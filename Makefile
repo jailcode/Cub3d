@@ -1,7 +1,7 @@
 NAME := cub3D
 
 SRC := src/main.c src/parsing/parse_map.c src/utils/get_next_line.c src/utils/get_line_utils.c \
-		src/utils/string_utils.c
+		src/utils/string_utils.c src/utils/memory_management.c src/init/init.c src/parsing/parse_texture.c
 
 INCLUDES := includes/cub.h
 
