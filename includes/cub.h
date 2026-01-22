@@ -20,9 +20,10 @@ typedef struct s_map
     int     color_ceiling[3];
     int     map_width;
     int     map_height;
-    char    **map;
+    char    **map;  //convert t_field
 
 }   t_map;
+
 
 typedef struct s_mem_list
 {

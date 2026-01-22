@@ -2,7 +2,7 @@
 
 int main(int argc, char **argv)
 {
-    t_game *data;
+    t_game *data; // just data instead of poiner
 
     if (argc != 2)
         return (1);
@@ -13,5 +13,6 @@ int main(int argc, char **argv)
     if (process_map(data, argv[1]) == false)
         return (1);
     
+    clean_memory_list(&data->parse_memory);
     return (0);
 }
