@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/22 14:36:54 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/01/22 17:27:35 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,11 @@ int	main(int argc, char *argv[])
 	// idxposition = field idx in map matrix
 	t_coord idxposition; // initialised to initial player idxpos on the map
 	char	compassdov;	 // initial dov (N,E,S,W)
+	
+	set_initial_player_pos(t_fidx init_player_field, char dir);
+	update_player_pos(double deltadist, double relangleofmovement, double deltadov);
+
+
 	set_player_posdov(&p, idxposition, compassdov);
 
 	int	pixelwidth; // = image.width in pxl
