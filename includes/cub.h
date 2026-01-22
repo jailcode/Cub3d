@@ -18,6 +18,8 @@ typedef struct s_map
     char    *Etexture;
     int     color_floor[3];
     int     color_ceiling[3];
+    int     map_width;
+    int     map_height;
     char    **map;
 
 }   t_map;
@@ -53,7 +55,7 @@ void	*ft_calloc(size_t elementCount, size_t elementSize);
 int	init_memory_list(t_mem_list **m);
 void	clean_memory_list(t_mem_list **mem);
 void	*x_malloc(t_mem_list **mem, size_t size);
-void    clean_exit(t_mem_list *memory, int code);
+void    clean_exit(t_mem_list *memory, int code, char *message);
 
 /*      MEMORY MANAGEMENT       */
 
