@@ -2,17 +2,14 @@
 
 int main(int argc, char **argv)
 {
-    t_game *data; // just data instead of poiner
+    t_parser data; // just data instead of poiner
 
     if (argc != 2)
         return (1);
-    data = init_game();
-    if (!data)
+    init_parser(&data);    
+    if (process_map(&data, argv[1]) == false)
         return (1);
     
-    if (process_map(data, argv[1]) == false)
-        return (1);
-    
-    clean_memory_list(&data->parse_memory);
+    clean_memory_list(&data.parse_memory);
     return (0);
 }

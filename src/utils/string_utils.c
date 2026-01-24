@@ -59,3 +59,27 @@ int ft_strncmp(const char *s1, const char *s2, size_t n)
         return 0;
     return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
+
+char    *ft_strdup(t_mem_list **memory, const char *s)
+{
+    char *dup;
+    size_t  len;
+    size_t  i;
+
+    if (!s)
+        return (NULL);
+    len = 0;
+    while (s[len])
+        len++;
+    dup = x_malloc(memory, len + 1);
+    if (!dup)
+        return (NULL);
+    i = 0;
+    while(i < len)
+    {
+        dup[i] = s[i];
+        i++;
+    }
+    dup[i] = '\0';
+    return (dup);
+}

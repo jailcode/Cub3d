@@ -57,12 +57,22 @@ void	*x_malloc(t_mem_list **mem, size_t size)
     return (new_node->address);
 }
 
-void    clean_exit(t_mem_list *memory, int code,char *message)
+void	close_fds_in_range(int start, int end)
+{
+	while(start < end)
+	{
+		close(start);
+		start++;
+	}
+}
+
+void    clean_exit(t_mem_list *memory, int code, char *message)
 {
     clean_memory_list(&memory);
 	if (message)
 		printf("Error: %s\n", message);
 	else
 		printf("Error\n");
+	close_fds_in_range(2, 1024);
     exit(code);
 }

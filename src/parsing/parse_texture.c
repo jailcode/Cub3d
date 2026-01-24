@@ -8,7 +8,7 @@ void    add_texture_data(char **dest, char *line, t_mem_list **memory)
     if (!dest || !line)
         return ;
     if (*dest != NULL)
-        clean_exit(*memory, 1, "missing texture data");
+        clean_exit(*memory, 1, "duplicate texture data");
     i = 0;
     while (ft_isspace(line[i]))
         i++;
@@ -46,7 +46,7 @@ void add_color_data(int color[3], char *line, t_mem_list **memory)
     int i;
 
     if (!color || !line || color[0] != -1)
-        clean_exit(*memory, 1, "missing dataaa");
+        clean_exit(*memory, 1, "Duplicate color");
     i = 0;
     color[0] = parse_color_value(line, &i, *memory);
     if (line[i++] != ',')
@@ -58,10 +58,10 @@ void add_color_data(int color[3], char *line, t_mem_list **memory)
     while (ft_isspace(line[i]))
         i++;
     if (line[i] && line[i] != '\n')
-        clean_exit(*memory, 1, "invalid format");
+        clean_exit(*memory, 1, "garbage after color");
 }
 
-
+/*
 int    extract_line(t_game *data, char *line)
 {
     int i;
@@ -85,6 +85,7 @@ int    extract_line(t_game *data, char *line)
        add_color_data(data->map->color_floor, &line[i + 1], &data->parse_memory);
     else if (ft_strncmp(&line[i], "C", 1) == 0)
        add_color_data(data->map->color_ceiling, &line[i + 1], &data->parse_memory);
-    else return (0);
+    else
+        return (0);
     return (1);
-}
+}*/

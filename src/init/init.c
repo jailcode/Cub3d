@@ -26,19 +26,18 @@ t_map *init_map(t_mem_list **memory)
     return (map); 
 }
 
-t_game *init_game(void)
+void init_parser(t_parser *ret)
 {
     t_mem_list *memory;
-    t_game *ret;
 
     if (init_memory_list(&memory))
-        return NULL;
-    ret = x_malloc(&memory, sizeof(*ret));
-    if (!ret)
-        clean_exit(memory, 1, "malloc failed");
+        exit(1);
     ret->map = init_map(&memory);
     if (!ret->map)
         clean_exit(memory, 1, "malloc failed");
     ret->parse_memory = memory;
-    return (ret);
+    ret->map_head = NULL;
+    ret->map_tail = NULL;
+    ret->map_height = 0;
+    ret->map_width = 0;
 }
