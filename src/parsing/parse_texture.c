@@ -30,6 +30,7 @@ static int parse_color_value(char *line, int *i, t_mem_list *memory)
 
     while (ft_isspace(line[*i]))
         (*i)++;
+    
     if (!ft_isdigit(line[*i]))
         clean_exit(memory, 1, "no numerical input");
     while (ft_isdigit(line[*i]))

@@ -108,3 +108,10 @@ void init_parser(t_parser *data);
 
 /*            INITIALISATION          */
 
+
+/*          VERFICATION                 */
+
+bool    verify_map(t_parser *data);
+
+
+/*          VERFICATION                 */

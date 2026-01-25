@@ -1,6 +1,6 @@
 #include "../../includes/cub.h"
 
-
+/*
 void    fill_map(t_game *data, char *line)
 {
     char    **map;
@@ -14,17 +14,21 @@ void    fill_map(t_game *data, char *line)
         clean_exit(data->parse_memory, 1, "malloc failed");
     
  
-}
+}*/
 
 int is_map_line(char *line)
 {
     int i;
 
+    if (!line || line[0] == '\0')
+        return 0;
     i = 0;
-    while (line[i])
+    while (line[i] && line[i] != '\n')
     {
         if (!ft_strchr("01NSEW ", line[i]))
-                return (0);
+        {
+                return (0);   
+        }
         i++;
     }
     return (1);
@@ -46,7 +50,7 @@ int starts_with(const char *line, const char *id)
         i++;
         id++;
     }
-    if (line[i] && !ft_isspace(line[i])) // might have to remove incase the path has alot of spaces
+    if (!ft_isspace(line[i])) // might have to remove incase the path has alot of spaces
         return (0);
     return (1);
 }
@@ -69,10 +73,11 @@ int is_empty(char *line)
 void    add_map_line(t_parser *p, char *line)
 {
     t_map_node *node;
+    size_t         len;
 
     if (is_empty(line))
         clean_exit(p->parse_memory, 1, "Empty line in map");
-    node = x_malloc(&p->parse_memory, sizeof(node));
+    node = x_malloc(&p->parse_memory, sizeof(*node));
     node->line = ft_strdup(&p->parse_memory, line);
     node->next = NULL;
     if (!p->map_head)
@@ -81,13 +86,16 @@ void    add_map_line(t_parser *p, char *line)
         p->map_tail->next = node;
     p->map_tail = node;
     p->map_height++;
-    if (p->map_width < ft_strlen(line))
-        p->map_width = ft_strlen(line);
+    len = ft_strlen(line);
+    if (line[len - 1] == '\n')
+        len--;
+    if (p->map_width < len)
+        p->map_width = len;
 }
 
 void    parse_header_line(t_parser *p, char *line)
 {
-    if (!line || line[0] == '\n' || line[0] == '\0')
+    if (!line || is_empty(line))
         return ;
     if (is_map_line(line))
     {
@@ -95,18 +103,18 @@ void    parse_header_line(t_parser *p, char *line)
         add_map_line(p, line);
         return ;
     }
-    if (starts_with(line, "NO "))
-        add_texture_data(&p->map->Ntexture, line, &p->parse_memory);
-    else if (starts_with(line, "SO "))
-        add_texture_data(&p->map->Ntexture, line, &p->parse_memory);
-    else if (starts_with(line, "WE "))
-        add_texture_data(&p->map->Ntexture, line, &p->parse_memory);
-    else if (starts_with(line, "EA "))
-        add_texture_data(&p->map->Ntexture, line, &p->parse_memory);
-    else if (starts_with(line, "F "))
-        add_color_data(p->map->color_floor, line, &p->parse_memory);
-    else if (starts_with(line, "C "))
-        add_color_data(p->map->color_ceiling, line, &p->parse_memory);
+    if (starts_with(line, "NO"))
+        add_texture_data(&p->map->Ntexture, line + 2, &p->parse_memory);
+    else if (starts_with(line, "SO"))
+        add_texture_data(&p->map->Stexture, line + 2, &p->parse_memory);
+    else if (starts_with(line, "WE"))
+        add_texture_data(&p->map->Wtexture, line + 2, &p->parse_memory);
+    else if (starts_with(line, "EA"))
+        add_texture_data(&p->map->Etexture, line + 2, &p->parse_memory);
+    else if (starts_with(line, "F"))
+        add_color_data(p->map->color_floor, line + 1, &p->parse_memory);
+    else if (starts_with(line, "C"))
+        add_color_data(p->map->color_ceiling, line + 1, &p->parse_memory);
     else
         clean_exit(p->parse_memory, 1, "Invalid identifier");
 }
@@ -119,6 +127,7 @@ void    finalize_map(t_parser *p)
     p->map->map = x_malloc(&p->parse_memory,
         sizeof(char *) * (p->map_height + 1));
     curr = p->map_head;
+    i = 0;
     while (curr)
     {
         p->map->map[i++] = curr->line;
@@ -129,24 +138,34 @@ void    finalize_map(t_parser *p)
     p->map->map_width = p->map_width;
 }
 
+void    pad_map(t_parser *data)
+{
+    if (!data)
+        clean_exit(data->parse_memory, 1, "missing data");
+    for (int i = 0; data->map->map[i]; i++)
+        printf("%lu and %zu\n", ft_strlen(data->map->map[i]), data->map_width);
+}
+
 bool process_map(t_parser *data, char *filename)
 {
     int     fd;
     char    *line;
 
     if (!filename)
-        return (0);
+        return (false);
     fd = open(filename, O_RDONLY);
     if (fd < 0)
-        return (0);
+        return (false);
     while ((line = get_next_line(data->parse_memory, fd)) != NULL)
     {
         if (data->state == PARSE_HEADER)
             parse_header_line(data, line);
         else
             add_map_line(data, line);
+        free(line);
     }
     close(fd);
-    //pad_map(data);
+    finalize_map(data);
+    pad_map(data);
     return (true);
 }

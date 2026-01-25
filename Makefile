@@ -1,8 +1,8 @@
 NAME := cub3D
 
 SRC := src/main.c src/parsing/parse_map.c src/utils/get_next_line.c src/utils/get_line_utils.c \
-		src/utils/string_utils.c src/utils/memory_management.c src/init/init.c src/parsing/parse_texture.c
-
+		src/utils/string_utils.c src/utils/memory_management.c src/init/init.c src/parsing/parse_texture.c \
+		src/verifying/verify_map.c
 INCLUDES := includes/cub.h
 
 OBJS := $(SRC:.c=.o)
