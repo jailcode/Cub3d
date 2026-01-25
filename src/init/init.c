@@ -40,4 +40,5 @@ void init_parser(t_parser *ret)
     ret->map_tail = NULL;
     ret->map_height = 0;
     ret->map_width = 0;
+    ret->state = PARSE_HEADER;
 }

@@ -119,9 +119,19 @@ void    parse_header_line(t_parser *p, char *line)
         clean_exit(p->parse_memory, 1, "Invalid identifier");
 }
 
-void    finalize_map(t_parser *p)
+char    *spaced_line(char *line, size_t len)
 {
     int i;
+
+    i = -1;
+    while((size_t)++i < len)
+        line[i] = ' ';
+    line[i] = '\0';
+    return (line);
+}
+void    build_raw_map(t_parser *p)
+{
+    size_t i;
     t_map_node *curr;
 
     p->map->map = x_malloc(&p->parse_memory,
@@ -130,7 +140,7 @@ void    finalize_map(t_parser *p)
     i = 0;
     while (curr)
     {
-        p->map->map[i++] = curr->line;
+        p->map->map[i++] = ft_strtrim(&p->parse_memory, curr->line, "\n");
         curr = curr->next;
     }
     p->map->map[i] = NULL;
@@ -138,12 +148,70 @@ void    finalize_map(t_parser *p)
     p->map->map_width = p->map_width;
 }
 
-void    pad_map(t_parser *data)
+char  *pad_line(t_parser *data, char *line)
 {
-    if (!data)
-        clean_exit(data->parse_memory, 1, "missing data");
-    for (int i = 0; data->map->map[i]; i++)
-        printf("%lu and %zu\n", ft_strlen(data->map->map[i]), data->map_width);
+    char *dest;
+    int i;
+    int     len;
+
+    if (!data || !line)
+        return NULL;
+    len = data->map->map_width +  2;// +2 for padded space 
+    dest = x_malloc(&data->parse_memory, sizeof(char) * (len + 1)); // 1 for \0, 2 for spaces to pad
+    if (!dest)
+        clean_exit(data->parse_memory, 1, "malloc failed");
+    i = -1;
+    while(++i < len)
+        dest[i] = ' '; 
+    dest[i] = '\0';
+    i = 0;
+    while(++i < len && line[i - 1])
+        dest[i] = line[i - 1];
+    return (dest);
+}
+
+static char *make_space_line(t_parser *p)
+{
+    char    *line;
+    int     len;
+    int     i;
+
+    len = p->map->map_width + 2;
+    line = x_malloc(&p->parse_memory, len + 1);
+    if (!line)
+        clean_exit(p->parse_memory, 1, "malloc failed");
+
+    i = 0;
+    while (i < len)
+        line[i++] = ' ';
+    line[i] = '\0';
+    return (line);
+}
+
+void    build_padded_map(t_parser *data)
+{
+    int old_h;
+    int i;
+    char    **new_map;
+
+    if (!data || !data->map ||!data->map->map)
+        return ;
+    old_h = data->map->map_height;
+    new_map = x_malloc(&data->parse_memory,
+                sizeof(char *) * (old_h + 3));
+    if (!new_map)
+        clean_exit(data->parse_memory, 1, "malloc failed");
+    new_map[0] = make_space_line(data);
+    i = 0;
+    while(i < old_h)
+    {
+      new_map[i + 1] =  pad_line(data, data->map->map[i]);
+        i++;
+    }
+    new_map[i + 1] = make_space_line(data);
+    new_map[i + 2] = NULL;
+    data->map->map = new_map;
+    data->map->map_height = old_h + 2;
 }
 
 bool process_map(t_parser *data, char *filename)
@@ -162,10 +230,10 @@ bool process_map(t_parser *data, char *filename)
             parse_header_line(data, line);
         else
             add_map_line(data, line);
-        free(line);
+        //free(line);
     }
     close(fd);
-    finalize_map(data);
-    pad_map(data);
+    build_raw_map(data);
+    build_padded_map(data);
     return (true);
 }

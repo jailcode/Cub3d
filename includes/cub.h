@@ -98,6 +98,7 @@ int ft_isdigit(char c);
 int ft_strncmp(const char *s1, const char *s2, size_t len);
 char    *ft_strdup(t_mem_list **memory, const char *s);
 int    extract_line(t_game *data, char *line);
+char	*ft_strtrim(t_mem_list **memory, char const *s1, char const *set);
 
 /*            PARSING          */
 
