@@ -1,10 +1,27 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdbool.h>
-#include <sys/time.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cub.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: raphha <raphha@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/27 11:06:16 by raphha            #+#    #+#             */
+/*   Updated: 2026/01/27 13:37:26 by raphha           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef CUB_H
+# define CUB_H
+
+#include "raycast.h"
+
+# include <stdio.h>
+# include <stdlib.h>
+# include <errno.h>
+# include <unistd.h>
+# include <fcntl.h>
+# include <stdbool.h>
+# include <sys/time.h>
 
 # ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1
@@ -18,10 +35,10 @@ typedef struct s_map
     char    *Etexture;
     int     color_floor[3];
     int     color_ceiling[3];
-    int     map_width;
-    int     map_height;
+    int     width;
+    int     height;
     char    **map;
-
+	t_field	**fields;
 }   t_map;
 
 typedef struct s_mem_list
@@ -79,3 +96,4 @@ t_game *init_game(void);
 
 /*            INITIALISATION          */
 
+#endif // CUB_H
