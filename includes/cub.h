@@ -60,8 +60,8 @@ typedef struct s_parser
 typedef struct s_game
 {
     t_map   *map;
-    t_mem_list *parse_memory;
-
+    void    *mlx;
+    void    *win;
 }   t_game;
 
 
