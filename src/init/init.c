@@ -21,8 +21,8 @@ t_map *init_map(t_mem_list **memory)
     map->Wtexture = NULL;
     map->Etexture = NULL;
     map->map = NULL;
-    map->map_height = 0;
-    map->map_width = 0;
+    map->height = 0;
+    map->width = 0;
     return (map); 
 }
 
@@ -41,4 +41,18 @@ t_game *init_game(void)
         clean_exit(memory, 1, "malloc failed");
     ret->parse_memory = memory;
     return (ret);
+}
+
+static t_cdir	char2cdir(char const charcompassdir)
+{
+	if (charcompassdir == 'N')
+		return ((t_cdir)North);
+	else if (charcompassdir == 'E')
+		return((t_cdir)East);
+	else if (charcompassdir == 'S')
+		return((t_cdir)South);
+	else if (charcompassdir == 'W')
+		return((t_cdir)West);
+	else
+		return ((t_cdir)cdir_error);
 }
