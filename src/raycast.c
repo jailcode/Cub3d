@@ -6,7 +6,7 @@
 /*   By: raphha <raphha@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/27 13:30:16 by raphha           ###   ########.fr       */
+/*   Updated: 2026/01/27 17:03:34 by raphha           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,17 @@ bool set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir const 
 	return (true);
 }
 
-int	update_player_pos(
-	t_player *p, t_coord const deltapos, double const deltadov)
+t_rcres	update_player_pos(
+	t_game *const g, t_coord const deltapos, double const deltadov)
 {
+	t_player *const p = g->player;
+	
 	p->pos.x += deltapos.x * cos(p->dov.rad) + deltapos.y * sin(p->dov.rad);
 	p->pos.y += deltapos.x * sin(p->dov.rad) + deltapos.y * cos(p->dov.rad);
 	p->dov.rad += deltadov;
 	p->pos.x = cos(p->dov.rad);
 	p->pos.y = sin(p->dov.rad);
+	return (gen_raycast(g));
 }
 
 bool	is_wall(t_map const *const pmap, t_fidx const fidx)
@@ -89,17 +92,26 @@ int	main(int argc, char *argv[])
 	char	compassdov;	 // initial dov (N,E,S,W)
 
 	set_initial_player_pos(&p, idxposition, compassdov);
-	int	pixelwidth; // = image.width in pxl
+	return (42);
+}
+
+t_rcres gen_raycast(t_game *const g)
+{
+	t_rcres res;
+	t_player const	p = g->player;
 	t_gridlns	gridlines = {
 		.horizontal = (t_line){.origin = (t_coord){0.0, 0.0}, .dir = (t_dir){.rad = M_PI / 2, .x = 1.0, .y = 0.0}},
 		.vertical =  (t_line){.origin = (t_coord){0.0, 0.0}, .dir = (t_dir){.rad = M_PI / 2, .x = 0.0, .y = 1.0}},
 	};
-	
-	for (int idx = 0; idx < pixelwidth; ++idx)
+
+	res.imgcolumn = ft_calloc(g->map->width, sizeof(t_rccol));
+	// this should probably be set in update_player_pos?
+	res.wallcollision = false;
+	for (int idx = 0; idx < g->map->width; ++idx)
 	{
 		t_line	ray;
 		ray.origin = p.pos;
-		double const rayangle = (p.dov.rad - p.fov / 2.0) + idx * (p.fov / (pixelwidth - 1));
+		double const rayangle = (p.dov.rad - p.fov / 2.0) + idx * (p.fov / (g->map->width - 1));
 		ray.dir = (t_dir){
 			.rad = rayangle,
 			.x = cos(rayangle),
@@ -119,19 +131,19 @@ int	main(int argc, char *argv[])
 		t_coord intersect;
 		while (!wall_found)
 		{
-			t_coord intersect_horizontal = intersection(&ray, &gridlines.horizontal);
-			t_coord intersect_vertical = intersection(&ray, &gridlines.vertical);		
-			double dist_h = dist(&ray.origin, &intersect_horizontal);
-			double dist_v = dist(&ray.origin, &intersect_vertical);
+			t_coord intersect_horizontalln = intersection(&ray, &gridlines.horizontal);
+			t_coord intersect_verticalln = intersection(&ray, &gridlines.vertical);		
+			double dist_h = dist(&ray.origin, &intersect_horizontalln);
+			double dist_v = dist(&ray.origin, &intersect_verticalln);
 
-			intersect = intersect_vertical;
-			bool hitvertical = true;
+			intersect = intersect_verticalln;
+			bool hitverticalln = true;
 			if (dist_h < dist_v)
 			{
-				intersect = intersect_horizontal;
-				hitvertical = false;
+				intersect = intersect_horizontalln;
+				hitverticalln = false;
 			}
-			if (hitvertical)
+			if (hitverticalln)
 				fieldidx = (t_fidx){.horizontal = (int)(round(intersect.x)), .vertical = (int)(intersect.y)};
 			else
 				fieldidx = (t_fidx){.horizontal = (int)(intersect.x), .vertical = (int)(round(intersect.y))};
@@ -139,11 +151,27 @@ int	main(int argc, char *argv[])
 			 	--fieldidx.horizontal;
 			if (ray.dir.y < 0)
 			 	--fieldidx.vertical;
-			if (is_wall(&map, fieldidx))
+			if (is_wall(&g.map, fieldidx))
 			{
 				wall_found = true;
+				t_rccol *const prcc = &(res.imgcolumn[idx]);
+				if (hitverticalln)
+				{
+					if (ray.dir.x > 0)
+						prcc->cubeside = (t_cdir)West;
+					else
+						prcc->cubeside = (t_cdir)East;
+				}
+				else
+				{
+					if (ray.dir.y > 0)
+						prcc->cubeside = (t_cdir)North;
+					else
+						prcc->cubeside = (t_cdir)South;
+				}
 			}
 		}
 		printf("Intersection for ray angle\n");
 	}
+	return (res);
 }

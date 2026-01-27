@@ -6,7 +6,7 @@
 /*   By: raphha <raphha@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/27 16:00:15 by raphha           ###   ########.fr       */
+/*   Updated: 2026/01/27 17:05:45 by raphha           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,21 @@ typedef struct s_gridlines
 	t_line	vertical;
 }	t_gridlns;
 
+typedef struct s_rc_image_column
+{
+	int	ceilpx;
+	int cubepx;
+	int floorpx;
+	t_cdir cubeside;
+}	t_rccol;
+
+typedef struct s_raycastresult
+{
+	t_rccol	*imgcolumn;
+	bool	wallcollision;
+}	t_rcres;
+
+
 // the field index is given as a struct with 2 integers,
 // cdir is the compass-direction like N(orth) etc.
 // starting at 0,0 in the top left corner of the map
@@ -94,7 +109,7 @@ bool	set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir cdir);
 // The deltapos is a relative distance:
 //   x => to the front/back (positive to the front)
 //   y => to the side (positive to the right)
-int	update_player_pos(
-	t_player *p, t_coord const deltapos, double const deltadov);
+t_rcres	update_player_pos(
+	t_game *const g, t_coord const deltapos, double const deltadov);
 
 #endif // RAYCAST_H
