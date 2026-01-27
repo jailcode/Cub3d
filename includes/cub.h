@@ -6,7 +6,7 @@
 /*   By: raphha <raphha@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 11:06:16 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/27 13:37:26 by raphha           ###   ########.fr       */
+/*   Updated: 2026/01/27 16:09:49 by raphha           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct s_mem_list
 typedef struct s_game
 {
     t_map   *map;
+	t_player	player;
     t_mem_list *parse_memory;
 
 }   t_game;
