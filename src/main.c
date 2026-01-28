@@ -1,11 +1,9 @@
 #include "../includes/cub.h"
 
-
-
 int main(int argc, char **argv)
 {
     t_parser parser;
-    //t_game      data;
+    t_game      data;
     if (argc != 2)
         return (1);
     init_parser(&parser);    
@@ -13,6 +11,8 @@ int main(int argc, char **argv)
         clean_exit(parser.parse_memory, 1, "file does not exist");
     if (verify_map(&parser) == false)
         clean_exit(parser.parse_memory, 1, "invalid map");
+    init_data(&data, &parser);
+    start_game(&data);
     clean_memory_list(&parser.parse_memory);
     return (0);
 }

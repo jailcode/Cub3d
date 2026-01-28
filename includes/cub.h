@@ -5,10 +5,25 @@
 #include <fcntl.h>
 #include <stdbool.h>
 #include <sys/time.h>
+#include "../minilibx-linux/mlx.h"
+#include "miniessentials.h"
+#include "raycast.h"
 
+# ifndef CUB_H
+# define CUB_H
 # ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1
 # endif
+
+# ifndef TILE_SIZE
+# define TILE_SIZE 12
+# endif
+
+# define SCREEN_HEIGHT 500
+# define SCREEN_WIDTH  600
+# define FOV 60
+
+# define FPS 60
 
 typedef struct s_map
 {
@@ -23,6 +38,8 @@ typedef struct s_map
     char    **map;  //convert t_field
 
 }   t_map;
+
+
 
 
 typedef struct s_mem_list
@@ -51,7 +68,8 @@ typedef struct s_parser
     t_parse_state   state;
     t_map_node *map_head;
     t_map_node *map_tail;
-
+    t_coord     player_pos;
+    t_dir       player_dir;
     size_t map_height;
     size_t map_width;
 
@@ -60,6 +78,9 @@ typedef struct s_parser
 typedef struct s_game
 {
     t_map   *map;
+    t_player player;
+    t_mem_list    *memory;
+    t_img   frame;
     void    *mlx;
     void    *win;
 }   t_game;
@@ -106,6 +127,7 @@ char	*ft_strtrim(t_mem_list **memory, char const *s1, char const *set);
 /*            INITIALISATION          */
 
 void init_parser(t_parser *data);
+void    init_data(t_game *data, t_parser *parser);
 
 /*            INITIALISATION          */
 
@@ -114,5 +136,28 @@ void init_parser(t_parser *data);
 
 bool    verify_map(t_parser *data);
 
-
 /*          VERFICATION                 */
+
+/*           minilibx funcs             */
+
+void    leave_game(t_game *data);
+void    start_game(t_game *data);
+void    register_input_hooks(t_game *data);
+void    set_image_background(t_img *img, int color); //remove later maybe
+void    load_mini_map(t_game *data);
+void    draw_tile(t_img *frame, int x, int y, int color);
+void    my_mlx_pixel_put(t_img *img, int x, int y, int color);
+void    load_mini_player(t_game *data);
+/*           minilibx funcs             */
+
+// DeltaDOV is positive in clockwise direction
+// for now the deltadov is in rad, but we could
+// agree to use deg if you prefer
+// The deltapos is a relative distance:
+//   x => to the front/back (positive to the front)
+//   y => to the side (positive to the right)
+t_rcres	update_player_pos(
+	t_game *const g, t_coord const deltapos, double const deltadov);
+
+
+# endif

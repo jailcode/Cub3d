@@ -6,7 +6,7 @@ void    print_map(char **map)
          printf("%s\n", map[i]);
 }
 
-int     check_map_elements(t_parser *data)
+int check_map_elements(t_parser *data)
 {
     int i;
     int j;
@@ -109,11 +109,56 @@ int no_spaces_inside(t_parser *data, char **map)
     return (1);
 }
 
+void    get_player_dov(t_parser *data, char dov)
+{
+    if (data->player_dir.rad != -1)
+        clean_exit(data->parse_memory, 1, "Multiple player starts");
+    if (dov == 'N')
+        data->player_dir.rad = M_PI / 2;
+    else if (dov == 'S')
+        data->player_dir.rad = 3 * M_PI / 2;
+    else if (dov == 'W')
+        data->player_dir.rad = M_PI ;
+    else if (dov == 'E')
+        data->player_dir.rad = 0;
+}
+
+int get_player_info(t_parser *data)
+{
+    int i;
+    int j;
+    int ret;
+
+    if (!data)
+        return (0);
+    i = 0;
+    ret = 0;
+    while(data->map->map[i])
+    {
+        j = 0;
+        while(data->map->map[i][j])
+        {
+            if (ft_strchr("NWES", data->map->map[i][j]) != NULL)
+            {
+                get_player_dov(data, data->map->map[i][j]);
+                data->player_pos.x = j * TILE_SIZE;
+                data->player_pos.y = i * TILE_SIZE;
+                ret = 1;
+            }
+            j++;
+        }
+        i++;
+    }
+    return (ret);
+}
+
 bool    verify_map(t_parser *data)
 {
     if (!data)
         return (false);
     if (!check_map_elements(data))
+        return (false);
+    if (!get_player_info(data))
         return (false);
     if (!is_closed(data))
         return (false);
