@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 11:06:16 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/29 18:03:47 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/01/29 18:14:54 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,6 @@ void    init_data(t_game *data, t_parser *parser);
 
 /*            INITIALISATION          */
 
-
 /*          VERFICATION                 */
 
 bool    verify_map(t_parser *data);
@@ -203,50 +202,5 @@ void    load_mini_player(t_game *data);
 /*           colors and textures         */
 int create_trgb(int t, int r, int g, int b);
 /*           colors and textures         */
-
-
-// DeltaDOV is positive in clockwise direction
-// for now the deltadov is in rad, but we could
-// agree to use deg if you prefer
-// The deltapos is a relative distance:
-//   x => to the front/back (positive to the front)
-//   y => to the side (positive to the right)
-t_rcres	update_player_pos(
-	t_game *const g, t_coord const deltapos, double const deltadov);
-
-
-
-/*          VERFICATION                 */
-
-bool    verify_map(t_parser *data);
-
-/*          VERFICATION                 */
-
-/*           minilibx funcs             */
-
-void    leave_game(t_game *data);
-void    start_game(t_game *data);
-void    register_input_hooks(t_game *data);
-void    set_image_background(t_img *img, int color); //remove later maybe
-void    load_mini_map(t_game *data);
-void    draw_tile(t_img *frame, int x, int y, int color);
-void    my_mlx_pixel_put(t_img *img, int x, int y, int color);
-void    load_mini_player(t_game *data);
-/*           minilibx funcs             */
-
-/*           colors and textures         */
-int create_trgb(int t, int r, int g, int b);
-/*           colors and textures         */
-
-
-// DeltaDOV is positive in clockwise direction
-// for now the deltadov is in rad, but we could
-// agree to use deg if you prefer
-// The deltapos is a relative distance:
-//   x => to the front/back (positive to the front)
-//   y => to the side (positive to the right)
-t_rcres	update_player_pos(
-	t_game *const g, t_coord const deltapos, double const deltadov);
-
 
 #endif //CUB_H

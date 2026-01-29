@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/29 16:33:33 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/01/29 18:14:45 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ bool	set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir cdir);
 // The deltapos is a relative distance:
 //   x => to the front/back (positive to the front)
 //   y => to the side (positive to the right)
-t_rcres	update_player_pos(
+bool	update_player_pos(
 	t_game *const g, t_coord const deltapos, double const deltadov);
 
 #endif // RAYCAST_H
