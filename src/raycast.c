@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/29 15:22:12 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/01/29 16:11:37 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,6 @@ t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
 	wall_found = false;
 	while (!wall_found)
 	{
-		// t_coord intersect;
 		t_coord const intersect_horizontalln = intersection(&ray, &gridlines.horizontal);
 		t_coord const intersect_verticalln = intersection(&ray, &gridlines.vertical);		
 		double const dist_h = dist(&ray.origin, &intersect_horizontalln);
@@ -149,17 +148,31 @@ t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
 			if (hitverticalln)
 			{
 				if (ray.dir.x > 0)
+				{
 					rcintersect.cubeside = (t_cdir)West;
+					rcintersect.impactangle = ray.dir.rad - 0.0 * M_PI;
+				}
 				else
+				{
 					rcintersect.cubeside = (t_cdir)East;
+					rcintersect.impactangle = ray.dir.rad - 1.0 * M_PI;
+				}
 			}
 			else
 			{
 				if (ray.dir.y > 0)
+				{
 					rcintersect.cubeside = (t_cdir)North;
+					rcintersect.impactangle = ray.dir.rad - 0.5 * M_PI;
+				}
 				else
+				{
 					rcintersect.cubeside = (t_cdir)South;
+					rcintersect.impactangle = ray.dir.rad - 1.5 * M_PI;
+				}
 			}
+			if (rcintersect.impactangle > M_PI)
+				rcintersect.impactangle -= M_PI;
 		}
 	}
 	return (rcintersect);
@@ -169,16 +182,9 @@ t_rcres gen_raycast(t_game *const g)
 {
 	t_rcres res;
 	t_player const	p = g->player;
-	// t_gridlns	gridlines = {
-	// 	.horizontal = (t_line){.origin = (t_coord){0.0, 0.0}, .dir = (t_dir){.rad = M_PI / 2, .x = 1.0, .y = 0.0}},
-	// 	.vertical =  (t_line){.origin = (t_coord){0.0, 0.0}, .dir = (t_dir){.rad = M_PI / 2, .x = 0.0, .y = 1.0}},
-	// };
 	double const unitdist = cos(g->player.fov);
 	double const w2hratio = (double)g->map->width / g->map->height;
 
-	// res.imgcolumn = g....somewhere in frame.;
-	// this should probably be set in update_player_pos?
-	res.wallcollision = false;
 	t_line	ray;
 	ray.origin = p.pos;
 	ray.dir = p.dov;
@@ -195,7 +201,6 @@ t_rcres gen_raycast(t_game *const g)
 		// gridlines.vertical.origin.x = (int)(p.pos.x);
 		// if (ray.dir.x > 0)
 		// 	gridlines.vertical.origin.x += 1.0;
-
 		// gridlines.horizontal.origin.y = (int)(p.pos.y);
 		// if (ray.dir.y > 0)
 		// 	gridlines.horizontal.origin.y += 1.0;
@@ -255,7 +260,7 @@ t_rcres gen_raycast(t_game *const g)
 
 		printf("Intersection for ray angle\n");
 		double min_dist = rcintersect.dist2intersect * cos(ray.dir.rad - p.dov.rad);
-		res.imgcolumn[idx].blockheigtpercent =
+		res.imgcolumn[idx].blockheightpercent =
 			min_dist / unitdist * w2hratio;
 	}
 	return (res);
@@ -267,7 +272,7 @@ double vnorm(t_coord const *const coord)
 }
 
 t_rcres	update_player_pos(
-	t_game *const g, t_coord const deltapos, double const deltadov)
+	t_game *const g, t_coord deltapos, double const deltadov)
 {
 	t_player *const p = &g->player;
 
@@ -275,9 +280,15 @@ t_rcres	update_player_pos(
 	ray.origin = p->pos;
 	ray.dir = p->dov;
 	t_rcintersect intersect = rayintersection(ray, g->map);
-	if (intersect.dist2intersect < vnorm(&deltapos))
+	double const maxdistbeforeimpact = intersect.dist2intersect
+			- p->mindist2wall / cos(intersect.impactangle);
+	double const deltadist = vnorm(&deltapos);
+	if (deltadist > maxdistbeforeimpact)
 	{
-		
+		double const ratio = maxdistbeforeimpact / deltadist;
+		deltapos.x *= ratio;
+		deltapos.y *= ratio;
+		g->player.collision = true;
 	}
 	p->pos.x += deltapos.x * cos(p->dov.rad) + deltapos.y * sin(p->dov.rad);
 	p->pos.y += deltapos.x * sin(p->dov.rad) + deltapos.y * cos(p->dov.rad);
