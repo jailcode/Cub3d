@@ -214,6 +214,7 @@ void    build_padded_map(t_parser *data)
     new_map[i + 2] = NULL;
     data->map->parse_map = new_map;
     data->map->map_height = old_h + 2;
+    data->map->map_width = data->map->map_width + 2;
 }
 
 
@@ -237,11 +238,10 @@ void    transfer_map(t_parser *data)
     t_field **main_map;
 
     map = data->map->parse_map;
-    main_map = data->map->main_map;
-    i = -1;
     main_map = x_malloc(&data->parse_memory, sizeof(*main_map) * (data->map->map_height));
-    while(++i < data->map->map_width)
-        main_map[i] = x_malloc(&data->parse_memory, sizeof(**main_map) * data->map->map_width);
+    i = -1;
+    while(++i < data->map->map_height)
+        main_map[i] = x_malloc(&data->parse_memory, sizeof(**main_map) * (data->map->map_width + 1));
     i = -1;
     while (map[++i])
     {
@@ -249,6 +249,7 @@ void    transfer_map(t_parser *data)
         while(map[i][++j])
             main_map[i][j].ftype = return_fieldtype(map[i][j]);
     }
+    data->map->main_map = main_map;
 }
 
 bool process_map(t_parser *data, char *filename)

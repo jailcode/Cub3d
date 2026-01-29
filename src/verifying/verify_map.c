@@ -59,7 +59,7 @@ void    dfs(t_parser *data, char **map, int row, int col)
     if (!data)
         clean_exit(data->parse_memory, 1, "no data");
     if (row < 0 || row >= data->map->map_height || col < 0 || 
-        col >= data->map->map_width  + 2|| map[row][col] == '1')
+        col >= data->map->map_width || map[row][col] == '1')
         return ;
     if (map[row][col] && !(map[row][col] == ' ' || map[row][col] == '1'))
         clean_exit(data->parse_memory, 1, "invalid map");

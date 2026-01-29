@@ -17,18 +17,28 @@ int	init_memory_list(t_mem_list **m)
 void	clean_memory_list(t_mem_list **mem)
 {
 	t_mem_list	*temp;
-
+	int			count;
+	
 	if (!mem || !(*mem))
 		return ;
+	// Find the start of the list
 	while ((*mem)->prev != NULL)
+	{
+		if ((*mem)->prev == *mem)  // Detect circular reference
+			break ;
 		(*mem) = (*mem)->prev;
-	while ((*mem))
+	}
+
+	// Free all nodes from start to end
+	count = 0;
+	while (*mem != NULL && count < 1000000)
 	{
 		temp = (*mem)->next;
-		if ((*mem)->address)
+		if ((*mem)->address != NULL)
 			free((*mem)->address);
 		free(*mem);
 		*mem = temp;
+		count++;
 	}
 }
 

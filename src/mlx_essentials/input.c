@@ -2,11 +2,6 @@
 
 int keypress(int keycode, t_game *data)
 {
-    if (keycode == K_Q)
-    {
-        clean_memory_list(&data->memory);
-        exit(0);
-    }
     if (keycode == K_W)
         data->key.w = 1;
     else if (keycode == K_A)
@@ -22,8 +17,23 @@ int keypress(int keycode, t_game *data)
     return (0);
 }
 
+void    destroy_mlx_resources(t_game *data)
+{
+    mlx_destroy_image(data->mlx, data->frame.img);
+    mlx_destroy_window(data->mlx, data->win);
+    mlx_destroy_display(data->mlx);
+    free(data->mlx);
+}
+
 int keyrelease(int keycode, t_game *data)
 {
+    if (keycode == K_Q || keycode == ESC)
+    {
+        mlx_loop_end(data->mlx);
+        destroy_mlx_resources(data);
+        clean_memory_list(&data->memory);
+        exit(0);
+    }
     if (keycode == K_W)
         data->key.w = 0;
     else if (keycode == K_A)
