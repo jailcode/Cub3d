@@ -1,23 +1,28 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdbool.h>
-#include <sys/time.h>
-#include "../minilibx-linux/mlx.h"
-#include "miniessentials.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cub.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: raphha <raphha@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/27 11:06:16 by raphha            #+#    #+#             */
+/*   Updated: 2026/01/27 16:09:49 by raphha           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef CUB_H
+# define CUB_H
+
 #include "raycast.h"
 
-/*TO DO*/
-// return the delta t_coord with the delta DOV to update player position
-// use set_initial_player_pos instead of set_dov in veirfy map
-// double check t_rccol *imgcolumn in frame for leaks and segfaults
-//  add FPS and set it to 60 using gettime of day
+# include <stdio.h>
+# include <stdlib.h>
+# include <errno.h>
+# include <unistd.h>
+# include <fcntl.h>
+# include <stdbool.h>
+# include <sys/time.h>
 
-
-# ifndef CUB_H
-# define CUB_H
 # ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1
 # endif
@@ -41,8 +46,8 @@ typedef struct s_map
     char    *Etexture;
     int     color_floor[3];
     int     color_ceiling[3];
-    int     map_width;
-    int     map_height;
+    int     width;
+    int     height;
     char    **parse_map;
     t_field **main_map;
 
@@ -192,4 +197,4 @@ t_rcres	update_player_pos(
 	t_game *const g, t_coord const deltapos, double const deltadov);
 
 
-# endif
+#endif //CUB_H

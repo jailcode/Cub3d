@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycast.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphha <raphha@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/27 17:05:45 by raphha           ###   ########.fr       */
+/*   Updated: 2026/01/29 11:05:57 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 
 # include <stdbool.h>
 
+typedef struct s_game t_game;
+
 typedef enum e_compassdir
 {
 	North, East, South, West, cdir_error
@@ -29,7 +31,6 @@ typedef enum e_fieldtype
 {
 	wall,
 	empty,
-	ground
 }	t_fieldtype;
 
 typedef struct s_field
@@ -76,7 +77,6 @@ typedef struct s_player
 	double	fov;
 	t_coord	pos;
 	t_dir	dov;
-	bool	collision; // 
 }	t_player;
 
 typedef struct s_gridlines
@@ -105,5 +105,13 @@ typedef struct s_raycastresult
 // starting at 0,0 in the top left corner of the map
 bool	set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir cdir);
 
+// DeltaDOV is positive in clockwise direction
+// for now the deltadov is in rad, but we could
+// agree to use deg if you prefer
+// The deltapos is a relative distance:
+//   x => to the front/back (positive to the front)
+//   y => to the side (positive to the right)
+t_rcres	update_player_pos(
+	t_game *const g, t_coord const deltapos, double const deltadov);
 
 #endif // RAYCAST_H
