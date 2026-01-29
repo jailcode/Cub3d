@@ -1,6 +1,6 @@
 #include "../../includes/cub.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(t_mem_list *memory, char const *s1, char const *s2)
 {
 	int		sizetotal;
 	char	*res;
@@ -9,7 +9,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	i = 0;
 	sizetotal = ft_strlen(s1) + ft_strlen(s2);
-	res = malloc(sizeof(char) * (sizetotal + 1));
+	res = x_malloc(&memory, sizeof(char) * (sizetotal + 1));
 	if (!res || !s1 || !s2)
 		return (NULL);
 	while (s1[i] != 0)
@@ -55,13 +55,13 @@ void	ft_bzero(void *s, size_t n)
 	}
 }
 
-void	*ft_calloc(size_t elementCount, size_t elementSize)
+void	*ft_calloc(t_mem_list *memory, size_t elementCount, size_t elementSize)
 {
 	char	*res;
 
-	res = malloc(elementSize * elementCount);
+	res = x_malloc(&memory, elementSize * elementCount);
 	if (!res)
-		return (NULL);
+		clean_exit(memory, 1, "malloc failed");
 	ft_bzero(res, elementSize * elementCount);
 	return (res);
 }

@@ -20,41 +20,41 @@ t_map *init_map(t_mem_list **memory)
     map->Stexture = NULL;
     map->Wtexture = NULL;
     map->Etexture = NULL;
-    map->map = NULL;
+    map->parse_map = NULL;
+    map->main_map = NULL;
     map->height = 0;
     map->width = 0;
     return (map); 
 }
 
-t_game *init_game(void)
+void init_parser(t_parser *ret)
 {
     t_mem_list *memory;
-    t_game *ret;
 
     if (init_memory_list(&memory))
-        return NULL;
-    ret = x_malloc(&memory, sizeof(*ret));
-    if (!ret)
-        clean_exit(memory, 1, "malloc failed");
+        exit(1);
     ret->map = init_map(&memory);
     if (!ret->map)
         clean_exit(memory, 1, "malloc failed");
     ret->parse_memory = memory;
-    return (ret);
+    ret->map_head = NULL;
+    ret->map->main_map = NULL;
+    ret->map_tail = NULL;
+    ret->map_height = 0;
+    ret->map_width = 0;
+    ret->compassdir = cdir_error;
+    ret->imgcolumn = x_malloc(&memory, SCREEN_WIDTH * sizeof(t_rccol));
+    ret->state = PARSE_HEADER;
 }
 
-/*
-static t_cdir	char2cdir(char const charcompassdir)
+void    init_data(t_game *data, t_parser *parser)
 {
-	if (charcompassdir == 'N')
-		return ((t_cdir)North);
-	else if (charcompassdir == 'E')
-		return((t_cdir)East);
-	else if (charcompassdir == 'S')
-		return((t_cdir)South);
-	else if (charcompassdir == 'W')
-		return((t_cdir)West);
-	else
-		return ((t_cdir)cdir_error);
+    data->map = parser->map;  // change to t_map2 or whatever Raphael prefers
+    data->memory = parser->parse_memory;
+    data->frame.img = NULL;
+    data->frame.imgcolumn = parser->imgcolumn;
+    data->mlx = NULL;
+    data->win = NULL;
+    data->current_time = 0;
+   // set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
 }
-*/

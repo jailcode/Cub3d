@@ -59,3 +59,50 @@ int ft_strncmp(const char *s1, const char *s2, size_t n)
         return 0;
     return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
+
+char    *ft_strdup(t_mem_list **memory, const char *s)
+{
+    char *dup;
+    size_t  len;
+    size_t  i;
+
+    if (!s)
+        return (NULL);
+    len = 0;
+    while (s[len])
+        len++;
+    dup = x_malloc(memory, len + 1);
+    if (!dup)
+        return (NULL);
+    i = 0;
+    while(i < len)
+    {
+        dup[i] = s[i];
+        i++;
+    }
+    dup[i] = '\0';
+    return (dup);
+}
+
+char	*ft_strtrim(t_mem_list **memory, char const *s1, char const *set)
+{
+	int		start;
+	int		end;
+	char	*str;
+
+	if (!s1 || !set)
+		return (NULL);
+	start = 0;
+	end = ft_strlen(s1) - 1;
+	while (ft_strchr(set, s1[start]) && start <= end)
+		start++;
+	if (start > end)
+		return (ft_strdup(memory, s1 + end + 1));
+	while (ft_strchr(set, s1[end]) && end >= 0)
+		end--;
+	str = x_malloc(memory, end - start + 2);
+	if (!str)
+		return (NULL);
+	ft_strlcpy(str, &s1[start], end - start + 2);
+	return (str);
+}

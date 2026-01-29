@@ -1,15 +1,15 @@
 #include "../../includes/cub.h"
 
-static char	*fr_free(char *buffer, char *buf)
+static char	*fr_free(t_mem_list *memory, char *buffer, char *buf)
 {
 	char	*temp;
 
-	temp = ft_strjoin(buffer, buf);
-	free(buffer);
+	temp = ft_strjoin(memory, buffer, buf);
+	//free(buffer);
 	return (temp);
 }
 
-static char	*ft_next(char *buffer)
+static char	*ft_next(t_mem_list *memory, char *buffer)
 {
 	int		i;
 	int		j;
@@ -20,19 +20,19 @@ static char	*ft_next(char *buffer)
 		i++;
 	if (!buffer[i])
 	{
-		free(buffer);
+		//free(buffer);
 		return (NULL);
 	}
-	line = ft_calloc((ft_strlen(buffer) - i + 1), sizeof(char));
+	line = ft_calloc(memory, (ft_strlen(buffer) - i + 1), sizeof(char));
 	i++;
 	j = 0;
 	while (buffer[i])
 		line[j++] = buffer[i++];
-	free(buffer);
+	//free(buffer);
 	return (line);
 }
 
-static char	*ft_line(char *buffer)
+static char	*ft_line(t_mem_list *memory, char *buffer)
 {
 	char	*line;
 	int		i;
@@ -42,7 +42,7 @@ static char	*ft_line(char *buffer)
 		return (NULL);
 	while (buffer[i] && buffer[i] != '\n')
 		i++;
-	line = ft_calloc(i + 2, sizeof(char));
+	line = ft_calloc(memory, i + 2, sizeof(char));
 	i = 0;
 	while (buffer[i] && buffer[i] != '\n')
 	{
@@ -54,55 +54,55 @@ static char	*ft_line(char *buffer)
 	return (line);
 }
 
-static char	*read_file(int fd, char *res)
+static char	*read_file(t_mem_list *memory, int fd, char *res)
 {
 	char	*buffer;
 	int		byte_read;
 
 	if (!res)
-		res = ft_calloc(1, 1);
-	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+		res = ft_calloc(memory, 1, 1);
+	buffer = ft_calloc(memory, BUFFER_SIZE + 1, sizeof(char));
 	byte_read = 1;
 	while (byte_read > 0)
 	{
 		byte_read = read(fd, buffer, BUFFER_SIZE);
 		if (byte_read == -1)
 		{
-			free(buffer);
+			//free(buffer);
 			return (NULL);
 		}
 		buffer[byte_read] = 0;
-		res = fr_free(res, buffer);
+		res = fr_free(memory, res, buffer);
 		if (ft_strchr(buffer, '\n'))
 			break ;
 	}
-	free(buffer);
+	//free(buffer);
 	return (res);
 }
 
-char	*get_next_line(int fd)
+char	*get_next_line(t_mem_list *memory, int fd)
 {
 	static char	*buffer = NULL;
 	char		*line;
 
 	if (fd == -1)
 	{
-		if (buffer)
-			free(buffer);
+		//if (buffer)
+			//free(buffer);
 		buffer = NULL;
 		return (NULL);
 	}
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
-		if (buffer)
-			free(buffer);
+		//if (buffer)
+			//free(buffer);
 		buffer = NULL;
 		return (NULL);
 	}
-	buffer = read_file(fd, buffer);
+	buffer = read_file(memory, fd, buffer);
 	if (!buffer)
 		return (NULL);
-	line = ft_line(buffer);
-	buffer = ft_next(buffer);
+	line = ft_line(memory, buffer);
+	buffer = ft_next(memory, buffer);
 	return (line);
 }
