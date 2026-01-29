@@ -40,17 +40,9 @@ void init_parser(t_parser *ret)
     ret->map_tail = NULL;
     ret->map_height = 0;
     ret->map_width = 0;
-    ret->player_dir.rad = -1;
-    ret->player_pos.x = -1;
-    ret->player_pos.y = -1;
+    ret->compassdir = cdir_error;
+    ret->imgcolumn = x_malloc(&memory, SCREEN_WIDTH * sizeof(t_rccol));
     ret->state = PARSE_HEADER;
-}
-
-void    init_player(t_player *player, t_coord coords, t_dir dov)
-{
-    player->dov = dov;
-    player->pos = coords;
-    player->fov = FOV;
 }
 
 void    init_data(t_game *data, t_parser *parser)
@@ -58,7 +50,8 @@ void    init_data(t_game *data, t_parser *parser)
     data->map = parser->map;  // change to t_map2 or whatever Raphael prefers
     data->memory = parser->parse_memory;
     data->frame.img = NULL;
+    data->frame.imgcolumn = parser->imgcolumn;
     data->mlx = NULL;
     data->win = NULL;
-    init_player(&data->player, parser->player_pos, parser->player_dir);
+    set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
 }

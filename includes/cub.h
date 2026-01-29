@@ -9,6 +9,13 @@
 #include "miniessentials.h"
 #include "raycast.h"
 
+/*TO DO*/
+// return the delta t_coord with the delta DOV to update player position
+// use set_initial_player_pos instead of set_dov in veirfy map
+// double check t_rccol *imgcolumn in frame for leaks and segfaults
+//  add FPS and set it to 60 using gettime of day
+
+
 # ifndef CUB_H
 # define CUB_H
 # ifndef BUFFER_SIZE
@@ -36,6 +43,7 @@ typedef struct s_map
     int     map_width;
     int     map_height;
     char    **map;  //convert t_field
+    //t_field **map;
 
 }   t_map;
 
@@ -63,23 +71,24 @@ typedef enum e_parse_state
 
 typedef struct s_parser
 {
+
+    //char **map; // remove char **map from t_map and add t_fields
     t_map *map;
     t_mem_list *parse_memory;
     t_parse_state   state;
     t_map_node *map_head;
     t_map_node *map_tail;
-    t_coord     player_pos;
-    t_dir       player_dir;
+    t_fidx      init_player_field;
+    //t_dir       player_dir;
+    t_cdir        compassdir;
     size_t map_height;
     size_t map_width;
-
+    t_rccol     *imgcolumn;
 }   t_parser;
 
 typedef struct s_map2
 {
     t_field **fields;
-    int       color_c;
-    int       color_f;
 }   t_map2; // not used yet, but could be implemented
 
 

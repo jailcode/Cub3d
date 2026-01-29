@@ -1,3 +1,8 @@
+#ifndef MINIESSENTIALS_H
+# define MINIESSENTIALS_H
+#include <X11/keysym.h> // has the keycodes
+
+#include "raycast.h"
 
 #ifndef KEY_LINUX_H
 # define KEY_LINUX_H
@@ -27,4 +32,7 @@ typedef struct s_img
     int bpp;
     int line_length;
     int endian;
+    t_rccol *imgcolumn;
 }   t_img;
+
+# endif

@@ -109,18 +109,18 @@ int no_spaces_inside(t_parser *data, char **map)
     return (1);
 }
 
-void    get_player_dov(t_parser *data, char dov)
+void    get_player_cdir(t_parser *data, char dov) // uset set_initial_player_pos but also parse for multiple player
 {
-    if (data->player_dir.rad != -1)
+    if (data->compassdir != cdir_error)
         clean_exit(data->parse_memory, 1, "Multiple player starts");
     if (dov == 'N')
-        data->player_dir.rad = M_PI / 2;
+        data->compassdir = North;
     else if (dov == 'S')
-        data->player_dir.rad = 3 * M_PI / 2;
+        data->compassdir = South;
     else if (dov == 'W')
-        data->player_dir.rad = M_PI ;
+        data->compassdir = West;
     else if (dov == 'E')
-        data->player_dir.rad = 0;
+        data->compassdir = East;
 }
 
 int get_player_info(t_parser *data)
@@ -140,9 +140,9 @@ int get_player_info(t_parser *data)
         {
             if (ft_strchr("NWES", data->map->map[i][j]) != NULL)
             {
-                get_player_dov(data, data->map->map[i][j]);
-                data->player_pos.x = j * TILE_SIZE;
-                data->player_pos.y = i * TILE_SIZE;
+                get_player_cdir(data, data->map->map[i][j]);
+                data->init_player_field.horizontal = j;
+                data->init_player_field.vertical = i;
                 ret = 1;
             }
             j++;

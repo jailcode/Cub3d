@@ -75,6 +75,7 @@ typedef struct s_player
 	double	fov;
 	t_coord	pos;
 	t_dir	dov;
+	bool	collision; // 
 }	t_player;
 
 typedef struct s_gridlines
