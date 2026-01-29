@@ -47,7 +47,7 @@ void    init_frame(t_game *data, t_img *img)
     img->addr = mlx_get_data_addr(img->img, &img->bpp, &img->line_length, &img->endian);
 }
 
-# define TIME_BETWEEN_FRAMES 100/FPS
+# define TIME_BETWEEN_FRAMES 1000/FPS
 
 long long get_time_in_ms(void)
 {
@@ -65,7 +65,7 @@ void    update_player(t_game *data)
     delta_pos.y = data->key.w - data->key.s;
     delta_dir = data->key.right - data->key.left;
 
-    //update_player_pos(data, delta_pos, delta_dir);
+    update_player_pos(data, delta_pos, delta_dir);
 }
 
 
@@ -81,11 +81,11 @@ int load_frame(t_game *data)
         return (0);
     data->current_time = new_time;
     update_player(data);
+    printf("%f and %f and %f\n", data->player.pos.x, data->player.pos.y, data->player.dov.rad);
     set_image_background(&data->frame, 0xFFFFFF);
     mlx_put_image_to_window(data->mlx, data->win, data->frame.img, 0, 0);
     return (1);
 }
-
 
 void    update_loop(t_game *data)
 {
