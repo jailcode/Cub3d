@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/29 16:11:37 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/01/29 18:06:03 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ bool set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir const 
 
 bool	is_wall(t_map const *const pmap, t_fidx const fidx)
 {
-	t_field const *const pfield = &pmap->fields[fidx.horizontal][fidx.vertical];
+	t_field const *const pfield = &pmap->main_map[fidx.horizontal][fidx.vertical];
 	
 	return (pfield->ftype == (t_fieldtype)wall);
 }

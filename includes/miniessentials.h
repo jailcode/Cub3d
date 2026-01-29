@@ -23,16 +23,4 @@
 
 # endif
 
-typedef struct s_img
-{
-    void *img;
-    char *addr;
-    int size_x;
-    int size_y;
-    int bpp;
-    int line_length;
-    int endian;
-    t_rccol *imgcolumn;
-}   t_img;
-
-# endif
+#endif
