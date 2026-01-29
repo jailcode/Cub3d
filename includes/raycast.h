@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/29 15:17:36 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/01/29 16:11:18 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ typedef struct s_gridlines
 typedef struct s_rc_intersectio
 {
 	double	dist2intersect;
+	double	impactangle;
 	t_coord	intersection;
 	t_cdir	cubeside;
 
@@ -97,7 +98,7 @@ typedef struct s_rc_intersectio
 
 typedef struct s_rc_image_column
 {
-	double blockheigtpercent;
+	double blockheightpercent;
 	// double ceilpercent;
 	// double floorpercent;
 	t_cdir cubeside;
