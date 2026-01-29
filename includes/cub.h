@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   cub.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphha <raphha@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 11:06:16 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/27 16:09:49 by raphha           ###   ########.fr       */
+/*   Updated: 2026/01/29 18:14:54 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB_H
 # define CUB_H
 
-#include "raycast.h"
-#include "miniessentials.h"
-#include "../minilibx-linux/mlx.h"
+# include "raycast.h"
+# include "miniessentials.h"
+# include "../minilibx-linux/mlx.h"
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -24,6 +24,15 @@
 # include <fcntl.h>
 # include <stdbool.h>
 # include <sys/time.h>
+
+# include "../minilibx-linux/mlx.h"
+# include "miniessentials.h"
+
+/*TO DO*/
+// return the delta t_coord with the delta DOV to update player position
+// use set_initial_player_pos instead of set_dov in veirfy map
+// double check t_rccol *imgcolumn in frame for leaks and segfaults
+//  add FPS and set it to 60 using gettime of day
 
 # ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1
@@ -104,11 +113,6 @@ typedef struct s_img
     t_rccol *imgcolumn;
 }   t_img;
 
-typedef struct s_map2
-{
-    t_field **fields;
-}   t_map2; // not used yet, but could be implemented
-
 typedef struct s_keys
 {
     int w;
@@ -177,7 +181,6 @@ void    init_data(t_game *data, t_parser *parser);
 
 /*            INITIALISATION          */
 
-
 /*          VERFICATION                 */
 
 bool    verify_map(t_parser *data);
@@ -199,16 +202,5 @@ void    load_mini_player(t_game *data);
 /*           colors and textures         */
 int create_trgb(int t, int r, int g, int b);
 /*           colors and textures         */
-
-
-// DeltaDOV is positive in clockwise direction
-// for now the deltadov is in rad, but we could
-// agree to use deg if you prefer
-// The deltapos is a relative distance:
-//   x => to the front/back (positive to the front)
-//   y => to the side (positive to the right)
-t_rcres	update_player_pos(
-	t_game *const g, t_coord const deltapos, double const deltadov);
-
 
 #endif //CUB_H

@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/29 11:05:57 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/01/29 18:14:45 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,11 @@ typedef struct s_line
 typedef struct s_player
 {
 	double	fov;
+	double	mindist2wall;
+	
 	t_coord	pos;
 	t_dir	dov;
+	bool	collision;
 }	t_player;
 
 typedef struct s_gridlines
@@ -86,11 +89,21 @@ typedef struct s_gridlines
 	t_line	vertical;
 }	t_gridlns;
 
+
+typedef struct s_rc_intersectio
+{
+	double	dist2intersect;
+	double	impactangle;
+	t_coord	intersection;
+	t_cdir	cubeside;
+
+}	t_rcintersect;
+
 typedef struct s_rc_image_column
 {
-	int	ceilpx;
-	int cubepx;
-	int floorpx;
+	double blockheightpercent;
+	// double ceilpercent;
+	// double floorpercent;
 	t_cdir cubeside;
 }	t_rccol;
 
@@ -112,7 +125,7 @@ bool	set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir cdir);
 // The deltapos is a relative distance:
 //   x => to the front/back (positive to the front)
 //   y => to the side (positive to the right)
-t_rcres	update_player_pos(
+bool	update_player_pos(
 	t_game *const g, t_coord const deltapos, double const deltadov);
 
 #endif // RAYCAST_H

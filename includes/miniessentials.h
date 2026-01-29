@@ -1,26 +1,26 @@
 #ifndef MINIESSENTIALS_H
 # define MINIESSENTIALS_H
-#include <X11/keysym.h> // has the keycodes
+# include <X11/keysym.h> // has the keycodes
 
-#include "raycast.h"
+# include "raycast.h"
 
-#ifndef KEY_LINUX_H
-# define KEY_LINUX_H
+# ifndef KEY_LINUX_H
+#  define KEY_LINUX_H
 
-# define ARROW_L 65361
-# define ARROW_U 65362
-# define ARROW_R 65363
-# define ARROW_D 65364
+#  define ARROW_L 65361
+#  define ARROW_U 65362
+#  define ARROW_R 65363
+#  define ARROW_D 65364 
 
-# define SPACE 32
-# define ESC 65307
-# define K_Q 113
+#  define SPACE 32
+#  define ESC 65307
+#  define K_Q 113
 
-# define K_W 119 
-# define K_A 97
-# define K_S 115 
-# define K_D 100
-
-# endif
+#  define K_W 119 
+#  define K_A 97
+#  define K_S 115 
+#  define K_D 100
 
 # endif
+
+#endif
