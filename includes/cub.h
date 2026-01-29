@@ -29,7 +29,8 @@
 # define SCREEN_HEIGHT 500
 # define SCREEN_WIDTH  600
 # define FOV 60
-
+# define SPEED 2
+# define ANGULAR_SPEED (M_PI / FPS)
 # define FPS 60
 
 typedef struct s_map
@@ -42,8 +43,8 @@ typedef struct s_map
     int     color_ceiling[3];
     int     map_width;
     int     map_height;
-    char    **map;  //convert t_field
-    //t_field **map;
+    char    **parse_map;
+    t_field **main_map;
 
 }   t_map;
 
@@ -71,8 +72,6 @@ typedef enum e_parse_state
 
 typedef struct s_parser
 {
-
-    //char **map; // remove char **map from t_map and add t_fields
     t_map *map;
     t_mem_list *parse_memory;
     t_parse_state   state;
@@ -91,6 +90,15 @@ typedef struct s_map2
     t_field **fields;
 }   t_map2; // not used yet, but could be implemented
 
+typedef struct s_keys
+{
+    int w;
+    int a;
+    int s;
+    int d;
+    int left;
+    int right;
+}   t_keys;
 
 typedef struct s_game
 {
@@ -98,8 +106,10 @@ typedef struct s_game
     t_player player;
     t_mem_list    *memory;
     t_img   frame;
+    t_keys  key;
     void    *mlx;
     void    *win;
+    long long current_time;
 }   t_game;
 
 
