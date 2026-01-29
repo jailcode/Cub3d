@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/29 16:11:18 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/01/29 16:33:33 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,10 @@ typedef struct s_player
 {
 	double	fov;
 	double	mindist2wall;
-
+	
 	t_coord	pos;
 	t_dir	dov;
+	bool	collision;
 }	t_player;
 
 typedef struct s_gridlines
@@ -86,6 +87,7 @@ typedef struct s_gridlines
 	t_line	horizontal;
 	t_line	vertical;
 }	t_gridlns;
+
 
 typedef struct s_rc_intersectio
 {
