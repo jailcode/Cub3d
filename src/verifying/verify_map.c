@@ -16,10 +16,10 @@ int check_map_elements(t_parser *data)
         return (0);
     map = data->map;
     i = -1;
-    while(++i < map->map_height)
+    while(++i < map->height)
     {
         j = -1;
-        while(++j <= map->map_width)
+        while(++j <= map->width)
         {
             if (ft_strchr("10 NSWE", map->parse_map[i][j]) == NULL)
                 return (0);
@@ -58,8 +58,8 @@ void    dfs(t_parser *data, char **map, int row, int col)
 {
     if (!data)
         clean_exit(data->parse_memory, 1, "no data");
-    if (row < 0 || row >= data->map->map_height || col < 0 || 
-        col >= data->map->map_width || map[row][col] == '1')
+    if (row < 0 || row >= data->map->height || col < 0 || 
+        col >= data->map->width || map[row][col] == '1')
         return ;
     if (map[row][col] && !(map[row][col] == ' ' || map[row][col] == '1'))
         clean_exit(data->parse_memory, 1, "invalid map");

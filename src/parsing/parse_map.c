@@ -146,8 +146,8 @@ void    build_raw_map(t_parser *p)
         curr = curr->next;
     }
     p->map->parse_map[i] = NULL;
-    p->map->map_height = p->map_height;
-    p->map->map_width = p->map_width;
+    p->map->height = p->map_height;
+    p->map->width = p->map_width;
 }
 
 char  *pad_line(t_parser *data, char *line)
@@ -158,7 +158,7 @@ char  *pad_line(t_parser *data, char *line)
 
     if (!data || !line)
         return NULL;
-    len = data->map->map_width +  2;// +2 for padded space 
+    len = data->map->width +  2;// +2 for padded space 
     dest = x_malloc(&data->parse_memory, sizeof(char) * (len + 1)); // 1 for \0, 2 for spaces to pad
     if (!dest)
         clean_exit(data->parse_memory, 1, "malloc failed");
@@ -178,7 +178,7 @@ static char *make_space_line(t_parser *p)
     int     len;
     int     i;
 
-    len = p->map->map_width + 2;
+    len = p->map->width + 2;
     line = x_malloc(&p->parse_memory, len + 1);
     if (!line)
         clean_exit(p->parse_memory, 1, "malloc failed");
@@ -198,7 +198,7 @@ void    build_padded_map(t_parser *data)
 
     if (!data || !data->map ||!data->map->parse_map)
         return ;
-    old_h = data->map->map_height;
+    old_h = data->map->height;
     new_map = x_malloc(&data->parse_memory,
                 sizeof(char *) * (old_h + 3));
     if (!new_map)
@@ -213,8 +213,8 @@ void    build_padded_map(t_parser *data)
     new_map[i + 1] = make_space_line(data);
     new_map[i + 2] = NULL;
     data->map->parse_map = new_map;
-    data->map->map_height = old_h + 2;
-    data->map->map_width = data->map->map_width + 2;
+    data->map->height = old_h + 2;
+    data->map->width = data->map->width + 2;
 }
 
 
@@ -238,10 +238,10 @@ void    transfer_map(t_parser *data)
     t_field **main_map;
 
     map = data->map->parse_map;
-    main_map = x_malloc(&data->parse_memory, sizeof(*main_map) * (data->map->map_height));
+    main_map = x_malloc(&data->parse_memory, sizeof(*main_map) * (data->map->height));
     i = -1;
-    while(++i < data->map->map_height)
-        main_map[i] = x_malloc(&data->parse_memory, sizeof(**main_map) * (data->map->map_width + 1));
+    while(++i < data->map->height)
+        main_map[i] = x_malloc(&data->parse_memory, sizeof(**main_map) * (data->map->width + 1));
     i = -1;
     while (map[++i])
     {

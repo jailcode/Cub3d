@@ -14,6 +14,8 @@
 # define CUB_H
 
 #include "raycast.h"
+#include "miniessentials.h"
+#include "../minilibx-linux/mlx.h"
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -89,6 +91,18 @@ typedef struct s_parser
     size_t map_width;
     t_rccol     *imgcolumn;
 }   t_parser;
+
+typedef struct s_img
+{
+    void *img;
+    char *addr;
+    int size_x;
+    int size_y;
+    int bpp;
+    int line_length;
+    int endian;
+    t_rccol *imgcolumn;
+}   t_img;
 
 typedef struct s_map2
 {
