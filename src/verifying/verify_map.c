@@ -21,7 +21,7 @@ int check_map_elements(t_parser *data)
         j = -1;
         while(++j <= map->map_width)
         {
-            if (ft_strchr("10 NSWE", map->map[i][j]) == NULL)
+            if (ft_strchr("10 NSWE", map->parse_map[i][j]) == NULL)
                 return (0);
         }
     }
@@ -80,7 +80,7 @@ int is_closed(t_parser *data)
 
     if (!data)
         return (0);
-    test_map = copy_map(&data->parse_memory, data->map->map);
+    test_map = copy_map(&data->parse_memory, data->map->parse_map);
     dfs(data, test_map, 0, 0);
     if (!no_spaces_inside(data, test_map))
         clean_exit(data->parse_memory, 1, "spaces inside map");
@@ -133,14 +133,14 @@ int get_player_info(t_parser *data)
         return (0);
     i = 0;
     ret = 0;
-    while(data->map->map[i])
+    while(data->map->parse_map[i])
     {
         j = 0;
-        while(data->map->map[i][j])
+        while(data->map->parse_map[i][j])
         {
-            if (ft_strchr("NWES", data->map->map[i][j]) != NULL)
+            if (ft_strchr("NWES", data->map->parse_map[i][j]) != NULL)
             {
-                get_player_cdir(data, data->map->map[i][j]);
+                get_player_cdir(data, data->map->parse_map[i][j]);
                 data->init_player_field.horizontal = j;
                 data->init_player_field.vertical = i;
                 ret = 1;

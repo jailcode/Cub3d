@@ -20,7 +20,8 @@ t_map *init_map(t_mem_list **memory)
     map->Stexture = NULL;
     map->Wtexture = NULL;
     map->Etexture = NULL;
-    map->map = NULL;
+    map->parse_map = NULL;
+    map->main_map = NULL;
     map->map_height = 0;
     map->map_width = 0;
     return (map); 
@@ -37,6 +38,7 @@ void init_parser(t_parser *ret)
         clean_exit(memory, 1, "malloc failed");
     ret->parse_memory = memory;
     ret->map_head = NULL;
+    ret->map->main_map = NULL;
     ret->map_tail = NULL;
     ret->map_height = 0;
     ret->map_width = 0;
@@ -53,5 +55,6 @@ void    init_data(t_game *data, t_parser *parser)
     data->frame.imgcolumn = parser->imgcolumn;
     data->mlx = NULL;
     data->win = NULL;
-    set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
+    data->current_time = 0;
+   // set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
 }

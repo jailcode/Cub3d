@@ -47,12 +47,41 @@ void    init_frame(t_game *data, t_img *img)
     img->addr = mlx_get_data_addr(img->img, &img->bpp, &img->line_length, &img->endian);
 }
 
+# define TIME_BETWEEN_FRAMES 100/FPS
+
+long long get_time_in_ms(void)
+{
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return ((long long) tv.tv_sec * 1000 + tv.tv_usec/1000);
+}
+
+void    update_player(t_game *data)
+{
+    t_coord     delta_pos;
+    double      delta_dir;
+
+    delta_pos.x = SPEED *(data->key.d - data->key.a);
+    delta_pos.y = data->key.w - data->key.s;
+    delta_dir = data->key.right - data->key.left;
+
+    //update_player_pos(data, delta_pos, delta_dir);
+}
+
+
 int load_frame(t_game *data)
 {
+    long long new_time;
+
     if (!data)
         return (0);
+    
+    new_time = get_time_in_ms();
+    if (new_time - data->current_time < TIME_BETWEEN_FRAMES)
+        return (0);
+    data->current_time = new_time;
+    update_player(data);
     set_image_background(&data->frame, 0xFFFFFF);
-    load_mini_map(data);
     mlx_put_image_to_window(data->mlx, data->win, data->frame.img, 0, 0);
     return (1);
 }
@@ -60,6 +89,7 @@ int load_frame(t_game *data)
 
 void    update_loop(t_game *data)
 {
+    data->current_time = get_time_in_ms();
     mlx_loop_hook(data->mlx, load_frame, data);
     mlx_loop(data->mlx);
 }

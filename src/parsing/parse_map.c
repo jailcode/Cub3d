@@ -90,7 +90,7 @@ void    add_map_line(t_parser *p, char *line)
     if (line[len - 1] == '\n')
         len--;
     if (p->map_width < len)
-        p->map_width = len;
+        p->map_width = len;    
 }
 
 void    parse_header_line(t_parser *p, char *line)
@@ -100,6 +100,7 @@ void    parse_header_line(t_parser *p, char *line)
     if (is_map_line(line))
     {
         p->state = PARSE_MAP;
+        
         add_map_line(p, line);
         return ;
     }
@@ -117,6 +118,7 @@ void    parse_header_line(t_parser *p, char *line)
         add_color_data(p->map->color_ceiling, line + 1, &p->parse_memory);
     else
         clean_exit(p->parse_memory, 1, "Invalid identifier");
+    
 }
 
 char    *spaced_line(char *line, size_t len)
@@ -134,16 +136,16 @@ void    build_raw_map(t_parser *p)
     size_t i;
     t_map_node *curr;
 
-    p->map->map = x_malloc(&p->parse_memory,
+    p->map->parse_map = x_malloc(&p->parse_memory,
         sizeof(char *) * (p->map_height + 1));
     curr = p->map_head;
     i = 0;
     while (curr)
     {
-        p->map->map[i++] = ft_strtrim(&p->parse_memory, curr->line, "\n");
+        p->map->parse_map[i++] = ft_strtrim(&p->parse_memory, curr->line, "\n");
         curr = curr->next;
     }
-    p->map->map[i] = NULL;
+    p->map->parse_map[i] = NULL;
     p->map->map_height = p->map_height;
     p->map->map_width = p->map_width;
 }
@@ -194,7 +196,7 @@ void    build_padded_map(t_parser *data)
     int i;
     char    **new_map;
 
-    if (!data || !data->map ||!data->map->map)
+    if (!data || !data->map ||!data->map->parse_map)
         return ;
     old_h = data->map->map_height;
     new_map = x_malloc(&data->parse_memory,
@@ -205,13 +207,48 @@ void    build_padded_map(t_parser *data)
     i = 0;
     while(i < old_h)
     {
-      new_map[i + 1] =  pad_line(data, data->map->map[i]);
+      new_map[i + 1] =  pad_line(data, data->map->parse_map[i]);
         i++;
     }
     new_map[i + 1] = make_space_line(data);
     new_map[i + 2] = NULL;
-    data->map->map = new_map;
+    data->map->parse_map = new_map;
     data->map->map_height = old_h + 2;
+}
+
+
+
+t_fieldtype return_fieldtype(char c)
+{
+    if (c == '0')
+        return (ground);
+    else if (c == '1')
+        return (wall);
+    else if (c == ' ')
+        return (empty);
+    else return (ground);
+}
+
+void    transfer_map(t_parser *data)
+{
+    int i;
+    int j;
+    char **map;
+    t_field **main_map;
+
+    map = data->map->parse_map;
+    main_map = data->map->main_map;
+    i = -1;
+    main_map = x_malloc(&data->parse_memory, sizeof(*main_map) * (data->map->map_height));
+    while(++i < data->map->map_width)
+        main_map[i] = x_malloc(&data->parse_memory, sizeof(**main_map) * data->map->map_width);
+    i = -1;
+    while (map[++i])
+    {
+        j = -1;
+        while(map[i][++j])
+            main_map[i][j].ftype = return_fieldtype(map[i][j]);
+    }
 }
 
 bool process_map(t_parser *data, char *filename)
@@ -221,6 +258,7 @@ bool process_map(t_parser *data, char *filename)
 
     if (!filename)
         return (false);
+    
     fd = open(filename, O_RDONLY);
     if (fd < 0)
         return (false);
@@ -235,5 +273,6 @@ bool process_map(t_parser *data, char *filename)
     close(fd);
     build_raw_map(data);
     build_padded_map(data);
+    transfer_map(data);
     return (true);
 }

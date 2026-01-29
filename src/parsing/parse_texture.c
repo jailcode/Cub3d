@@ -21,6 +21,7 @@ void    add_texture_data(char **dest, char *line, t_mem_list **memory)
     if (!*dest)
         clean_exit(*memory, 1, "malloc failed");
     ft_strlcpy(*dest, &line[i], len + 1); // copy from start of path til end
+
 }
 
 

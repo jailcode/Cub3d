@@ -29,6 +29,7 @@ typedef enum e_fieldtype
 {
 	wall,
 	empty,
+	ground
 }	t_fieldtype;
 
 typedef struct s_field
