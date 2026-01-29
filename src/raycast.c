@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycast.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphha <raphha@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/27 17:03:34 by raphha           ###   ########.fr       */
+/*   Updated: 2026/01/29 15:22:12 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#include "cub.h"
-#include "raycast.h"
+#include "../includes/cub.h"
+#include "../includes/raycast.h"
 
 #include <stdlib.h>
 #include <math.h>
@@ -36,6 +36,15 @@ double dist(t_coord const *const c1, t_coord const *const c2)
 	return (hypot(c1->x - c2->x, c1->y -c2->y));
 }
 
+// double mindist(t_coord const *const c1, t_coord const *const c2)
+// {
+// 	return ((c1->x * c2->x) + (c1->y * c2->y));
+// }
+// double mindist(double const dist2intersect, double const deltadov)
+// {
+// 	return (dist2intersect * cos(deltadov));
+// }
+
 bool set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir const compassdir)
 {
 	if (compassdir == (t_cdir)North)
@@ -55,19 +64,6 @@ bool set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir const 
 	return (true);
 }
 
-t_rcres	update_player_pos(
-	t_game *const g, t_coord const deltapos, double const deltadov)
-{
-	t_player *const p = g->player;
-	
-	p->pos.x += deltapos.x * cos(p->dov.rad) + deltapos.y * sin(p->dov.rad);
-	p->pos.y += deltapos.x * sin(p->dov.rad) + deltapos.y * cos(p->dov.rad);
-	p->dov.rad += deltadov;
-	p->pos.x = cos(p->dov.rad);
-	p->pos.y = sin(p->dov.rad);
-	return (gen_raycast(g));
-}
-
 bool	is_wall(t_map const *const pmap, t_fidx const fidx)
 {
 	t_field const *const pfield = &pmap->fields[fidx.horizontal][fidx.vertical];
@@ -76,41 +72,119 @@ bool	is_wall(t_map const *const pmap, t_fidx const fidx)
 }
 
 
-int	main(int argc, char *argv[])
-{
-	t_map		map;
-	t_player	p = (t_player){.fov = 60.0};
+// int	main(int argc, char *argv[])
+// {
+// 	t_map		map;
+// 	t_player	p = (t_player){.fov = 60.0};
 	
-	map.fields = calloc(map.width, sizeof(t_field *));
-	for (int f=0; f<map.width; ++f)
-		map.fields[f] = calloc(map.height, sizeof(t_field));
-	// fill map2 from parsing
+// 	map.fields = calloc(map.width, sizeof(t_field *));
+// 	for (int f=0; f<map.width; ++f)
+// 		map.fields[f] = calloc(map.height, sizeof(t_field));
+// 	// fill map from parsing
 
-	/* Player init */
-	// idxposition = field idx in map matrix
-	t_fidx	idxposition; // initialised to initial player idxpos on the map
-	char	compassdov;	 // initial dov (N,E,S,W)
+// 	/* Player init */
+// 	// idxposition = field idx in map matrix
+// 	t_fidx	idxposition; // initialised to initial player idxpos on the map
+// 	char	compassdov;	 // initial dov (N,E,S,W)
 
-	set_initial_player_pos(&p, idxposition, compassdov);
-	return (42);
+// 	set_initial_player_pos(&p, idxposition, compassdov);
+// 	return (42);
+// }
+
+t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
+{
+	t_rcintersect rcintersect;
+	bool	wall_found;
+	t_gridlns	gridlines = {
+		.horizontal = (t_line){/* .origin = (t_coord){0.0, 0.0}, */ .dir = (t_dir){.rad = M_PI / 2, .x = 1.0, .y = 0.0}},
+		.vertical =  (t_line){/* .origin = (t_coord){0.0, 0.0}, */ .dir = (t_dir){.rad = M_PI / 2, .x = 0.0, .y = 1.0}},
+	};
+	
+	gridlines.vertical.origin.x = (int)(ray.origin.x);
+	if (ray.dir.x > 0)
+		gridlines.vertical.origin.x += 1.0;
+	gridlines.horizontal.origin.y = (int)(ray.origin.y);
+	if (ray.dir.y > 0)
+		gridlines.horizontal.origin.y += 1.0;
+	
+	wall_found = false;
+	while (!wall_found)
+	{
+		// t_coord intersect;
+		t_coord const intersect_horizontalln = intersection(&ray, &gridlines.horizontal);
+		t_coord const intersect_verticalln = intersection(&ray, &gridlines.vertical);		
+		double const dist_h = dist(&ray.origin, &intersect_horizontalln);
+		double const dist_v = dist(&ray.origin, &intersect_verticalln);
+		bool hitverticalln;
+		if (dist_v <= dist_h)
+		{
+			rcintersect.intersection = intersect_verticalln;
+			rcintersect.dist2intersect = dist_v;				
+			hitverticalln = true;
+		}
+		else
+		{
+			rcintersect.intersection = intersect_horizontalln;
+			rcintersect.dist2intersect = dist_h;
+			hitverticalln = false;
+		}
+		
+		t_fidx fieldidx;
+		if (hitverticalln)
+			fieldidx = (t_fidx){
+				.horizontal = (int)(round(rcintersect.intersection.x)),
+				.vertical = (int)(rcintersect.intersection.y)};
+		else
+			fieldidx = (t_fidx){
+				.horizontal = (int)(rcintersect.intersection.x),
+				.vertical = (int)(round(rcintersect.intersection.y))};
+		if (ray.dir.x < 0)
+		 	--fieldidx.horizontal;
+		if (ray.dir.y < 0)
+		 	--fieldidx.vertical;
+		
+		if (is_wall(pmap, fieldidx))
+		{
+			wall_found = true;
+			if (hitverticalln)
+			{
+				if (ray.dir.x > 0)
+					rcintersect.cubeside = (t_cdir)West;
+				else
+					rcintersect.cubeside = (t_cdir)East;
+			}
+			else
+			{
+				if (ray.dir.y > 0)
+					rcintersect.cubeside = (t_cdir)North;
+				else
+					rcintersect.cubeside = (t_cdir)South;
+			}
+		}
+	}
+	return (rcintersect);
 }
 
 t_rcres gen_raycast(t_game *const g)
 {
 	t_rcres res;
 	t_player const	p = g->player;
-	t_gridlns	gridlines = {
-		.horizontal = (t_line){.origin = (t_coord){0.0, 0.0}, .dir = (t_dir){.rad = M_PI / 2, .x = 1.0, .y = 0.0}},
-		.vertical =  (t_line){.origin = (t_coord){0.0, 0.0}, .dir = (t_dir){.rad = M_PI / 2, .x = 0.0, .y = 1.0}},
-	};
+	// t_gridlns	gridlines = {
+	// 	.horizontal = (t_line){.origin = (t_coord){0.0, 0.0}, .dir = (t_dir){.rad = M_PI / 2, .x = 1.0, .y = 0.0}},
+	// 	.vertical =  (t_line){.origin = (t_coord){0.0, 0.0}, .dir = (t_dir){.rad = M_PI / 2, .x = 0.0, .y = 1.0}},
+	// };
+	double const unitdist = cos(g->player.fov);
+	double const w2hratio = (double)g->map->width / g->map->height;
 
-	res.imgcolumn = ft_calloc(g->map->width, sizeof(t_rccol));
+	// res.imgcolumn = g....somewhere in frame.;
 	// this should probably be set in update_player_pos?
 	res.wallcollision = false;
+	t_line	ray;
+	ray.origin = p.pos;
+	ray.dir = p.dov;
+
 	for (int idx = 0; idx < g->map->width; ++idx)
 	{
-		t_line	ray;
-		ray.origin = p.pos;
 		double const rayangle = (p.dov.rad - p.fov / 2.0) + idx * (p.fov / (g->map->width - 1));
 		ray.dir = (t_dir){
 			.rad = rayangle,
@@ -118,60 +192,97 @@ t_rcres gen_raycast(t_game *const g)
 			.y = sin(rayangle),
 		};
 
-		gridlines.vertical.origin.x = (int)(p.pos.x);
-		if (ray.dir.x > 0)
-			gridlines.vertical.origin.x += 1.0;
+		// gridlines.vertical.origin.x = (int)(p.pos.x);
+		// if (ray.dir.x > 0)
+		// 	gridlines.vertical.origin.x += 1.0;
 
-		gridlines.horizontal.origin.y = (int)(p.pos.y);
-		if (ray.dir.y > 0)
-			gridlines.horizontal.origin.y += 1.0;
+		// gridlines.horizontal.origin.y = (int)(p.pos.y);
+		// if (ray.dir.y > 0)
+		// 	gridlines.horizontal.origin.y += 1.0;
 
-		bool wall_found = false;
-		t_fidx fieldidx;
-		t_coord intersect;
-		while (!wall_found)
-		{
-			t_coord intersect_horizontalln = intersection(&ray, &gridlines.horizontal);
-			t_coord intersect_verticalln = intersection(&ray, &gridlines.vertical);		
-			double dist_h = dist(&ray.origin, &intersect_horizontalln);
-			double dist_v = dist(&ray.origin, &intersect_verticalln);
+		t_rcintersect rcintersect = rayintersection(ray, g->map);
+		
+		// bool wall_found = false;
+		// while (!wall_found)
+		// {
+		// 	t_coord intersect;
+		// 	t_coord const intersect_horizontalln = intersection(&ray, &gridlines.horizontal);
+		// 	t_coord const intersect_verticalln = intersection(&ray, &gridlines.vertical);		
+		// 	double const dist_h = dist(&ray.origin, &intersect_horizontalln);
+		// 	double const dist_v = dist(&ray.origin, &intersect_verticalln);
+		// 	bool hitverticalln;
+		// 	if (dist_v <= dist_h)
+		// 	{
+		// 		intersect = intersect_verticalln;
+		// 		rcintersect.dist2intersect = dist_v;				
+		// 		hitverticalln = true;
+		// 	}
+		// 	else
+		// 	{
+		// 		intersect = intersect_horizontalln;
+		// 		rcintersect.dist2intersect = dist_h;
+		// 		hitverticalln = false;
+		// 	}
+		// 	t_fidx fieldidx;
+		// 	if (hitverticalln)
+		// 		fieldidx = (t_fidx){.horizontal = (int)(round(intersect.x)), .vertical = (int)(intersect.y)};
+		// 	else
+		// 		fieldidx = (t_fidx){.horizontal = (int)(intersect.x), .vertical = (int)(round(intersect.y))};
+		// 	if (ray.dir.x < 0)
+		// 	 	--fieldidx.horizontal;
+		// 	if (ray.dir.y < 0)
+		// 	 	--fieldidx.vertical;
+		// 	if (is_wall(g->map, fieldidx))
+		// 	{
+		// 		wall_found = true;
+		// 		t_rccol *const prcc = &(res.imgcolumn[idx]);
+		// 		if (hitverticalln)
+		// 		{
+		// 			if (ray.dir.x > 0)
+		// 				prcc->cubeside = (t_cdir)West;
+		// 			else
+		// 				prcc->cubeside = (t_cdir)East;
+		// 		}
+		// 		else
+		// 		{
+		// 			if (ray.dir.y > 0)
+		// 				prcc->cubeside = (t_cdir)North;
+		// 			else
+		// 				prcc->cubeside = (t_cdir)South;
+		// 		}
+		// 	}
+		// }
 
-			intersect = intersect_verticalln;
-			bool hitverticalln = true;
-			if (dist_h < dist_v)
-			{
-				intersect = intersect_horizontalln;
-				hitverticalln = false;
-			}
-			if (hitverticalln)
-				fieldidx = (t_fidx){.horizontal = (int)(round(intersect.x)), .vertical = (int)(intersect.y)};
-			else
-				fieldidx = (t_fidx){.horizontal = (int)(intersect.x), .vertical = (int)(round(intersect.y))};
-			if (ray.dir.x < 0)
-			 	--fieldidx.horizontal;
-			if (ray.dir.y < 0)
-			 	--fieldidx.vertical;
-			if (is_wall(&g.map, fieldidx))
-			{
-				wall_found = true;
-				t_rccol *const prcc = &(res.imgcolumn[idx]);
-				if (hitverticalln)
-				{
-					if (ray.dir.x > 0)
-						prcc->cubeside = (t_cdir)West;
-					else
-						prcc->cubeside = (t_cdir)East;
-				}
-				else
-				{
-					if (ray.dir.y > 0)
-						prcc->cubeside = (t_cdir)North;
-					else
-						prcc->cubeside = (t_cdir)South;
-				}
-			}
-		}
 		printf("Intersection for ray angle\n");
+		double min_dist = rcintersect.dist2intersect * cos(ray.dir.rad - p.dov.rad);
+		res.imgcolumn[idx].blockheigtpercent =
+			min_dist / unitdist * w2hratio;
 	}
 	return (res);
+}
+
+double vnorm(t_coord const *const coord)
+{
+	return (pow(coord->x * coord->x + coord->y * coord->y, 0.5));
+}
+
+t_rcres	update_player_pos(
+	t_game *const g, t_coord const deltapos, double const deltadov)
+{
+	t_player *const p = &g->player;
+
+	t_line	ray;
+	ray.origin = p->pos;
+	ray.dir = p->dov;
+	t_rcintersect intersect = rayintersection(ray, g->map);
+	if (intersect.dist2intersect < vnorm(&deltapos))
+	{
+		
+	}
+	p->pos.x += deltapos.x * cos(p->dov.rad) + deltapos.y * sin(p->dov.rad);
+	p->pos.y += deltapos.x * sin(p->dov.rad) + deltapos.y * cos(p->dov.rad);
+	p->dov.rad += deltadov;
+	p->pos.x = cos(p->dov.rad);
+	p->pos.y = sin(p->dov.rad);
+	return (gen_raycast(g));
 }
