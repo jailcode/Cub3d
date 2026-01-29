@@ -43,6 +43,7 @@ t_game *init_game(void)
     return (ret);
 }
 
+/*
 static t_cdir	char2cdir(char const charcompassdir)
 {
 	if (charcompassdir == 'N')
@@ -56,3 +57,4 @@ static t_cdir	char2cdir(char const charcompassdir)
 	else
 		return ((t_cdir)cdir_error);
 }
+*/

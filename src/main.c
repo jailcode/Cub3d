@@ -24,6 +24,5 @@ int main(int argc, char **argv)
 	*/
 	// update_player_pos(
 	// 	&data->player, t_coord const deltapos, double const deltadov);
-
-	return (0);
+return (0);
 }
