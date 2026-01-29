@@ -54,12 +54,13 @@ int load_frame(t_game *data)
     set_image_background(&data->frame, 0xFFFFFF);
     load_mini_map(data);
     mlx_put_image_to_window(data->mlx, data->win, data->frame.img, 0, 0);
+    return (1);
 }
 
 
 void    update_loop(t_game *data)
 {
-    //mlx_loop_hook(data->mlx, load_frame, data);
+    mlx_loop_hook(data->mlx, load_frame, data);
     mlx_loop(data->mlx);
 }
 

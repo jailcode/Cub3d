@@ -75,6 +75,14 @@ typedef struct s_parser
 
 }   t_parser;
 
+typedef struct s_map2
+{
+    t_field **fields;
+    int       color_c;
+    int       color_f;
+}   t_map2; // not used yet, but could be implemented
+
+
 typedef struct s_game
 {
     t_map   *map;
@@ -149,6 +157,11 @@ void    draw_tile(t_img *frame, int x, int y, int color);
 void    my_mlx_pixel_put(t_img *img, int x, int y, int color);
 void    load_mini_player(t_game *data);
 /*           minilibx funcs             */
+
+/*           colors and textures         */
+int create_trgb(int t, int r, int g, int b);
+/*           colors and textures         */
+
 
 // DeltaDOV is positive in clockwise direction
 // for now the deltadov is in rad, but we could
