@@ -25,15 +25,6 @@
 # include <stdbool.h>
 # include <sys/time.h>
 
-# include "../minilibx-linux/mlx.h"
-# include "miniessentials.h"
-
-/*TO DO*/
-// return the delta t_coord with the delta DOV to update player position
-// use set_initial_player_pos instead of set_dov in veirfy map
-// double check t_rccol *imgcolumn in frame for leaks and segfaults
-//  add FPS and set it to 60 using gettime of day
-
 # ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1
 # endif
