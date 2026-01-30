@@ -49,12 +49,12 @@ void init_parser(t_parser *ret)
 
 void    init_data(t_game *data, t_parser *parser)
 {
-    data->map = parser->map;  // change to t_map2 or whatever Raphael prefers
+    data->map = parser->map;
     data->memory = parser->parse_memory;
     data->frame.img = NULL;
     data->frame.imgcolumn = parser->imgcolumn;
     data->mlx = NULL;
     data->win = NULL;
     data->current_time = 0;
-   // set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
+    set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
 }

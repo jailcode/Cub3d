@@ -241,12 +241,12 @@ void    transfer_map(t_parser *data)
     main_map = x_malloc(&data->parse_memory, sizeof(*main_map) * (data->map->height));
     i = -1;
     while(++i < data->map->height)
-        main_map[i] = x_malloc(&data->parse_memory, sizeof(**main_map) * (data->map->width + 1));
+        main_map[i] = x_malloc(&data->parse_memory, sizeof(**main_map) * (data->map->width));
     i = -1;
-    while (map[++i])
+    while (++i < data->map->height)
     {
         j = -1;
-        while(map[i][++j])
+        while(++j < data->map->width)
             main_map[i][j].ftype = return_fieldtype(map[i][j]);
     }
     data->map->main_map = main_map;
@@ -269,7 +269,6 @@ bool process_map(t_parser *data, char *filename)
             parse_header_line(data, line);
         else
             add_map_line(data, line);
-        //free(line);
     }
     close(fd);
     build_raw_map(data);

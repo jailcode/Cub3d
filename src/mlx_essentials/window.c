@@ -64,8 +64,7 @@ void    update_player(t_game *data)
     delta_pos.x = SPEED *(data->key.d - data->key.a);
     delta_pos.y = data->key.w - data->key.s;
     delta_dir = data->key.right - data->key.left;
-
-    update_player_pos(data, delta_pos, delta_dir);
+    //update_player_pos(data, delta_pos, (const double )delta_dir);
 }
 
 
@@ -81,7 +80,6 @@ int load_frame(t_game *data)
         return (0);
     data->current_time = new_time;
     update_player(data);
-    printf("%f and %f and %f\n", data->player.pos.x, data->player.pos.y, data->player.dov.rad);
     set_image_background(&data->frame, 0xFFFFFF);
     mlx_put_image_to_window(data->mlx, data->win, data->frame.img, 0, 0);
     return (1);
@@ -101,7 +99,6 @@ void    start_game(t_game *data)
     data->mlx = mlx_init();
     data->win = mlx_new_window(data->mlx, SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d");
     init_frame(data, &data->frame);
-
     register_input_hooks(data);
     update_loop(data);
 }
