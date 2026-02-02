@@ -49,27 +49,6 @@ int keyrelease(int keycode, t_game *data)
     return (0);
 }
 
-/*
-int     alot_key_bind(int keycode, t_game *data) // make this states based to enable slanted movement, and return the delta t_coord and not the t_coord;
-{
-    if (keycode == K_Q || keycode == ESC)
-        leave_game(data);
-    else if (keycode == K_W)
-        data->player.pos.y -= .5;
-    else if (keycode == K_A)
-        data->player.pos.x -= .5;
-    else if (keycode == K_S)
-        data->player.pos.y += .5;
-    else if (keycode == K_D)
-        data->player.pos.x += .5;
-    else if (keycode == ARROW_R)
-        printf("RIGHT\n");
-    else if (keycode == ARROW_L)
-        printf("LEFT\n");
-    return (0); /// change this calcualate delta distance  give a  change in t_coord to update player position() and a deltadov
-}
-    */
-
 
 /* the third parameter of mlx_hook lets us now how to treat the buttons
 so 1L<<0 registers input immediately, 1L<<1 only registers on release
