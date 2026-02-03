@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/03 15:03:15 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/03 17:07:02 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ t_coord	intersection(t_line const *const rayln, t_line const *const gridln)
 		  rayln->dir.x * (rayln->origin.y - gridln->origin.y)
 		- rayln->dir.y * (rayln->origin.x - gridln->origin.x)
 	) / (rayln->dir.x * gridln->dir.y - rayln->dir.y * gridln->dir.x);
-	t_coord const intersect = (t_coord) { rayln->origin.x + lambda * rayln->dir.x, gridln->origin.y + lambda * gridln->dir.y };
+	t_coord const intersect = (t_coord) {
+		gridln->origin.x + lambda * gridln->dir.x,
+		gridln->origin.y + lambda * gridln->dir.y};
 	return (intersect);
 }
 
@@ -66,13 +68,14 @@ bool set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir const 
 
 bool	is_wall(t_map const *const pmap, t_fidx const fidx)
 {
-	/*if (!pmap || !pmap->main_map)
+	if (!pmap || !pmap->main_map)
 		return (false);
 	if (fidx.horizontal < 0 || fidx.vertical < 0)
 		return (false);
-	if (fidx.horizontal >= pmap->rows || fidx.vertical >= pmap->col)
-		return (false);*/
-	return (pmap->main_map[fidx.horizontal][fidx.vertical].ftype == (t_fieldtype)wall);
+	if (fidx.horizontal >= pmap->col || fidx.vertical >= pmap->rows)
+		return (false);
+	t_fieldtype const ft = (pmap->main_map)[fidx.vertical][fidx.horizontal].ftype;
+	return (ft == (t_fieldtype)wall);
 }
 /*  added a new is_awll with checks
 bool	is_wall(t_map const *const pmap, t_fidx const fidx)
@@ -111,12 +114,20 @@ t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
 			rcintersect.intersection = intersect_verticalln;
 			rcintersect.dist2intersect = dist_v;				
 			hitverticalln = true;
+			if (ray.dir.x > 0)
+				gridlines.vertical.origin.x += 1.0;
+			else
+				gridlines.vertical.origin.x -= 1.0;
 		}
 		else
 		{
 			rcintersect.intersection = intersect_horizontalln;
 			rcintersect.dist2intersect = dist_h;
 			hitverticalln = false;
+			if (ray.dir.y > 0)
+				gridlines.horizontal.origin.y += 1.0;
+			else
+				gridlines.horizontal.origin.y -= 1.0;
 		}
 		
 		t_fidx fieldidx;
@@ -172,7 +183,7 @@ t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
 bool gen_raycast(t_game *const g)
 {
 	t_player const	p = g->player;
-	double const unitdist = cos(g->player.fov);
+	double const unitdist = cos(g->player.fov / 2.0);
 	double const w2hratio = (double)g->frame.size_x / g->frame.size_y;
 
 	t_line	ray;
@@ -189,10 +200,20 @@ bool gen_raycast(t_game *const g)
 
 		t_rcintersect rcintersect = rayintersection(ray, g->map);
 		
-		printf("Intersection for ray angle\n");
+		/* DEBUG S
+		printf("\nIntersection %d:"
+			"\nray x=%.3lf y=%.3lf angle=%.3lf"
+			"\nintersect coord x=%.3lf y=%.3lf dist=%.3lf"
+			"\n",
+			 idx,
+			 ray.origin.x, ray.origin.y, rayangle * 180.0 / M_PI,
+			 rcintersect.intersection.x, rcintersect.intersection.y,
+			 rcintersect.dist2intersect);
+		 DEBUG E */
 		double min_dist = rcintersect.dist2intersect * cos(ray.dir.rad - p.dov.rad);
-		g->frame.imgcolumn[idx].blockheightpercent =
+		g->frame.imgcolumn[idx].blockheightfactor =
 			min_dist / unitdist * w2hratio;
+		g->frame.imgcolumn[idx].cubeside = rcintersect.cubeside;
 	}
 	return (true);
 }
@@ -203,21 +224,23 @@ double vnorm(t_coord const *const coord)
 }
 
 bool	update_player_pos(
-	t_game *const g, t_coord deltapos, double /* const */ deltadov)
+	t_game *const g, t_coord /* const */ deltapos, double /* const */ deltadov)
 {
 	t_player *const p = &g->player;
 	t_line	ray;
 
-	// // DEBUG S
-	deltapos.x = 2.0;
-	deltapos.y = 0.0;
-	// p->pos.x -= 1.0;
-	// p->pos.y -= 1.0;
+	/* // DEBUG S
+	deltapos.x = 0.0;
+	deltapos.y = 2.0;
+	double tmp = p->pos.x;
+	p->pos.x = p->pos.y;
+	p->pos.y = tmp;
 	// deltadov = 0.0;
-	// // DEBUG E
+	*/ // // DEBUG E
 
 	p->collision = false;
-	if (vnorm(&deltapos) > EPS)
+	double const deltadist = vnorm(&deltapos);
+	if (deltadist > EPS)
 	{
 		ray.origin = p->pos;
 		ray.dir.rad = p->dov.rad + atan2(deltapos.y, deltapos.x);
@@ -226,7 +249,6 @@ bool	update_player_pos(
 		t_rcintersect intersect = rayintersection(ray, g->map);
 		double const maxdistbeforeimpact = intersect.dist2intersect
 				- p->mindist2wall / cos(intersect.impactangle);
-		double const deltadist = vnorm(&deltapos);
 		if (deltadist > maxdistbeforeimpact)
 		{
 			double const ratio = maxdistbeforeimpact / deltadist;
@@ -234,11 +256,14 @@ bool	update_player_pos(
 			deltapos.y *= ratio;
 			g->player.collision = true;
 		}
-		p->pos.x += deltapos.x * cos(p->dov.rad) + deltapos.y * sin(p->dov.rad);
+		p->pos.x += deltapos.x * cos(p->dov.rad) - deltapos.y * sin(p->dov.rad);
 		p->pos.y += deltapos.x * sin(p->dov.rad) + deltapos.y * cos(p->dov.rad);
 	}
-	p->dov.rad += deltadov;
-	p->dov.x = cos(p->dov.rad);
-	p->dov.y = sin(p->dov.rad);
+	if (deltadov > EPS)
+	{	
+		p->dov.rad += deltadov;
+		p->dov.x = cos(p->dov.rad);
+		p->dov.y = sin(p->dov.rad);
+	}
 	return (gen_raycast(g));
 }
