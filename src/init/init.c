@@ -47,6 +47,16 @@ void init_parser(t_parser *ret)
     ret->state = PARSE_HEADER;
 }
 
+void    init_keys(t_game *data)
+{
+    data->key.a = 0;
+    data->key.d = 0;
+    data->key.s = 0;
+    data->key.left = 0;
+    data->key.right = 0;
+    data->key.w = 0;
+}
+
 void    init_data(t_game *data, t_parser *parser)
 {
     data->map = parser->map;
@@ -56,5 +66,6 @@ void    init_data(t_game *data, t_parser *parser)
     data->mlx = NULL;
     data->win = NULL;
     data->current_time = 0;
+    init_keys(data);
     set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
 }

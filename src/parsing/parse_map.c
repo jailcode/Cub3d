@@ -250,6 +250,8 @@ void    transfer_map(t_parser *data)
     data->map->main_map = main_map;
 }
 
+int get_player_info(t_parser *data);
+
 bool process_map(t_parser *data, char *filename)
 {
     int     fd;
@@ -270,6 +272,7 @@ bool process_map(t_parser *data, char *filename)
     }
     close(fd);
     build_raw_map(data);
+    get_player_info(data);
     build_padded_map(data);
     transfer_map(data);
     return (true);

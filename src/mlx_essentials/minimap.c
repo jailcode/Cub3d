@@ -31,7 +31,7 @@ void draw_tile(t_game *data, int screen_x, int screen_y, int color)
     }
 }
 
-void    update_cords(t_game *data, t_mmap_dimensions *cords, int i, int j)
+void    update_cords(t_mmap_dimensions *cords, int i, int j)
 {
     cords->top_left.x = 0;
     cords->top_right.y = 0;
@@ -78,6 +78,7 @@ void    draw_outline(t_game *data, t_mmap_dimensions *cords)
         }
         i++;
     }
+    update_cords(cords, i, j);
 }
 void    temp_update_player_pos(t_game *data, t_coord delta_pos, double delta_dir);
 
@@ -141,16 +142,16 @@ void draw_mmap(t_game *data)
     int offset_x;
     int offset_y;
 
-    offset_x = ((int)(data->player.pos.y * 100) % 100) * TILE_SIZE / 100;
-    offset_y = ((int)(data->player.pos.x * 100) % 100) * TILE_SIZE / 100;
+    offset_x = ((int)(data->player.pos.x * 100) % 100) * TILE_SIZE / 100;
+    offset_y = ((int)(data->player.pos.y * 100) % 100) * TILE_SIZE / 100;
     dy = -MM_RENDER_DISTANCE;
     while (dy <= MM_RENDER_DISTANCE)
     {
         dx = -MM_RENDER_DISTANCE;
         while (dx <= MM_RENDER_DISTANCE)
         {
-            color = get_field_color(data, (int)data->player.pos.x + dy,
-             (int)data->player.pos.y + dx);
+            color = get_field_color(data, (int)data->player.pos.y + dy,
+             (int)data->player.pos.x + dx);
             screen_x = MMAP_OFFSET_X
                 + (dx + MM_RENDER_DISTANCE) * TILE_SIZE - offset_x;
             screen_y = MMAP_OFFSET_Y

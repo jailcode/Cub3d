@@ -141,8 +141,8 @@ int get_player_info(t_parser *data)
             if (ft_strchr("NWES", data->map->parse_map[i][j]) != NULL)
             {
                 get_player_cdir(data, data->map->parse_map[i][j]);
-                data->init_player_field.vertical = j; // going with the convention of j being cols which is vertical
-                data->init_player_field.horizontal = i;
+                data->init_player_field.vertical = i; // going with the convention of j being cols which is vertical
+                data->init_player_field.horizontal = j;
                 ret = 1;
             }
             j++;
@@ -157,8 +157,6 @@ bool    verify_map(t_parser *data)
     if (!data)
         return (false);
     if (!check_map_elements(data))
-        return (false);
-    if (!get_player_info(data))
         return (false);
     if (!is_closed(data))
         return (false);
