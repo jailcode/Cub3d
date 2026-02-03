@@ -22,8 +22,8 @@ t_map *init_map(t_mem_list **memory)
     map->Etexture = NULL;
     map->parse_map = NULL;
     map->main_map = NULL;
-    map->height = 0;
-    map->width = 0;
+    map->rows = 0;
+    map->col = 0;
     return (map); 
 }
 

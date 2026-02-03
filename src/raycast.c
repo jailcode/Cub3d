@@ -66,12 +66,12 @@ bool set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir const 
 
 bool	is_wall(t_map const *const pmap, t_fidx const fidx)
 {
-	if (!pmap || !pmap->main_map)
+	/*if (!pmap || !pmap->main_map)
 		return (false);
 	if (fidx.horizontal < 0 || fidx.vertical < 0)
 		return (false);
-	if (fidx.horizontal >= pmap->height || fidx.vertical >= pmap->width)
-		return (false);
+	if (fidx.horizontal >= pmap->rows || fidx.vertical >= pmap->col)
+		return (false);*/
 	return (pmap->main_map[fidx.horizontal][fidx.vertical].ftype == (t_fieldtype)wall);
 }
 /*  added a new is_awll with checks

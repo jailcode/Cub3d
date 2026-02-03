@@ -49,8 +49,8 @@ typedef struct s_map
     char    *Etexture;
     int     color_floor[3];
     int     color_ceiling[3];
-    int     width;
-    int     height;
+    int     col;
+    int     rows;
     char    **parse_map;
     t_field **main_map;
 

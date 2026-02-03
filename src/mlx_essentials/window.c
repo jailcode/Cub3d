@@ -59,7 +59,7 @@ void    temp_update_player_pos(t_game *data, t_coord delta_pos, double delta_dir
 {
     data->player.pos.x += delta_pos.x/10;
     data->player.pos.y += delta_pos.y/10;
-    data->player.dov.rad += ANGULAR_SPEED * delta_dir;
+    data->player.dov.rad += delta_dir;
 }
 
 void    update_player(t_game *data)
@@ -68,8 +68,8 @@ void    update_player(t_game *data)
     double      delta_dir;
 
     delta_pos.x = SPEED *(data->key.d - data->key.a);
-    delta_pos.y = data->key.s - data->key.w ;
-    delta_dir = data->key.right - data->key.left;
+    delta_pos.y = SPEED * (data->key.s - data->key.w) ;
+    delta_dir = ANGULAR_SPEED * ( data->key.right - data->key.left);
     //update_player_pos(data, delta_pos, (const double )delta_dir);
     temp_update_player_pos(data, delta_pos, delta_dir);
 }

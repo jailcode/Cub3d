@@ -7,7 +7,7 @@
 #define MMAP_OFFSET_X 24
 #define MMAP_OFFSET_Y 24
 
-void draw_tile(t_game *data, float screen_x, float screen_y, int color)
+void draw_tile(t_game *data, int screen_x, int screen_y, int color)
 {
     int x;
     int y;
@@ -72,11 +72,9 @@ void    draw_outline(t_game *data, t_mmap_dimensions *cords)
         j = 0;
         while(j < MMAP_TILE_COUNT + 2)
         {
-                if (i == 0 || i == MMAP_TILE_COUNT + 1)
-                    draw_tile(data, j * TILE_SIZE, i * TILE_SIZE, COLOR_BLACK);
-                else if (i != 0 && (j == 0 || j == MMAP_TILE_COUNT + 1))
-                    draw_tile(data, j * TILE_SIZE, i * TILE_SIZE, COLOR_BLACK);
-                j++;
+            if (i == 0 || i == MMAP_TILE_COUNT + 1 || j == 0 || j == MMAP_TILE_COUNT + 1)
+                draw_tile(data, j * TILE_SIZE, i * TILE_SIZE, COLOR_BLACK);
+            j++;
         }
         i++;
     }
@@ -99,7 +97,7 @@ int get_field_color(t_game *data, int row, int col)
     if (row < 0 || col < 0)
         return COLOR_BLACK;
 
-    if (row >= data->map->height || col >= data->map->width)
+    if (row >= data->map->rows || col >= data->map->col)
         return COLOR_BLACK;
 
     if (data->map->main_map[row][col].ftype == ground)
@@ -140,19 +138,19 @@ void draw_mmap(t_game *data)
     int color;
     int screen_x;
     int screen_y;
-    float offset_x;
-    float offset_y;
+    int offset_x;
+    int offset_y;
 
-    offset_x = (data->player.pos.x - (int)data->player.pos.x) * TILE_SIZE;
-    offset_y = (data->player.pos.y - (int)data->player.pos.y) * TILE_SIZE;
+    offset_x = ((int)(data->player.pos.y * 100) % 100) * TILE_SIZE / 100;
+    offset_y = ((int)(data->player.pos.x * 100) % 100) * TILE_SIZE / 100;
     dy = -MM_RENDER_DISTANCE;
     while (dy <= MM_RENDER_DISTANCE)
     {
         dx = -MM_RENDER_DISTANCE;
         while (dx <= MM_RENDER_DISTANCE)
         {
-            color = get_field_color(data, (int)data->player.pos.y + dy,
-             (int)data->player.pos.x + dx); // gets the color in the world space
+            color = get_field_color(data, (int)data->player.pos.x + dy,
+             (int)data->player.pos.y + dx);
             screen_x = MMAP_OFFSET_X
                 + (dx + MM_RENDER_DISTANCE) * TILE_SIZE - offset_x;
             screen_y = MMAP_OFFSET_Y
@@ -171,7 +169,7 @@ void    draw_mini_player(t_game *data)
 
     mmap_px = MM_RENDER_DISTANCE;
     mmap_py = MM_RENDER_DISTANCE;
-    rotate(&mmap_py, &mmap_px, data->player.dov.rad);
+    //rotate(&mmap_py, &mmap_px, data->player.dov.rad);
     mmap_px = MMAP_OFFSET_X + mmap_px * TILE_SIZE;
     mmap_py = MMAP_OFFSET_Y + mmap_py * TILE_SIZE;
     draw_tile(data, mmap_px, mmap_py, COLOR_DARK_BLUE); // replace with draw_circle
