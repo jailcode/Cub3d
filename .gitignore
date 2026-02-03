@@ -4,3 +4,4 @@ cub3D
 *.o
 minilibx-linux/
 minilibx-linux.tgz
+.vscode/settings.json
