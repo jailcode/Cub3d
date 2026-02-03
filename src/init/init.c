@@ -56,5 +56,6 @@ void    init_data(t_game *data, t_parser *parser)
     data->mlx = NULL;
     data->win = NULL;
     data->current_time = 0;
+    printf("%d and %d\n", parser->init_player_field.horizontal, parser->init_player_field.vertical);
     set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
 }

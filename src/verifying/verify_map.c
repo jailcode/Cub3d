@@ -158,8 +158,6 @@ bool    verify_map(t_parser *data)
         return (false);
     if (!check_map_elements(data))
         return (false);
-    if (!get_player_info(data))
-        return (false);
     if (!is_closed(data))
         return (false);
     return (true);
