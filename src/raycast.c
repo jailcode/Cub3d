@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycast.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphha <raphha@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/29 20:18:48 by raphha           ###   ########.fr       */
+/*   Updated: 2026/02/03 12:48:31 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,7 @@ bool	update_player_pos(
 	ray.origin = p->pos;
 	ray.dir.rad = p->dov.rad + atan2(deltapos.y, deltapos.x);
 	ray.dir.x = cos(ray.dir.rad);
-	ray.dir.x = sin(ray.dir.rad);
+	ray.dir.y = sin(ray.dir.rad);
 	t_rcintersect intersect = rayintersection(ray, g->map);
 	double const maxdistbeforeimpact = intersect.dist2intersect
 			- p->mindist2wall / cos(intersect.impactangle);
