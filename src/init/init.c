@@ -62,5 +62,7 @@ void    init_data(t_game *data, t_parser *parser)
     data->key.d = 0;
     data->key.left = 0;
     data->key.right = 0;
+	data->player.fov = FOV * M_PI / 180.0;
+	data->player.mindist2wall = 0.2;
     set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
 }
