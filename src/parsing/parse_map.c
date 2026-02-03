@@ -227,6 +227,28 @@ t_fieldtype return_fieldtype(char c)
         return (empty);
     else return (ground);
 }
+/*
+void    print_main_map(t_map *map)
+{
+    int i;
+    int j;
+
+    if (!map || !map->main_map)
+        return ;
+    for (i = 0; i < map->rows; i++)
+    {
+        for (j = 0; j < map->col; j++)
+        {
+            if (map->main_map[i][j].ftype == wall)
+                printf("1");
+            else if (map->main_map[i][j].ftype == ground)
+                printf("0");
+            else if (map->main_map[i][j].ftype == empty)
+                printf(" ");
+        }
+        printf("\n");
+    }
+}*/
 
 void    transfer_map(t_parser *data)
 {
@@ -248,7 +270,10 @@ void    transfer_map(t_parser *data)
             main_map[i][j].ftype = return_fieldtype(map[i][j]);
     }
     data->map->main_map = main_map;
+    //print_main_map(data->map);
 }
+
+
 
 int get_player_info(t_parser *data);
 
@@ -273,7 +298,7 @@ bool process_map(t_parser *data, char *filename)
     close(fd);
     build_raw_map(data);
     get_player_info(data);
-    build_padded_map(data);
     transfer_map(data);
+    build_padded_map(data);
     return (true);
 }
