@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/03 14:41:57 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/03 15:03:15 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,30 +207,38 @@ bool	update_player_pos(
 {
 	t_player *const p = &g->player;
 	t_line	ray;
-	// DEBUG S
-	p->pos.x -= 1.0;
-	p->pos.y -= 1.0;
-	deltadov = 0.0;
-	// DEBUG E
-	ray.origin = p->pos;
-	ray.dir.rad = p->dov.rad + atan2(deltapos.y, deltapos.x);
-	ray.dir.x = cos(ray.dir.rad);
-	ray.dir.y = sin(ray.dir.rad);
-	t_rcintersect intersect = rayintersection(ray, g->map);
-	double const maxdistbeforeimpact = intersect.dist2intersect
-			- p->mindist2wall / cos(intersect.impactangle);
-	double const deltadist = vnorm(&deltapos);
-	if (deltadist > maxdistbeforeimpact)
+
+	// // DEBUG S
+	deltapos.x = 2.0;
+	deltapos.y = 0.0;
+	// p->pos.x -= 1.0;
+	// p->pos.y -= 1.0;
+	// deltadov = 0.0;
+	// // DEBUG E
+
+	p->collision = false;
+	if (vnorm(&deltapos) > EPS)
 	{
-		double const ratio = maxdistbeforeimpact / deltadist;
-		deltapos.x *= ratio;
-		deltapos.y *= ratio;
-		g->player.collision = true;
+		ray.origin = p->pos;
+		ray.dir.rad = p->dov.rad + atan2(deltapos.y, deltapos.x);
+		ray.dir.x = cos(ray.dir.rad);
+		ray.dir.y = sin(ray.dir.rad);
+		t_rcintersect intersect = rayintersection(ray, g->map);
+		double const maxdistbeforeimpact = intersect.dist2intersect
+				- p->mindist2wall / cos(intersect.impactangle);
+		double const deltadist = vnorm(&deltapos);
+		if (deltadist > maxdistbeforeimpact)
+		{
+			double const ratio = maxdistbeforeimpact / deltadist;
+			deltapos.x *= ratio;
+			deltapos.y *= ratio;
+			g->player.collision = true;
+		}
+		p->pos.x += deltapos.x * cos(p->dov.rad) + deltapos.y * sin(p->dov.rad);
+		p->pos.y += deltapos.x * sin(p->dov.rad) + deltapos.y * cos(p->dov.rad);
 	}
-	p->pos.x += deltapos.x * cos(p->dov.rad) + deltapos.y * sin(p->dov.rad);
-	p->pos.y += deltapos.x * sin(p->dov.rad) + deltapos.y * cos(p->dov.rad);
 	p->dov.rad += deltadov;
-	p->pos.x = cos(p->dov.rad);
-	p->pos.y = sin(p->dov.rad);
+	p->dov.x = cos(p->dov.rad);
+	p->dov.y = sin(p->dov.rad);
 	return (gen_raycast(g));
 }
