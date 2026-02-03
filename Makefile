@@ -12,19 +12,21 @@ OBJS := $(SRC:.c=.o)
 
 CC := cc
 
-FLAGS := -Wall -Werror -Wextra -g
+CFLAGS := -Wall -Werror -Wextra
+CFLAGS += -Iminilibx-linux 
+CFLAGS += -g3
 
-LFLAGS := -lm
+LFLAGS := -lm -Lminilibx-linux
 
-MLX_FLAGS = -Lminilibx-linux -lmlx -lXext -lX11
+MLX_FLAGS = -lmlx -lXext -lX11
 
 all: $(NAME)
 
 %.o: %.c $(INCLUDES)
-	$(CC) $(CFLAGS) -Iminilibx-linux -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) $(LFLAGS) $(MLX_FLAGS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(LFLAGS) $(MLX_FLAGS) -o $(NAME)
 
 clean:
 	rm -f $(OBJS)
