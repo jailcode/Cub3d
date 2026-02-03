@@ -143,7 +143,6 @@ t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
 		 	--fieldidx.horizontal;
 		if (!hitverticalln && ray.dir.y < 0)
 		 	--fieldidx.vertical;
-		
 		if (is_wall(pmap, fieldidx))
 		{
 			wall_found = true;

@@ -219,6 +219,8 @@ void    build_padded_map(t_parser *data)
 
 t_fieldtype return_fieldtype(char c)
 {
+    if (c == '\0')
+        return (empty);
     if (c == '0')
         return (ground);
     else if (c == '1')
@@ -254,20 +256,27 @@ void    transfer_map(t_parser *data)
 {
     int i;
     int j;
+    int len;
     char **map;
     t_field **main_map;
 
     map = data->map->parse_map;
-    main_map = x_malloc(&data->parse_memory, sizeof(*main_map) * (data->map->rows)); // chan
+    main_map = x_malloc(&data->parse_memory, sizeof(*main_map) * (data->map->rows));
     i = -1;
     while(++i < data->map->rows)
         main_map[i] = x_malloc(&data->parse_memory, sizeof(**main_map) * (data->map->col));
     i = -1;
     while (++i < data->map->rows)
     {
+        len = (int)ft_strlen(map[i]);
         j = -1;
         while(++j < data->map->col)
-            main_map[i][j].ftype = return_fieldtype(map[i][j]);
+        {
+            if (j < len)
+                main_map[i][j].ftype = return_fieldtype(map[i][j]);
+            else
+                main_map[i][j].ftype = empty; // pad short lines with spaces
+        }
     }
     data->map->main_map = main_map;
     //print_main_map(data->map);
@@ -299,6 +308,7 @@ bool process_map(t_parser *data, char *filename)
     build_raw_map(data);
     get_player_info(data);
     transfer_map(data);
+
     build_padded_map(data);
     return (true);
 }

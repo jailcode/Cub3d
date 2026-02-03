@@ -142,16 +142,16 @@ void draw_mmap(t_game *data)
     int offset_x;
     int offset_y;
 
-    offset_x = ((int)(data->player.pos.y * 100) % 100) * TILE_SIZE / 100;
-    offset_y = ((int)(data->player.pos.x * 100) % 100) * TILE_SIZE / 100;
+    offset_x = ((int)(data->player.pos.x * 100) % 100) * TILE_SIZE / 100;
+    offset_y = ((int)(data->player.pos.y * 100) % 100) * TILE_SIZE / 100;
     dy = -MM_RENDER_DISTANCE;
     while (dy <= MM_RENDER_DISTANCE)
     {
         dx = -MM_RENDER_DISTANCE;
         while (dx <= MM_RENDER_DISTANCE)
         {
-            color = get_field_color(data, (int)data->player.pos.x + dy,
-             (int)data->player.pos.y + dx);
+            color = get_field_color(data, (int)data->player.pos.x + dx,
+             (int)data->player.pos.y + dy);
             screen_x = MMAP_OFFSET_X
                 + (dx + MM_RENDER_DISTANCE) * TILE_SIZE - offset_x;
             screen_y = MMAP_OFFSET_Y

@@ -71,11 +71,27 @@ void    update_player(t_game *data)
     delta_pos.y = SPEED * (data->key.s - data->key.w) ;
     delta_dir = ANGULAR_SPEED * ( data->key.right - data->key.left);
     update_player_pos(data, delta_pos, (const double )delta_dir);
-    // temp_update_player_pos(data, delta_pos, delta_dir);
+    //temp_update_player_pos(data, delta_pos, delta_dir);
 }
+/*
+#include "../../includes/cub.h"
 
+t_rccol *make_test_imgcolumn(double blockheightfactor, t_cdir cubeside)
+{
+    t_rccol *imgcolumn;
+    int i;
 
-
+    imgcolumn = malloc(sizeof(t_rccol) * SCREEN_WIDTH);
+    if (!imgcolumn)
+        return NULL;
+    for (i = 0; i < SCREEN_WIDTH; i++)
+    {
+        imgcolumn[i].blockheightfactor = blockheightfactor;
+        imgcolumn[i].cubeside = cubeside;
+    }
+    return imgcolumn;
+}
+*/
 int load_frame(t_game *data)
 {
     long long new_time;
@@ -89,6 +105,7 @@ int load_frame(t_game *data)
     data->current_time = new_time;
     update_player(data);
     set_image_background(&data->frame, 0xFFFFFF);
+    put_cols_to_win(data);
     load_mini_map(data);
     mlx_put_image_to_window(data->mlx, data->win, data->frame.img, 0, 0);
     return (1);
@@ -108,6 +125,9 @@ void    start_game(t_game *data)
     data->mlx = mlx_init();
     data->win = mlx_new_window(data->mlx, SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d");
     init_frame(data, &data->frame);
+    data->player.fov = FOV * (M_PI / 180.0);
+    if (data->player.mindist2wall <= 0.0)
+        data->player.mindist2wall = 0.1;
     register_input_hooks(data);
     update_loop(data);
 }
