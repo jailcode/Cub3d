@@ -31,7 +31,7 @@ void draw_tile(t_game *data, int screen_x, int screen_y, int color)
     }
 }
 
-void    update_cords(t_game *data, t_mmap_dimensions *cords, int i, int j)
+void    update_cords(t_mmap_dimensions *cords, int i, int j)
 {
     cords->top_left.x = 0;
     cords->top_right.y = 0;
@@ -78,6 +78,7 @@ void    draw_outline(t_game *data, t_mmap_dimensions *cords)
         }
         i++;
     }
+    update_cords(cords, i, j);
 }
 void    temp_update_player_pos(t_game *data, t_coord delta_pos, double delta_dir);
 
