@@ -70,8 +70,8 @@ void    update_player(t_game *data)
     delta_pos.x = SPEED *(data->key.d - data->key.a);
     delta_pos.y = SPEED * (data->key.s - data->key.w) ;
     delta_dir = ANGULAR_SPEED * ( data->key.right - data->key.left);
-    update_player_pos(data, delta_pos, (const double )delta_dir);
-    //temp_update_player_pos(data, delta_pos, delta_dir);
+    //update_player_pos(data, delta_pos, (const double )delta_dir);
+    temp_update_player_pos(data, delta_pos, delta_dir);
 }
 
 
