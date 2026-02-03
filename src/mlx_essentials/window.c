@@ -15,7 +15,6 @@ void    leave_game(t_game *data)
 void    my_mlx_pixel_put(t_img *img, int x, int y, int color)
 {
     char *dst;
-
     dst = img->addr + (y * img->line_length + x * (img->bpp / 8));
     *(unsigned int *)dst = color;
 }
@@ -47,7 +46,7 @@ void    init_frame(t_game *data, t_img *img)
     img->addr = mlx_get_data_addr(img->img, &img->bpp, &img->line_length, &img->endian);
 }
 
-# define TIME_BETWEEN_FRAMES 100/FPS
+# define TIME_BETWEEN_FRAMES 1000/FPS
 
 long long get_time_in_ms(void)
 {
@@ -56,17 +55,25 @@ long long get_time_in_ms(void)
     return ((long long) tv.tv_sec * 1000 + tv.tv_usec/1000);
 }
 
+void    temp_update_player_pos(t_game *data, t_coord delta_pos, double delta_dir)
+{
+    data->player.pos.x += delta_pos.x/10;
+    data->player.pos.y += delta_pos.y/10;
+    data->player.dov.rad += delta_dir;
+}
+
 void    update_player(t_game *data)
 {
     t_coord     delta_pos;
     double      delta_dir;
 
     delta_pos.x = SPEED *(data->key.d - data->key.a);
-    delta_pos.y = data->key.w - data->key.s;
-    delta_dir = data->key.right - data->key.left;
-
-    update_player_pos(data, delta_pos, delta_dir);
+    delta_pos.y = SPEED * (data->key.s - data->key.w) ;
+    delta_dir = ANGULAR_SPEED * ( data->key.right - data->key.left);
+    update_player_pos(data, delta_pos, (const double )delta_dir);
+    //temp_update_player_pos(data, delta_pos, delta_dir);
 }
+
 
 
 int load_frame(t_game *data)
@@ -82,10 +89,10 @@ int load_frame(t_game *data)
     data->current_time = new_time;
     update_player(data);
     set_image_background(&data->frame, 0xFFFFFF);
+    load_mini_map(data);
     mlx_put_image_to_window(data->mlx, data->win, data->frame.img, 0, 0);
     return (1);
 }
-
 
 void    update_loop(t_game *data)
 {
@@ -101,7 +108,6 @@ void    start_game(t_game *data)
     data->mlx = mlx_init();
     data->win = mlx_new_window(data->mlx, SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d");
     init_frame(data, &data->frame);
-
     register_input_hooks(data);
     update_loop(data);
 }

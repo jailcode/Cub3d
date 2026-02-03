@@ -24,26 +24,18 @@
 # include <fcntl.h>
 # include <stdbool.h>
 # include <sys/time.h>
-
-# include "../minilibx-linux/mlx.h"
-# include "miniessentials.h"
-
-/*TO DO*/
-// return the delta t_coord with the delta DOV to update player position
-// use set_initial_player_pos instead of set_dov in veirfy map
-// double check t_rccol *imgcolumn in frame for leaks and segfaults
-//  add FPS and set it to 60 using gettime of day
+# include <math.h>
 
 # ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1
 # endif
 
 # ifndef TILE_SIZE
-# define TILE_SIZE 12
+# define TILE_SIZE 24
 # endif
 
-# define SCREEN_HEIGHT 500
-# define SCREEN_WIDTH  600
+# define SCREEN_HEIGHT 600
+# define SCREEN_WIDTH  1000
 # define FOV 60
 # define SPEED 2
 # define ANGULAR_SPEED (M_PI / FPS)
@@ -57,14 +49,20 @@ typedef struct s_map
     char    *Etexture;
     int     color_floor[3];
     int     color_ceiling[3];
-    int     width;
-    int     height;
+    int     col;
+    int     rows;
     char    **parse_map;
     t_field **main_map;
 
 }   t_map;
 
-
+typedef struct s_mmap_dimensions
+{
+    t_coord top_left;
+    t_coord top_right;
+    t_coord bottom_left;
+    t_coord bottom_right;
+}   t_mmap_dimensions;
 
 
 typedef struct s_mem_list
@@ -133,6 +131,7 @@ typedef struct s_game
     void    *mlx;
     void    *win;
     long long current_time;
+    t_mmap_dimensions mmap_size;
 }   t_game;
 
 
@@ -194,9 +193,7 @@ void    start_game(t_game *data);
 void    register_input_hooks(t_game *data);
 void    set_image_background(t_img *img, int color); //remove later maybe
 void    load_mini_map(t_game *data);
-void    draw_tile(t_img *frame, int x, int y, int color);
 void    my_mlx_pixel_put(t_img *img, int x, int y, int color);
-void    load_mini_player(t_game *data);
 /*           minilibx funcs             */
 
 /*           colors and textures         */

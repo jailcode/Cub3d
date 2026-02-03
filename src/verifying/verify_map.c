@@ -16,10 +16,10 @@ int check_map_elements(t_parser *data)
         return (0);
     map = data->map;
     i = -1;
-    while(++i < map->height)
+    while(++i < map->rows)
     {
         j = -1;
-        while(++j <= map->width)
+        while(++j <= map->col)
         {
             if (ft_strchr("10 NSWE", map->parse_map[i][j]) == NULL)
                 return (0);
@@ -58,8 +58,8 @@ void    dfs(t_parser *data, char **map, int row, int col)
 {
     if (!data)
         clean_exit(data->parse_memory, 1, "no data");
-    if (row < 0 || row >= data->map->height || col < 0 || 
-        col >= data->map->width || map[row][col] == '1')
+    if (row < 0 || row >= data->map->rows || col < 0 || 
+        col >= data->map->col || map[row][col] == '1')
         return ;
     if (map[row][col] && !(map[row][col] == ' ' || map[row][col] == '1'))
         clean_exit(data->parse_memory, 1, "invalid map");
@@ -141,8 +141,8 @@ int get_player_info(t_parser *data)
             if (ft_strchr("NWES", data->map->parse_map[i][j]) != NULL)
             {
                 get_player_cdir(data, data->map->parse_map[i][j]);
-                data->init_player_field.horizontal = j;
-                data->init_player_field.vertical = i;
+                data->init_player_field.vertical = j; // going with the convention of j being cols which is vertical
+                data->init_player_field.horizontal = i;
                 ret = 1;
             }
             j++;
@@ -157,8 +157,6 @@ bool    verify_map(t_parser *data)
     if (!data)
         return (false);
     if (!check_map_elements(data))
-        return (false);
-    if (!get_player_info(data))
         return (false);
     if (!is_closed(data))
         return (false);

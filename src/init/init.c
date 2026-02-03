@@ -22,8 +22,8 @@ t_map *init_map(t_mem_list **memory)
     map->Etexture = NULL;
     map->parse_map = NULL;
     map->main_map = NULL;
-    map->height = 0;
-    map->width = 0;
+    map->rows = 0;
+    map->col = 0;
     return (map); 
 }
 
@@ -49,12 +49,18 @@ void init_parser(t_parser *ret)
 
 void    init_data(t_game *data, t_parser *parser)
 {
-    data->map = parser->map;  // change to t_map2 or whatever Raphael prefers
+    data->map = parser->map;
     data->memory = parser->parse_memory;
     data->frame.img = NULL;
     data->frame.imgcolumn = parser->imgcolumn;
     data->mlx = NULL;
     data->win = NULL;
     data->current_time = 0;
+    data->key.w = 0;
+    data->key.a = 0;
+    data->key.s = 0;
+    data->key.d = 0;
+    data->key.left = 0;
+    data->key.right = 0;
     set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
 }
