@@ -1,11 +1,5 @@
 #include "../../includes/cub.h"
 
-void    print_map(char **map)
-{
-    for(int i = 0; map[i]; i++)
-         printf("%s\n", map[i]);
-}
-
 int check_map_elements(t_parser *data)
 {
     int i;
@@ -141,7 +135,7 @@ int get_player_info(t_parser *data)
             if (ft_strchr("NWES", data->map->parse_map[i][j]) != NULL)
             {
                 get_player_cdir(data, data->map->parse_map[i][j]);
-                data->init_player_field.vertical = i; // going with the convention of j being cols which is vertical
+                data->init_player_field.vertical = i;
                 data->init_player_field.horizontal = j;
                 ret = 1;
             }

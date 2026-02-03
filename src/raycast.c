@@ -72,7 +72,7 @@ bool	is_wall(t_map const *const pmap, t_fidx const fidx)
 		return (false);
 	if (fidx.horizontal >= pmap->rows || fidx.vertical >= pmap->col)
 		return (false);*/
-	return (pmap->main_map[fidx.horizontal][fidx.vertical].ftype == (t_fieldtype)wall);
+	return (pmap->main_map[fidx.vertical][fidx.horizontal].ftype == (t_fieldtype)wall);
 }
 /*  added a new is_awll with checks
 bool	is_wall(t_map const *const pmap, t_fidx const fidx)

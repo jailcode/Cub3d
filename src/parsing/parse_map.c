@@ -1,21 +1,5 @@
 #include "../../includes/cub.h"
 
-/*
-void    fill_map(t_game *data, char *line)
-{
-    char    **map;
-    static  int index;
-
-    if (!data || !line)
-        clean_exit(data->parse_memory, 1, "missing data");
-    index = 1;
-    map = x_malloc(&data->parse_memory, sizeof(*map) * index);
-    if (!map)
-        clean_exit(data->parse_memory, 1, "malloc failed");
-    
- 
-}*/
-
 int is_map_line(char *line)
 {
     int i;
@@ -131,6 +115,15 @@ char    *spaced_line(char *line, size_t len)
     line[i] = '\0';
     return (line);
 }
+
+
+void    print_map(char **map)
+{
+    for(int i = 0; map[i]; i++)
+         printf("%s\n", map[i]);
+}
+
+
 void    build_raw_map(t_parser *p)
 {
     size_t i;
@@ -148,6 +141,7 @@ void    build_raw_map(t_parser *p)
     p->map->parse_map[i] = NULL;
     p->map->rows = p->map_height;
     p->map->col = p->map_width;
+    print_map(p->map->parse_map);
 }
 
 char  *pad_line(t_parser *data, char *line)
@@ -227,7 +221,7 @@ t_fieldtype return_fieldtype(char c)
         return (empty);
     else return (ground);
 }
-/*
+
 void    print_main_map(t_map *map)
 {
     int i;
@@ -248,29 +242,37 @@ void    print_main_map(t_map *map)
         }
         printf("\n");
     }
-}*/
+}
+
+void    build_main_map(t_parser *data, t_field **map)
+{
+    int i;
+    int j;
+
+    i = -1;
+    while(++i < data->map->rows)
+    {
+        j = -1;
+        while(++j < data->map->col)
+            map[i][j].ftype = return_fieldtype(data->map->parse_map[i][j]);
+    }
+}
 
 void    transfer_map(t_parser *data)
 {
     int i;
-    int j;
-    char **map;
+    //char **map;
     t_field **main_map;
 
-    map = data->map->parse_map;
+    //map = data->map->parse_map;
     main_map = x_malloc(&data->parse_memory, sizeof(*main_map) * (data->map->rows)); // chan
     i = -1;
     while(++i < data->map->rows)
         main_map[i] = x_malloc(&data->parse_memory, sizeof(**main_map) * (data->map->col));
     i = -1;
-    while (++i < data->map->rows)
-    {
-        j = -1;
-        while(++j < data->map->col)
-            main_map[i][j].ftype = return_fieldtype(map[i][j]);
-    }
+    build_main_map(data, main_map);
     data->map->main_map = main_map;
-    //print_main_map(data->map);
+    print_main_map(data->map);
 }
 
 int get_player_info(t_parser *data);
@@ -297,5 +299,6 @@ bool process_map(t_parser *data, char *filename)
     build_raw_map(data);
     get_player_info(data);
     build_padded_map(data);
+    transfer_map(data);
     return (true);
 }
