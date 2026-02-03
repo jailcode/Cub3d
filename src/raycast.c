@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/03 12:48:31 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/03 14:41:57 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_coord	intersection(t_line const *const rayln, t_line const *const gridln)
 		  rayln->dir.x * (rayln->origin.y - gridln->origin.y)
 		- rayln->dir.y * (rayln->origin.x - gridln->origin.x)
 	) / (rayln->dir.x * gridln->dir.y - rayln->dir.y * gridln->dir.x);
-	t_coord const intersect = (t_coord) { gridln->origin.x + lambda * gridln->dir.x, gridln->origin.y + lambda * gridln->dir.y };
+	t_coord const intersect = (t_coord) { rayln->origin.x + lambda * rayln->dir.x, gridln->origin.y + lambda * gridln->dir.y };
 	return (intersect);
 }
 
@@ -118,9 +118,9 @@ t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
 			fieldidx = (t_fidx){
 				.horizontal = (int)(rcintersect.intersection.x),
 				.vertical = (int)(round(rcintersect.intersection.y))};
-		if (ray.dir.x < 0)
+		if (hitverticalln && ray.dir.x < 0)
 		 	--fieldidx.horizontal;
-		if (ray.dir.y < 0)
+		if (!hitverticalln && ray.dir.y < 0)
 		 	--fieldidx.vertical;
 		
 		if (is_wall(pmap, fieldidx))
@@ -193,11 +193,16 @@ double vnorm(t_coord const *const coord)
 }
 
 bool	update_player_pos(
-	t_game *const g, t_coord deltapos, double const deltadov)
+	t_game *const g, t_coord deltapos, double /* const */ deltadov)
 {
 	t_player *const p = &g->player;
 
 	t_line	ray;
+	// DEBUG S
+	p->pos.x -= 1.0;
+	p->pos.y -= 1.0;
+	deltadov = 0.0;
+	// DEBUG E
 	ray.origin = p->pos;
 	ray.dir.rad = p->dov.rad + atan2(deltapos.y, deltapos.x);
 	ray.dir.x = cos(ray.dir.rad);
