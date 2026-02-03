@@ -65,7 +65,7 @@ void    update_player(t_game *data)
     delta_pos.y = data->key.w - data->key.s;
     delta_dir = data->key.right - data->key.left;
 
-    //update_player_pos(data, delta_pos, delta_dir);
+    update_player_pos(data, delta_pos, delta_dir);
 }
 
 
