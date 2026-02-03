@@ -66,10 +66,20 @@ bool set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir const 
 
 bool	is_wall(t_map const *const pmap, t_fidx const fidx)
 {
-	t_field const *const pfield = &pmap->main_map[fidx.horizontal][fidx.vertical];
-	
-	return (pfield->ftype == (t_fieldtype)wall);
+	/*if (!pmap || !pmap->main_map)
+		return (false);
+	if (fidx.horizontal < 0 || fidx.vertical < 0)
+		return (false);
+	if (fidx.horizontal >= pmap->rows || fidx.vertical >= pmap->col)
+		return (false);*/
+	return (pmap->main_map[fidx.horizontal][fidx.vertical].ftype == (t_fieldtype)wall);
 }
+/*  added a new is_awll with checks
+bool	is_wall(t_map const *const pmap, t_fidx const fidx)
+{
+	t_field const *const pfield = &pmap->main_map[fidx.horizontal][fidx.vertical];
+	return (pfield->ftype == (t_fieldtype)wall);
+}*/
 
 
 t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
@@ -196,7 +206,6 @@ bool	update_player_pos(
 	t_game *const g, t_coord deltapos, double const deltadov)
 {
 	t_player *const p = &g->player;
-
 	t_line	ray;
 	ray.origin = p->pos;
 	ray.dir.rad = p->dov.rad + atan2(deltapos.y, deltapos.x);
