@@ -141,7 +141,7 @@ void    build_raw_map(t_parser *p)
     p->map->parse_map[i] = NULL;
     p->map->rows = p->map_height;
     p->map->col = p->map_width;
-    print_map(p->map->parse_map);
+    //print_map(p->map->parse_map);
 }
 
 char  *pad_line(t_parser *data, char *line)
@@ -207,8 +207,8 @@ void    build_padded_map(t_parser *data)
     new_map[i + 1] = make_space_line(data);
     new_map[i + 2] = NULL;
     data->map->parse_map = new_map;
-    data->map->rows = old_h + 2;
-    data->map->col = data->map->col + 2;
+    data->map->rows = old_h;
+    data->map->col = data->map->col;
 }
 
 t_fieldtype return_fieldtype(char c)
@@ -287,7 +287,7 @@ void    transfer_map(t_parser *data)
         }
     }
     data->map->main_map = main_map;
-    print_main_map(data->map);
+    //print_main_map(data->map);
 }
 
 int get_player_info(t_parser *data);
@@ -314,8 +314,7 @@ bool process_map(t_parser *data, char *filename)
     build_raw_map(data);
     get_player_info(data);
     transfer_map(data);
-
     build_padded_map(data);
-    transfer_map(data);
+    //print_main_map(data->map);
     return (true);
 }

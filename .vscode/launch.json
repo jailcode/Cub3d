@@ -10,7 +10,7 @@
     //   "stopAtEntry": true,
       "externalConsole": false,
       "cwd": "${workspaceFolder}",
-      "program": "${workspaceFolder}/${workspaceFolderBasename}",
+      "program": "${workspaceFolder}/cub3D",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
 	  //"preLaunchTask": "42 C build bonus test.c",

@@ -101,9 +101,9 @@ int get_field_color(t_game *data, int row, int col)
     if (row >= data->map->rows || col >= data->map->col)
         return COLOR_BLACK;
 
-    if (data->map->main_map[row][col].ftype == ground)
+    if (data->map->main_map[row] && data->map->main_map[row][col].ftype == ground)
         return COLOR_BROWN;
-    if (data->map->main_map[row][col].ftype == wall)
+    if (data->map->main_map[row] && data->map->main_map[row][col].ftype == wall)
         return COLOR_SKY_BLUE;
 
     return COLOR_BLACK;
@@ -142,8 +142,6 @@ void draw_mmap(t_game *data)
     int offset_x;
     int offset_y;
 
-    offset_x = ((int)(data->player.pos.x * 100) % 100) * TILE_SIZE / 100;
-    offset_y = ((int)(data->player.pos.y * 100) % 100) * TILE_SIZE / 100;
     offset_x = ((int)(data->player.pos.x * 100) % 100) * TILE_SIZE / 100;
     offset_y = ((int)(data->player.pos.y * 100) % 100) * TILE_SIZE / 100;
     dy = -MM_RENDER_DISTANCE;

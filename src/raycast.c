@@ -211,7 +211,8 @@ bool gen_raycast(t_game *const g)
 		 DEBUG E */
 		double min_dist = rcintersect.dist2intersect * cos(ray.dir.rad - p.dov.rad);
 		g->frame.imgcolumn[idx].blockheightfactor =
-			min_dist / unitdist * w2hratio;
+			1/(min_dist / unitdist * w2hratio);
+		printf("blockheightfactor: %f\n", min_dist / unitdist * w2hratio);
 		g->frame.imgcolumn[idx].cubeside = rcintersect.cubeside;
 	}
 	return (true);
@@ -255,8 +256,8 @@ bool	update_player_pos(
 			deltapos.y *= ratio;
 			g->player.collision = true;
 		}
-		p->pos.x += deltapos.x * cos(p->dov.rad) - deltapos.y * sin(p->dov.rad);
-		p->pos.y += deltapos.x * sin(p->dov.rad) + deltapos.y * cos(p->dov.rad);
+		p->pos.y += deltapos.x * cos(p->dov.rad) - deltapos.y * sin(p->dov.rad);
+		p->pos.x -= deltapos.x * sin(p->dov.rad) + deltapos.y * cos(p->dov.rad); // changed += to -= to flip direction
 	}
 	if (deltadov > EPS)
 	{	

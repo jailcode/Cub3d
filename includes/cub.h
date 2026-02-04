@@ -37,7 +37,8 @@
 # define SCREEN_HEIGHT 600
 # define SCREEN_WIDTH  1000
 # define FOV 60
-# define SPEED 2
+# define SPEED .05
+
 # define ANGULAR_SPEED (M_PI / FPS)
 # define FPS 60
 
