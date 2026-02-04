@@ -144,6 +144,8 @@ void draw_mmap(t_game *data)
 
     offset_x = ((int)(data->player.pos.x * 100) % 100) * TILE_SIZE / 100;
     offset_y = ((int)(data->player.pos.y * 100) % 100) * TILE_SIZE / 100;
+    offset_x = ((int)(data->player.pos.x * 100) % 100) * TILE_SIZE / 100;
+    offset_y = ((int)(data->player.pos.y * 100) % 100) * TILE_SIZE / 100;
     dy = -MM_RENDER_DISTANCE;
     while (dy <= MM_RENDER_DISTANCE)
     {

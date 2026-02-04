@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/29 18:14:45 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/03 17:02:34 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # ifndef M_PI
 #  define M_PI 3.14159265358979323846
 # endif
+# define EPS 1.0E-3
 
 # include <stdbool.h>
 
@@ -101,7 +102,7 @@ typedef struct s_rc_intersectio
 
 typedef struct s_rc_image_column
 {
-	double blockheightpercent;
+	double blockheightfactor;
 	// double ceilpercent;
 	// double floorpercent;
 	t_cdir cubeside;

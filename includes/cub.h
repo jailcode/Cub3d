@@ -194,6 +194,7 @@ void    register_input_hooks(t_game *data);
 void    set_image_background(t_img *img, int color); //remove later maybe
 void    load_mini_map(t_game *data);
 void    my_mlx_pixel_put(t_img *img, int x, int y, int color);
+void    put_cols_to_win(t_game *data);
 /*           minilibx funcs             */
 
 /*           colors and textures         */
