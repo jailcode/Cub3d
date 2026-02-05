@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 11:06:16 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/05 11:51:56 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/05 14:42:04 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@
 # define SCREEN_HEIGHT 600
 # define SCREEN_WIDTH  1000
 # define FOV 60
-# define SPEED .05
+# define SPEED .025
 
-# define ANGULAR_SPEED (M_PI / FPS)
+# define ANGULAR_SPEED (M_PI / FPS / 3.0)
 # define FPS 60
 
 typedef struct s_map
