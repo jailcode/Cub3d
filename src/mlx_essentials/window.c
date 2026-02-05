@@ -59,7 +59,9 @@ void    temp_update_player_pos(t_game *data, t_coord delta_pos, double delta_dir
 {
     data->player.pos.x += delta_pos.x/10;
     data->player.pos.y += delta_pos.y/10;
-    data->player.dov.rad += delta_dir;
+	double const pdovrad = atan2(data->player.dov.y, data->player.dov.x) + delta_dir;
+	data->player.dov.x = cos(pdovrad);
+	data->player.dov.y = sin(pdovrad);	
 }
 
 void    update_player(t_game *data)
@@ -68,14 +70,11 @@ void    update_player(t_game *data)
     double      delta_dir;
 	double      delta_verticaldir;
 
-    // delta_pos.x = SPEED *(data->key.d - data->key.a);
-    // delta_pos.y = SPEED * (data->key.s - data->key.w) ;
     delta_pos.x = SPEED *(data->key.w - data->key.s);
     delta_pos.y = SPEED * (data->key.d - data->key.a) ;
     delta_dir = ANGULAR_SPEED * ( data->key.right - data->key.left);
 	delta_verticaldir = ANGULAR_SPEED * ( data->key.up - data->key.down);
     update_player_pos(data, delta_pos, delta_dir, delta_verticaldir);
-    //temp_update_player_pos(data, delta_pos, delta_dir);
 }
 /*
 #include "../../includes/cub.h"

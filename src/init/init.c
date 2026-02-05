@@ -70,6 +70,7 @@ void    init_data(t_game *data, t_parser *parser)
     data->current_time = 0;
     init_keys(data);
     data->player.fov = FOV * M_PI / 180.0;
+	data->player.unitdist = cos(data->player.fov / 2.0);
 	data->player.mindist2wall = 0.2;
     set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
 }

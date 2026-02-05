@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/05 11:50:34 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/05 18:26:13 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,6 @@ typedef struct s_fieldindex
 	int vertical;
 }	t_fidx;
 
-// rad: dov angle in rad
-// x,y: Direction of view representation
-//      as normalised vector
-typedef struct s_direction
-{
-	double	rad;
-	double	x;
-	double	y; 
-}	t_dir;
-
 // x in width direction (left->right)
 // y in height direction (top->down)
 typedef struct s_coordinate
@@ -63,6 +53,17 @@ typedef struct s_coordinate
 	double x;
 	double y;
 }	t_coord;
+
+typedef t_coord t_vec;
+typedef t_vec t_dir;
+
+// new coord sys specified in the old one as normalised axis vectors
+typedef struct s_coordsystem
+{
+	t_vec	xaxis;
+	t_vec	yaxis;
+}
+t_csys;
 
 typedef struct s_line
 {
@@ -78,10 +79,11 @@ typedef struct s_player
 {
 	double	fov;
 	double	mindist2wall;
+	double	unitdist;
 	
 	t_coord	pos;
 	t_dir	dov;
-	t_dir	verticaldov;
+	double	verticaldovrad;
 	bool	collision;
 }	t_player;
 
@@ -96,7 +98,6 @@ typedef struct s_rc_intersection
 {
 	double	dist2intersect;
 	double	relative;
-	double	impactangle;
 	t_coord	intersection;
 	t_coord wallnormal;
 	t_cdir	cubeside;
@@ -123,14 +124,12 @@ typedef struct s_raycastresult
 // starting at 0,0 in the top left corner of the map
 bool	set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir cdir);
 
-// DeltaDOV is positive in clockwise direction
-// for now the deltadov is in rad, but we could
-// agree to use deg if you prefer
+// DeltaDOV [rad] is positive in clockwise direction
 // The deltapos is a relative distance:
 //   x => to the front/back (positive to the front)
 //   y => to the side (positive to the right)
 bool	update_player_pos(
-	t_game *const g, t_coord /* const */ deltapos, double const deltadov,
+	t_game *const g, t_vec deltapos, double const deltadov,
 		double const deltaverticaldov);
 
 #endif // RAYCAST_H

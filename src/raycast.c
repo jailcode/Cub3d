@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/05 12:11:56 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/05 18:43:09 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,44 @@
 #include "../includes/cub.h"
 #include "../includes/raycast.h"
 
-#include <stdlib.h>
 #include <math.h>
 #include <stdbool.h>
 
-t_coord	intersection(t_line const *const rayln, t_line const *const gridln)
+double vnorm(t_coord const *const coord)
+{
+	return (pow(coord->x * coord->x + coord->y * coord->y, 0.5));
+}
+
+double vdot(t_vec const *const v1, t_vec const *const v2)
+{
+	return (v1->x * v2->x + v1->y * v2->y);
+}
+
+double vcross(t_vec const *const v1, t_vec const *const v2)
+{
+	return (v1->x * v2->y - v1->y * v2->x);
+}
+
+// transform a vector to a new csys, the axes of which are defined in the old csys
+t_vec	transform2csys(t_vec const *const pv, t_csys const *const pcsys)
+{
+	// the x-axis would be sufficient here... then the y would need to be
+	// calculated using vcross...
+	return ((t_vec){
+		vdot(pv, &pcsys->xaxis),
+		vdot(pv, &pcsys->yaxis)});
+}
+
+t_coord	intersect(t_line const *const rayln, t_line const *const gridln)
 {
 	double const lambda = (
 		  rayln->dir.x * (rayln->origin.y - gridln->origin.y)
 		- rayln->dir.y * (rayln->origin.x - gridln->origin.x)
 	) / (rayln->dir.x * gridln->dir.y - rayln->dir.y * gridln->dir.x);
-	t_coord const intersect = (t_coord) {
+
+	return ((t_coord){
 		gridln->origin.x + lambda * gridln->dir.x,
-		gridln->origin.y + lambda * gridln->dir.y};
-	return (intersect);
+		gridln->origin.y + lambda * gridln->dir.y});
 }
 
 double dist(t_coord const *const c1, t_coord const *const c2)
@@ -38,32 +62,22 @@ double dist(t_coord const *const c1, t_coord const *const c2)
 	return (hypot(c1->x - c2->x, c1->y -c2->y));
 }
 
-// double mindist(t_coord const *const c1, t_coord const *const c2)
-// {
-// 	return ((c1->x * c2->x) + (c1->y * c2->y));
-// }
-// double mindist(double const dist2intersect, double const deltadov)
-// {
-// 	return (dist2intersect * cos(deltadov));
-// }
-
 bool set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir const compassdir)
 {
-	if (compassdir == (t_cdir)North)
-		p->dov.rad = 1.5 * M_PI;
-	else if (compassdir == (t_cdir)East)
-		p->dov.rad = 0.0 * M_PI;
-	else if (compassdir == (t_cdir)South)
-		p->dov.rad = 0.5 * M_PI;
-	else if (compassdir == (t_cdir)West)
-		p->dov.rad = 1.0 * M_PI;
-	else if (init_player_field.horizontal < 0 || init_player_field.vertical < 0)
+	if (init_player_field.horizontal < 0 || init_player_field.vertical < 0)
 		return (false);
-	p->dov.x = cos(p->dov.rad);
-	p->dov.y = sin(p->dov.rad);
+	p->dov = (t_dir){.x = 0.0, .y = 0.0};
+	if (compassdir == (t_cdir)North)
+		p->dov.y = -1.0;
+	else if (compassdir == (t_cdir)East)
+		p->dov.x = +1.0;
+	else if (compassdir == (t_cdir)South)
+		p->dov.y = +1.0;
+	else if (compassdir == (t_cdir)West)
+		p->dov.x = -1.0;
 	p->pos.x = (double)init_player_field.horizontal + 0.5;
 	p->pos.y = (double)init_player_field.vertical + 0.5;
-	p->verticaldov = (t_dir){.rad = 0.0, .x = 1.0, .y = 0.0};
+	p->verticaldovrad = 0.0;
 	return (true);
 }
 
@@ -71,28 +85,23 @@ bool	is_wall(t_map const *const pmap, t_fidx const fidx)
 {
 	if (!pmap || !pmap->main_map)
 		return (false);
-	if (fidx.horizontal < 0 || fidx.vertical < 0)
+	if (fidx.horizontal < 0 || fidx.vertical < 0
+		|| fidx.horizontal >= pmap->col || fidx.vertical >= pmap->rows)
+	{
+		printf("\nDebug: field index out of range, shouldn't happen.\n");
 		return (false);
-	if (fidx.horizontal >= pmap->col || fidx.vertical >= pmap->rows)
-		return (false);
-	t_fieldtype const ft = (pmap->main_map)[fidx.vertical][fidx.horizontal].ftype;
-	return (ft == (t_fieldtype)wall);
+	}
+	return ((pmap->main_map)[fidx.vertical][fidx.horizontal].ftype
+			== (t_fieldtype)wall);
 }
-/*  added a new is_awll with checks
-bool	is_wall(t_map const *const pmap, t_fidx const fidx)
-{
-	t_field const *const pfield = &pmap->main_map[fidx.horizontal][fidx.vertical];
-	return (pfield->ftype == (t_fieldtype)wall);
-}*/
-
 
 t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
 {
 	t_rcintersect rcintersect;
 	bool	wall_found;
 	t_gridlns	gridlines = {
-		.horizontal = (t_line){/* .origin = (t_coord){0.0, 0.0}, */ .dir = (t_dir){.rad = M_PI / 2, .x = 1.0, .y = 0.0}},
-		.vertical =  (t_line){/* .origin = (t_coord){0.0, 0.0}, */ .dir = (t_dir){.rad = M_PI / 2, .x = 0.0, .y = 1.0}},
+		.horizontal = (t_line){.dir = (t_vec){.x = 1.0, .y = 0.0}},
+		.vertical   = (t_line){.dir = (t_vec){.x = 0.0, .y = 1.0}},
 	};
 	
 	gridlines.vertical.origin.x = (int)(ray.origin.x);
@@ -105,11 +114,12 @@ t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
 	wall_found = false;
 	while (!wall_found)
 	{
-		t_coord const intersect_horizontalln = intersection(&ray, &gridlines.horizontal);
-		t_coord const intersect_verticalln = intersection(&ray, &gridlines.vertical);		
+		t_coord const intersect_horizontalln = intersect(&ray, &gridlines.horizontal);
+		t_coord const intersect_verticalln = intersect(&ray, &gridlines.vertical);		
 		double const dist2hln = dist(&ray.origin, &intersect_horizontalln);
 		double const dist2vln = dist(&ray.origin, &intersect_verticalln);
 		bool hitverticalln;
+		
 		if (dist2vln <= dist2hln)
 		{
 			rcintersect.intersection = intersect_verticalln;
@@ -153,13 +163,11 @@ t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
 				if (ray.dir.x > 0)
 				{
 					rcintersect.cubeside = (t_cdir)West;
-					rcintersect.impactangle = ray.dir.rad - 0.0 * M_PI;
 					rcintersect.relative = fmod(rcintersect.intersection.y, 1.0);
 				}
 				else
 				{
 					rcintersect.cubeside = (t_cdir)East;
-					rcintersect.impactangle = ray.dir.rad - 1.0 * M_PI;
 					rcintersect.relative = 1.0 - fmod(rcintersect.intersection.y, 1.0);
 				}
 			}
@@ -169,18 +177,14 @@ t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
 				if (ray.dir.y > 0)
 				{
 					rcintersect.cubeside = (t_cdir)North;
-					rcintersect.impactangle = ray.dir.rad - 0.5 * M_PI;
 					rcintersect.relative = 1.0 - fmod(rcintersect.intersection.x, 1.0);
 				}
 				else
 				{
 					rcintersect.cubeside = (t_cdir)South;
-					rcintersect.impactangle = ray.dir.rad - 1.5 * M_PI;
 					rcintersect.relative = fmod(rcintersect.intersection.x, 1.0);
 				}
 			}
-			rcintersect.impactangle = 
-				fmod(rcintersect.impactangle, 2*M_PI);
 		}
 	}
 	return (rcintersect);
@@ -189,68 +193,93 @@ t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
 bool gen_raycast(t_game *const g)
 {
 	t_player const	*const p = &g->player;
-	double const unitdist = cos(p->fov / 2.0);
-	double const w2hratio = (double)g->frame.size_x / g->frame.size_y;
-	t_rccol	*pimgcolumn;
+	double const	playerdovrad = atan2(p->dov.y, p->dov.x);	
+	double const	w2hratio = (double)g->frame.size_x / g->frame.size_y;
 
 	t_line	ray;
 	ray.origin = p->pos;
 	ray.dir = p->dov;
 	for (int idx = 0; idx < g->frame.size_x; ++idx)
 	{
-		pimgcolumn = &(g->frame.imgcolumn[idx]);
-		double const rayangle = (p->dov.rad - p->fov / 2.0) + idx * (p->fov / (g->frame.size_x - 1));
+		t_rccol	*pimgcolumn = &(g->frame.imgcolumn[idx]);
+		
+		double const rayangle = (playerdovrad - p->fov / 2.0)
+								+ (idx + 0.5) * (p->fov / g->frame.size_x);
 		ray.dir = (t_dir){
-			.rad = rayangle,
 			.x = cos(rayangle),
 			.y = sin(rayangle),
 		};
 
 		t_rcintersect rcintersect = rayintersection(ray, g->map);
 		
-		/* DEBUG S
-		printf("\nIntersection %d:"
-			"\nray x=%.3lf y=%.3lf angle=%.3lf"
-			"\nintersect coord x=%.3lf y=%.3lf dist=%.3lf"
-			"\n",
-			 idx,
-			 ray.origin.x, ray.origin.y, rayangle * 180.0 / M_PI,
-			 rcintersect.intersection.x, rcintersect.intersection.y,
-			 rcintersect.dist2intersect);
-		 DEBUG E */
-		double min_dist = rcintersect.dist2intersect * cos(ray.dir.rad - p->dov.rad);
+		double min_dist = rcintersect.dist2intersect * vdot(&ray.dir, &p->dov);
 		pimgcolumn->blockheightfactor =
-			unitdist / min_dist * w2hratio;
+			p->unitdist / min_dist * w2hratio;
 		pimgcolumn->blockstartrelative = 
 			0.5 * (1.0 - pimgcolumn->blockheightfactor)
-			+ p->verticaldov.rad / p->fov * w2hratio;
+			+ p->verticaldovrad / p->fov * w2hratio;
 		pimgcolumn->cubeside = rcintersect.cubeside;
 		pimgcolumn->left2rightrelative = rcintersect.relative;
 	}
 	return (true);
 }
 
-double vnorm(t_coord const *const coord)
+t_csys	maincsysrelative2player(t_player const *const p)
 {
-	return (pow(coord->x * coord->x + coord->y * coord->y, 0.5));
+	static t_vec const	maincosxaxis = (t_vec){1.0, 0.0};
+	t_vec const		xaxis = (t_vec){
+		vdot(&p->dov, &maincosxaxis), vcross(&p->dov, &maincosxaxis)};
+
+	return ((t_csys){xaxis, (t_vec){-xaxis.y, xaxis.x}});
+}
+
+bool	update_player_pos_internal(
+	t_game *const g, t_line ray, double const deltadist)
+{
+	t_player *const p = &g->player;
+	t_rcintersect const intersect = rayintersection(ray, g->map);
+	double const maxdistbeforeimpact = 
+		intersect.dist2intersect
+			- p->mindist2wall / fabs(vdot(&ray.dir, &intersect.wallnormal));
+	bool	player_moved = false;
+	double	ratio = maxdistbeforeimpact / deltadist;				
+	
+	p->collision = (ratio < 1.0);
+	if (ratio > EPS)
+	{
+		if (!p->collision)
+			ratio = 1.0;
+		p->pos.x += ray.dir.x * deltadist * ratio;
+		p->pos.y += ray.dir.y * deltadist * ratio;
+		player_moved = true;
+	}
+	if (p->collision)
+	{
+		t_vec wallparallel = (t_vec){-intersect.wallnormal.y, intersect.wallnormal.x};
+		double slidedist = deltadist * (1.0 - ratio) * vdot(&ray.dir, &wallparallel);
+		if (fabs(slidedist) > EPS)
+		{
+			ray.dir = wallparallel;
+			if (slidedist < 0.0)
+			{
+				slidedist *= -1.0;
+				ray.dir.x *= -1.0;
+				ray.dir.y *= -1.0;
+			}
+			player_moved = update_player_pos_internal(g, ray, slidedist);
+		}
+	}
+	return (player_moved);
 }
 
 bool	update_player_pos(
-	t_game *const g, t_coord /* const */ deltapos, double const deltadov,
-		double const deltaverticaldov)
+	t_game *const g, t_vec deltapos, double const deltadovrad,
+		double const deltaverticalrad)
 {
-	t_player *const p = &g->player;
-	t_line	ray;
-	bool	player_moved;
-
-	/* // DEBUG S
-	deltapos.x = 0.0;
-	deltapos.y = 2.0;
-	double tmp = p->pos.x;
-	p->pos.x = p->pos.y;
-	p->pos.y = tmp;
-	// deltadov = 0.0;
-	*/ // // DEBUG E
+	t_player *const	p = &g->player;
+	t_csys const	maincsysrel2plyr = maincsysrelative2player(p);
+	t_line			ray;
+	bool			player_moved;
 
 	p->collision = false;
 	player_moved = false;
@@ -258,53 +287,24 @@ bool	update_player_pos(
 	if (deltadist > EPS)
 	{
 		ray.origin = p->pos;
-		ray.dir.rad = fmod(p->dov.rad + atan2(deltapos.y, deltapos.x), 2*M_PI);
-		ray.dir.x = cos(ray.dir.rad);
-		ray.dir.y = sin(ray.dir.rad);
-		t_rcintersect intersect = rayintersection(ray, g->map);
-		double const maxdistbeforeimpact = intersect.dist2intersect
-				- p->mindist2wall / cos(intersect.impactangle);
-		double const ratio = maxdistbeforeimpact / deltadist;				
-		if (deltadist > maxdistbeforeimpact) // i.e. ratio < 1.0
-		{
-			deltapos.x *= ratio;
-			deltapos.y *= ratio;
-			g->player.collision = true;
-		}
-		if (vnorm(&deltapos) > EPS)
-		{
-			p->pos.x += deltapos.x * cos(p->dov.rad) - deltapos.y * sin(p->dov.rad);
-			p->pos.y += deltapos.x * sin(p->dov.rad) + deltapos.y * cos(p->dov.rad);
-			player_moved = true;
-		}
-		if (g->player.collision)
-		{
-			double slidedist = (1.0 - ratio) * deltadist * sin(intersect.impactangle);
-			if (fabs(slidedist) > EPS)
-			{
-				deltapos.x = slidedist * sin(intersect.impactangle);
-				deltapos.y = slidedist * cos(intersect.impactangle);
-				update_player_pos(g, deltapos, 0.0, 0.0);
-				g->player.collision = true;
-				player_moved = true;
-			}
-		}
+		t_vec const deltaposabs = transform2csys(&deltapos, &maincsysrel2plyr);
+		ray.dir.x = deltaposabs.x / deltadist;
+		ray.dir.y = deltaposabs.y / deltadist;
+		player_moved = update_player_pos_internal(g, ray, deltadist);
 	}
-	if (fabs(deltadov) > EPS)
+	if (fabs(deltadovrad) > EPS)
 	{	
-		p->dov.rad += deltadov;
-		p->dov.x = cos(p->dov.rad);
-		p->dov.y = sin(p->dov.rad);
+		double const	pdovrad = atan2(p->dov.y, p->dov.x) + deltadovrad;			
+		p->dov.x = cos(pdovrad);
+		p->dov.y = sin(pdovrad);
 		player_moved = true;
 	}
-	if (fabs(deltaverticaldov) > EPS)
+	if (fabs(deltaverticalrad) > EPS)
 	{	
-		p->verticaldov.rad += deltaverticaldov;
-		p->verticaldov.x = cos(p->verticaldov.rad);
-		p->verticaldov.y = sin(p->verticaldov.rad);
+		p->verticaldovrad += deltaverticalrad;
 		player_moved = true;
 	}
 	if (player_moved)
-		gen_raycast(g);
-	return (true);
+		return(gen_raycast(g), true);
+	return (false);
 }
