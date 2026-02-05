@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/03 17:02:34 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/05 11:50:34 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ typedef struct s_player
 	
 	t_coord	pos;
 	t_dir	dov;
+	t_dir	verticaldov;
 	bool	collision;
 }	t_player;
 
@@ -91,11 +92,13 @@ typedef struct s_gridlines
 }	t_gridlns;
 
 
-typedef struct s_rc_intersectio
+typedef struct s_rc_intersection
 {
 	double	dist2intersect;
+	double	relative;
 	double	impactangle;
 	t_coord	intersection;
+	t_coord wallnormal;
 	t_cdir	cubeside;
 
 }	t_rcintersect;
@@ -103,8 +106,8 @@ typedef struct s_rc_intersectio
 typedef struct s_rc_image_column
 {
 	double blockheightfactor;
-	// double ceilpercent;
-	// double floorpercent;
+	double blockstartrelative;
+	double left2rightrelative;
 	t_cdir cubeside;
 }	t_rccol;
 
@@ -127,6 +130,7 @@ bool	set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir cdir);
 //   x => to the front/back (positive to the front)
 //   y => to the side (positive to the right)
 bool	update_player_pos(
-	t_game *const g, t_coord const deltapos, double const deltadov);
+	t_game *const g, t_coord /* const */ deltapos, double const deltadov,
+		double const deltaverticaldov);
 
 #endif // RAYCAST_H

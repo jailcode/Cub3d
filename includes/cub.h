@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 11:06:16 by raphha            #+#    #+#             */
-/*   Updated: 2026/01/29 18:14:54 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/05 11:51:56 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,8 @@ typedef struct s_keys
     int d;
     int left;
     int right;
+	int up;
+	int down;
 }   t_keys;
 
 typedef struct s_assets
