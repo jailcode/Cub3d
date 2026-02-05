@@ -103,6 +103,7 @@ typedef struct s_parser
 typedef struct s_img
 {
     void *img;
+    char *relative_path; // relative path not needed for frame, but only for the assets
     char *addr;
     int size_x;
     int size_y;
@@ -124,6 +125,15 @@ typedef struct s_keys
 	int down;
 }   t_keys;
 
+typedef struct s_assets
+{
+    int asset_num;
+    t_img North;
+    t_img South;
+    t_img East;
+    t_img West;
+}   t_assets;
+
 typedef struct s_game
 {
     t_map   *map;
@@ -131,6 +141,7 @@ typedef struct s_game
     t_mem_list    *memory;
     t_img   frame;
     t_keys  key;
+    t_assets assets;
     void    *mlx;
     void    *win;
     long long current_time;
@@ -198,6 +209,7 @@ void    set_image_background(t_img *img, int color); //remove later maybe
 void    load_mini_map(t_game *data);
 void    my_mlx_pixel_put(t_img *img, int x, int y, int color);
 void    put_cols_to_win(t_game *data);
+void    load_assets(t_game *data);
 /*           minilibx funcs             */
 
 /*           colors and textures         */

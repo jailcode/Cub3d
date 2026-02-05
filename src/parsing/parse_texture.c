@@ -62,3 +62,27 @@ void add_color_data(int color[3], char *line, t_mem_list **memory)
     if (line[i] && line[i] != '\n')
         clean_exit(*memory, 1, "garbage after color");
 }
+
+void    store_img(t_game *data, t_img *img)
+{
+    img->imgcolumn = NULL;
+    img->img = mlx_xpm_file_to_image(data->mlx, img->relative_path, &img->size_x, &img->size_y);
+    if (!img->img)
+        clean_exit(data->memory, 1, "file does not exist");
+    img->addr = mlx_get_data_addr(img->img, &img->bpp, &img->line_length, &img->endian);
+    if (!img->addr)
+        clean_exit(data->memory, 1, "failed to get image data addr");
+}
+
+void    load_assets(t_game *data)
+{
+
+    data->assets.North.relative_path = data->map->Ntexture;
+    data->assets.East.relative_path = data->map->Etexture;
+    data->assets.South.relative_path = data->map->Stexture;
+    data->assets.West.relative_path = data->map->Wtexture;
+    store_img(data, &data->assets.East);
+    store_img(data, &data->assets.West);
+    store_img(data, &data->assets.South);
+    store_img(data, &data->assets.North);
+}

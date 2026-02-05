@@ -106,6 +106,7 @@ typedef struct s_rc_intersection
 
 typedef struct s_rc_image_column
 {
+	int	id;
 	double blockheightfactor;
 	double blockstartrelative;
 	double left2rightrelative;
