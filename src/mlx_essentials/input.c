@@ -14,6 +14,10 @@ int keypress(int keycode, t_game *data)
         data->key.left = 1;
     else if (keycode == XK_Right)
         data->key.right = 1;
+    else if (keycode == XK_Up)
+        data->key.up = 1;
+    else if (keycode == XK_Down)
+        data->key.down = 1;
     return (0);
 }
 
@@ -46,6 +50,10 @@ int keyrelease(int keycode, t_game *data)
         data->key.left = 0;
     else if (keycode == XK_Right)
         data->key.right = 0;
+    else if (keycode == XK_Up)
+        data->key.up = 0;
+    else if (keycode == XK_Down)
+        data->key.down = 0;
     return (0);
 }
 

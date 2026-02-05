@@ -54,6 +54,8 @@ void    init_keys(t_game *data)
     data->key.s = 0;
     data->key.left = 0;
     data->key.right = 0;
+    data->key.up = 0;
+    data->key.down = 0;
     data->key.w = 0;
 }
 
