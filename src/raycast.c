@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/04 20:17:05 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/05 12:11:56 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ bool set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir const 
 	p->dov.y = sin(p->dov.rad);
 	p->pos.x = (double)init_player_field.horizontal + 0.5;
 	p->pos.y = (double)init_player_field.vertical + 0.5;
+	p->verticaldov = (t_dir){.rad = 0.0, .x = 1.0, .y = 0.0};
 	return (true);
 }
 
@@ -148,28 +149,34 @@ t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
 			wall_found = true;
 			if (hitverticalln)
 			{
+				rcintersect.wallnormal = (t_coord){ .x = 1.0, .y = 0.0};
 				if (ray.dir.x > 0)
 				{
 					rcintersect.cubeside = (t_cdir)West;
 					rcintersect.impactangle = ray.dir.rad - 0.0 * M_PI;
+					rcintersect.relative = fmod(rcintersect.intersection.y, 1.0);
 				}
 				else
 				{
 					rcintersect.cubeside = (t_cdir)East;
 					rcintersect.impactangle = ray.dir.rad - 1.0 * M_PI;
+					rcintersect.relative = 1.0 - fmod(rcintersect.intersection.y, 1.0);
 				}
 			}
 			else
 			{
+				rcintersect.wallnormal = (t_coord){ .x = 0.0, .y = 1.0};
 				if (ray.dir.y > 0)
 				{
 					rcintersect.cubeside = (t_cdir)North;
 					rcintersect.impactangle = ray.dir.rad - 0.5 * M_PI;
+					rcintersect.relative = 1.0 - fmod(rcintersect.intersection.x, 1.0);
 				}
 				else
 				{
 					rcintersect.cubeside = (t_cdir)South;
 					rcintersect.impactangle = ray.dir.rad - 1.5 * M_PI;
+					rcintersect.relative = fmod(rcintersect.intersection.x, 1.0);
 				}
 			}
 			rcintersect.impactangle = 
@@ -181,16 +188,18 @@ t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
 
 bool gen_raycast(t_game *const g)
 {
-	t_player const	p = g->player;
-	double const unitdist = cos(g->player.fov / 2.0);
+	t_player const	*const p = &g->player;
+	double const unitdist = cos(p->fov / 2.0);
 	double const w2hratio = (double)g->frame.size_x / g->frame.size_y;
+	t_rccol	*pimgcolumn;
 
 	t_line	ray;
-	ray.origin = p.pos;
-	ray.dir = p.dov;
+	ray.origin = p->pos;
+	ray.dir = p->dov;
 	for (int idx = 0; idx < g->frame.size_x; ++idx)
 	{
-		double const rayangle = (p.dov.rad - p.fov / 2.0) + idx * (p.fov / (g->frame.size_x - 1));
+		pimgcolumn = &(g->frame.imgcolumn[idx]);
+		double const rayangle = (p->dov.rad - p->fov / 2.0) + idx * (p->fov / (g->frame.size_x - 1));
 		ray.dir = (t_dir){
 			.rad = rayangle,
 			.x = cos(rayangle),
@@ -209,10 +218,14 @@ bool gen_raycast(t_game *const g)
 			 rcintersect.intersection.x, rcintersect.intersection.y,
 			 rcintersect.dist2intersect);
 		 DEBUG E */
-		double min_dist = rcintersect.dist2intersect * cos(ray.dir.rad - p.dov.rad);
-		g->frame.imgcolumn[idx].blockheightfactor =
+		double min_dist = rcintersect.dist2intersect * cos(ray.dir.rad - p->dov.rad);
+		pimgcolumn->blockheightfactor =
 			unitdist / min_dist * w2hratio;
-		g->frame.imgcolumn[idx].cubeside = rcintersect.cubeside;
+		pimgcolumn->blockstartrelative = 
+			0.5 * (1.0 - pimgcolumn->blockheightfactor)
+			+ p->verticaldov.rad / p->fov * w2hratio;
+		pimgcolumn->cubeside = rcintersect.cubeside;
+		pimgcolumn->left2rightrelative = rcintersect.relative;
 	}
 	return (true);
 }
@@ -223,7 +236,8 @@ double vnorm(t_coord const *const coord)
 }
 
 bool	update_player_pos(
-	t_game *const g, t_coord /* const */ deltapos, double /* const */ deltadov)
+	t_game *const g, t_coord /* const */ deltapos, double const deltadov,
+		double const deltaverticaldov)
 {
 	t_player *const p = &g->player;
 	t_line	ray;
@@ -270,7 +284,7 @@ bool	update_player_pos(
 			{
 				deltapos.x = slidedist * sin(intersect.impactangle);
 				deltapos.y = slidedist * cos(intersect.impactangle);
-				update_player_pos(g, deltapos, 0.0);
+				update_player_pos(g, deltapos, 0.0, 0.0);
 				g->player.collision = true;
 				player_moved = true;
 			}
@@ -281,6 +295,13 @@ bool	update_player_pos(
 		p->dov.rad += deltadov;
 		p->dov.x = cos(p->dov.rad);
 		p->dov.y = sin(p->dov.rad);
+		player_moved = true;
+	}
+	if (fabs(deltaverticaldov) > EPS)
+	{	
+		p->verticaldov.rad += deltaverticaldov;
+		p->verticaldov.x = cos(p->verticaldov.rad);
+		p->verticaldov.y = sin(p->verticaldov.rad);
 		player_moved = true;
 	}
 	if (player_moved)
