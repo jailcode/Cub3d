@@ -83,12 +83,12 @@ void    update_player(t_game *data)
 t_rccol *make_test_imgcolumn(double blockheightfactor, t_cdir cubeside)
     update_player_pos(data, delta_pos, (const double )delta_dir);
 }
-
+*/
 int create_rgb(int color[3])
 {
     return (color[0] << 16 | color[1] << 8 | color[2]);
 }
-*/
+
 void    apply_background_color(t_game *data)
 {
     int start_ceiling;
@@ -132,7 +132,6 @@ int load_frame(t_game *data)
     put_cols_to_win(data);
     load_mini_map(data);
     mlx_put_image_to_window(data->mlx, data->win, data->frame.img, 0, 0);
-
     return (1);
 }
 
