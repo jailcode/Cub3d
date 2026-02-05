@@ -315,6 +315,5 @@ bool process_map(t_parser *data, char *filename)
     get_player_info(data);
     transfer_map(data);
     build_padded_map(data);
-    //print_main_map(data->map);
     return (true);
 }

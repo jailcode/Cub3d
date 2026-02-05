@@ -54,14 +54,14 @@ long long get_time_in_ms(void)
     gettimeofday(&tv, NULL);
     return ((long long) tv.tv_sec * 1000 + tv.tv_usec/1000);
 }
-
+/*
 void    temp_update_player_pos(t_game *data, t_coord delta_pos, double delta_dir)
 {
     data->player.pos.x += delta_pos.x/10;
     data->player.pos.y += delta_pos.y/10;
     data->player.dov.rad += delta_dir;
 }
-
+*/
 void    update_player(t_game *data)
 {
     t_coord     delta_pos;
@@ -71,27 +71,40 @@ void    update_player(t_game *data)
     delta_pos.y = SPEED * (data->key.s - data->key.w) ;
     delta_dir = ANGULAR_SPEED * ( data->key.right - data->key.left);
     update_player_pos(data, delta_pos, (const double )delta_dir);
-    //temp_update_player_pos(data, delta_pos, delta_dir);
 }
-/*
-#include "../../includes/cub.h"
 
-t_rccol *make_test_imgcolumn(double blockheightfactor, t_cdir cubeside)
+int create_rgb(int color[3])
 {
-    t_rccol *imgcolumn;
-    int i;
-
-    imgcolumn = malloc(sizeof(t_rccol) * SCREEN_WIDTH);
-    if (!imgcolumn)
-        return NULL;
-    for (i = 0; i < SCREEN_WIDTH; i++)
-    {
-        imgcolumn[i].blockheightfactor = blockheightfactor;
-        imgcolumn[i].cubeside = cubeside;
-    }
-    return imgcolumn;
+    return (color[0] << 16 | color[1] << 8 | color[2]);
 }
-*/
+
+void    apply_background_color(t_game *data)
+{
+    int start_ceiling;
+    int start_floor;
+    int j;
+    int *color;
+
+    start_floor = (data->frame.size_y/2);// * data->player.dov.rad;
+    start_ceiling = 0;
+    color = data->map->color_ceiling;
+    while(start_ceiling < start_floor)
+    {
+        j = -1;
+        while(++j < data->frame.size_x)
+            my_mlx_pixel_put(&data->frame, j, start_ceiling, create_rgb(color));
+        start_ceiling++; 
+    }
+    color = data->map->color_floor;
+    while(start_floor < data->frame.size_y)
+    {
+        j = -1;
+        while(++j < data->frame.size_x)
+            my_mlx_pixel_put(&data->frame, j, start_floor, create_rgb(color));
+        start_floor++; 
+    }
+}
+
 int load_frame(t_game *data)
 {
     long long new_time;
@@ -104,10 +117,11 @@ int load_frame(t_game *data)
         return (0);
     data->current_time = new_time;
     update_player(data);
-    set_image_background(&data->frame, 0xFFFFFF);
+    apply_background_color(data);
     put_cols_to_win(data);
     load_mini_map(data);
     mlx_put_image_to_window(data->mlx, data->win, data->frame.img, 0, 0);
+
     return (1);
 }
 
@@ -125,6 +139,7 @@ void    start_game(t_game *data)
     data->mlx = mlx_init();
     data->win = mlx_new_window(data->mlx, SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d");
     init_frame(data, &data->frame);
+    load_assets(data);
     data->player.fov = FOV * (M_PI / 180.0);
     if (data->player.mindist2wall <= 0.0)
         data->player.mindist2wall = 0.1;

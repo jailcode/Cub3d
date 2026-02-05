@@ -57,6 +57,15 @@ void    init_keys(t_game *data)
     data->key.w = 0;
 }
 
+void init_assets(t_game *data)
+{
+    data->assets.asset_num = 4;
+    data->assets.East.img = NULL;
+    data->assets.West.img = NULL;
+    data->assets.North.img = NULL;
+    data->assets.South.img = NULL;
+}
+
 void    init_data(t_game *data, t_parser *parser)
 {
     data->map = parser->map;
@@ -69,5 +78,6 @@ void    init_data(t_game *data, t_parser *parser)
     init_keys(data);
     data->player.fov = FOV * M_PI / 180.0;
 	data->player.mindist2wall = 0.2;
+    init_assets(data);
     set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
 }
