@@ -5,7 +5,9 @@
       "name": "C/C++ Runner: Debug Session",
       "type": "cppdbg",
       "request": "launch",
-      "args": [ "map.cub",
+      "args": [
+		// "map_rapha.cub",
+		"map.cub",
 		],	
     //   "stopAtEntry": true,
       "externalConsole": false,
