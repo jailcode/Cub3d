@@ -163,6 +163,14 @@ void draw_mmap(t_game *data)
     }
 }
 
+void    draw_triangle(t_game *data, t_vec vec[3], int color)
+{
+    my_mlx_pixel_put(&data->frame, vec[0].x, vec[0].y, color);
+    my_mlx_pixel_put(&data->frame, vec[1].x, vec[1].y, color);
+    my_mlx_pixel_put(&data->frame, vec[2].x, vec[2].y, color);
+}
+
+
 void    draw_mini_player(t_game *data)
 {
     double mmap_px;
@@ -171,18 +179,14 @@ void    draw_mini_player(t_game *data)
     mmap_px = MM_RENDER_DISTANCE;
     mmap_py = MM_RENDER_DISTANCE;
     //rotate(&mmap_py, &mmap_px, data->player.dov.rad);
-    mmap_px = MMAP_OFFSET_X + mmap_px * TILE_SIZE;
-    mmap_py = MMAP_OFFSET_Y + mmap_py * TILE_SIZE;
+    mmap_px = MMAP_OFFSET_X/2 + mmap_px * TILE_SIZE;
+    mmap_py = MMAP_OFFSET_Y/2 + mmap_py * TILE_SIZE;
     draw_tile(data, mmap_px, mmap_py, COLOR_DARK_BLUE); // replace with draw_circle
 }
 
 void    load_mini_map(t_game *data)
 {
-    //t_mmap_dimensions   cords; //tells where the mmap starts and finishes
-    
     draw_mmap(data);
     draw_outline(data, &data->mmap_size);
     draw_mini_player(data);
-        //draw_outline(data); // draws a black minmap of fixed size on which the draw_mini_map draws
-    //draw_mini_map(data); // draws the minimap based on player_position
 }

@@ -65,6 +65,7 @@ harm_smits.github.io/42docs/libs/minilibx/events.html*/
 
 void    register_input_hooks(t_game *data)
 {
+    mlx_hook(data->win, 17, 0, close_window, data);
     mlx_hook(data->win, 2, 1L<<0, keypress, data);
     mlx_hook(data->win, 3, 1L<<1, keyrelease, data);
 }

@@ -210,6 +210,7 @@ void    load_mini_map(t_game *data);
 void    my_mlx_pixel_put(t_img *img, int x, int y, int color);
 void    put_cols_to_win(t_game *data);
 void    load_assets(t_game *data);
+int close_window(void *param);
 /*           minilibx funcs             */
 
 /*           colors and textures         */

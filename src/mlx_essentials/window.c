@@ -4,8 +4,13 @@
 void    leave_game(t_game *data)
 {
     mlx_destroy_image(data->mlx, data->frame.img);
+    mlx_destroy_image(data->mlx, data->assets.East.img);
+    mlx_destroy_image(data->mlx, data->assets.West.img);
+    mlx_destroy_image(data->mlx, data->assets.North.img);
+    mlx_destroy_image(data->mlx, data->assets.South.img);
     mlx_destroy_window(data->mlx, data->win);
     mlx_destroy_display(data->mlx);
+    
     free(data->mlx);
     clean_memory_list(&data->memory);
     exit(0);
@@ -139,6 +144,12 @@ void    update_loop(t_game *data)
     data->current_time = get_time_in_ms();
     mlx_loop_hook(data->mlx, load_frame, data);
     mlx_loop(data->mlx);
+}
+
+int close_window(void *param)
+{
+    leave_game(param);
+    return (0);
 }
 
 void    start_game(t_game *data)
