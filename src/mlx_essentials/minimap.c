@@ -7,6 +7,7 @@
 #define MMAP_OFFSET_X 24
 #define MMAP_OFFSET_Y 24
 
+
 void draw_tile(t_game *data, int screen_x, int screen_y, int color)
 {
     int x;
@@ -42,25 +43,7 @@ void    update_cords(t_mmap_dimensions *cords, int i, int j)
     cords->bottom_right.x = j;
     cords->bottom_right.y = i;
 }
-/*
-void    draw_outline(t_game *data, t_mmap_dimensions *cords)
-{
-    int i;
-    int j;
 
-    i = 0;
-    while(i < MMAP_TILE_COUNT + 3) // +2 for padding
-    {
-        j = 0;
-        while(j < MMAP_TILE_COUNT + 3)
-         {
-            draw_tile(data, i * TILE_SIZE, j * TILE_SIZE, 0x000000);
-            j++;
-        }
-        i++;
-    }
-    update_cords(data, cords, i, j);
-}*/
 void    draw_outline(t_game *data, t_mmap_dimensions *cords)
 {
     int i;
@@ -108,29 +91,6 @@ int get_field_color(t_game *data, int row, int col)
 
     return COLOR_BLACK;
 }
-/*
-void draw_mmap(t_game *data, t_mmap_dimensions *mmap_size)
-{
-    int px;
-    int py;
-    int i;
-    int j;
-    int color;
-    px = (int)data->player.pos.x;
-    py = (int)data->player.pos.y;
-    i = py - MM_RENDER_DISTANCE;
-    while(i < py + MM_RENDER_DISTANCE)
-    {
-        j = px - MM_RENDER_DISTANCE;
-        while(j < px + MM_RENDER_DISTANCE)
-        {
-            draw_tile(data, i, j, get_field_color(data->map->main_map, i, j));
-            j++;
-        }
-        i++;
-    }
-
-}*/
 
 void draw_mmap(t_game *data)
 {
@@ -161,13 +121,6 @@ void draw_mmap(t_game *data)
         }
         dy++;
     }
-}
-
-void    draw_triangle(t_game *data, t_vec vec[3], int color)
-{
-    my_mlx_pixel_put(&data->frame, vec[0].x, vec[0].y, color);
-    my_mlx_pixel_put(&data->frame, vec[1].x, vec[1].y, color);
-    my_mlx_pixel_put(&data->frame, vec[2].x, vec[2].y, color);
 }
 
 

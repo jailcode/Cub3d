@@ -54,6 +54,12 @@ typedef struct s_coordinate
 	double y;
 }	t_coord;
 
+typedef struct s_screen_cord
+{
+	int x;
+	int y;
+} t_screen_coord;
+
 typedef t_coord t_vec;
 typedef t_vec t_dir;
 

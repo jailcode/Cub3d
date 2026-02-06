@@ -33,15 +33,6 @@ int get_pixel_color(t_game *data, t_img *img, t_rccol col, float up2downrelative
     color = img->addr + (img_y * img->line_length + img_x * (img->bpp / 8));
     return (*(unsigned int *)color);
 }
-
-double compute_texture_step(t_img *tex, int line_height, int draw_start, double *tex_pos)
-{
-    double step;
-    step = (double)tex->size_y / line_height;
-    *tex_pos = (draw_start - SCREEN_HEIGHT / 2 - line_height / 2) * step;
-    return (step);
-}
-
 void    put_vertical_line(t_game *data, t_img *tex, t_rccol col)
 {
     int start;
@@ -49,10 +40,12 @@ void    put_vertical_line(t_game *data, t_img *tex, t_rccol col)
     int line_length; // line_length of pixels
     int color;
     int start_save;
+
     line_length = col.blockheightfactor * SCREEN_HEIGHT;
     if (line_length < 0)
-        return;
-    start_save = (SCREEN_HEIGHT - line_length) / 2;
+        line_length = 0;
+    // +15 for col.blocksartrelative is to offset it to the center
+    start_save = ((SCREEN_HEIGHT / VERTICAL_OFFSET) * (col.blockstartrelative) - line_length) / 2;
     start = start_save;
     end = start + line_length;
     if (start < 0)
@@ -66,16 +59,15 @@ void    put_vertical_line(t_game *data, t_img *tex, t_rccol col)
 }
 
 
-void put_cols_to_win(t_game *data)
+void load_world(t_game *data)
 {
     int i;
     t_img curr;
-    // init col.id
-    //goal is to put all the cols from the image onto the frame;
 
     if (!data || !data->frame.imgcolumn)
         return ;
     i = 0;
+    apply_background_color(data);
     while(i < SCREEN_WIDTH)
     {
         data->frame.imgcolumn[i].id = i;
