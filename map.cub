@@ -1,7 +1,7 @@
-EA  assets/test_wall.xpm
-WE      assets/redbrick.xpm
-SO  assets/redbrick.xpm
-NO                              assets/test_wall.xpm
+EA  assets/East.xpm
+WE      assets/West.xpm
+SO  assets/South.xpm
+NO                              assets/North.xpm
 
 
 F  255, 255, 255

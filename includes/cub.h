@@ -37,9 +37,9 @@
 # define SCREEN_HEIGHT 600
 # define SCREEN_WIDTH  1000
 # define FOV 60
-# define SPEED .025
+# define SPEED .05
 
-# define ANGULAR_SPEED (M_PI / FPS / 3.0)
+# define ANGULAR_SPEED (M_PI / FPS / 1.0)
 # define FPS 60
 
 typedef struct s_map

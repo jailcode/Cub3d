@@ -202,14 +202,14 @@ bool gen_raycast(t_game *const g)
 	for (int idx = 0; idx < g->frame.size_x; ++idx)
 	{
 		t_rccol	*pimgcolumn = &(g->frame.imgcolumn[idx]);
-		
+		 // double check for texture debugging
 		double const rayangle = (playerdovrad - p->fov / 2.0)
 								+ (idx + 0.5) * (p->fov / g->frame.size_x);
 		ray.dir = (t_dir){
 			.x = cos(rayangle),
 			.y = sin(rayangle),
 		};
-
+		// 
 		t_rcintersect rcintersect = rayintersection(ray, g->map);
 		
 		double min_dist = rcintersect.dist2intersect * vdot(&ray.dir, &p->dov);
