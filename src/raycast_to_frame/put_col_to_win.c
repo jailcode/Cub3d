@@ -17,7 +17,7 @@ t_img return_asset(t_game *data, t_cdir side)
 
 float normalise(int notnormalised, int start, int end)
 {
-    return ((float)(notnormalised - start) / (float)(end-start));
+    return ((float)(notnormalised - start) / (end-start));
 }
 
 int get_pixel_color(t_game *data, t_img *img, t_rccol col, float up2downrelative)
@@ -25,13 +25,21 @@ int get_pixel_color(t_game *data, t_img *img, t_rccol col, float up2downrelative
     char *color;
     int img_x;
     int img_y;
-    
+
     if (!data || !img)
         return (0);
     img_x = img->size_x * col.left2rightrelative;
-    img_y = img->size_y * up2downrelative;
+    img_y = (img->size_y) * (up2downrelative);
     color = img->addr + (img_y * img->line_length + img_x * (img->bpp / 8));
     return (*(unsigned int *)color);
+}
+
+double compute_texture_step(t_img *tex, int line_height, int draw_start, double *tex_pos)
+{
+    double step;
+    step = (double)tex->size_y / line_height;
+    *tex_pos = (draw_start - SCREEN_HEIGHT / 2 - line_height / 2) * step;
+    return (step);
 }
 
 void    put_vertical_line(t_game *data, t_img *tex, t_rccol col)
@@ -41,17 +49,15 @@ void    put_vertical_line(t_game *data, t_img *tex, t_rccol col)
     int line_length; // line_length of pixels
     int color;
     int start_save;
- // put one line to the frame;
-
     line_length = col.blockheightfactor * SCREEN_HEIGHT;
     if (line_length < 0)
         return;
-    if (line_length > SCREEN_HEIGHT)
-        line_length = SCREEN_HEIGHT;
     start_save = (SCREEN_HEIGHT - line_length) / 2;
     start = start_save;
     end = start + line_length;
-    while(start < end)
+    if (start < 0)
+        start = 0;
+    while(start < end && start < SCREEN_HEIGHT)
     {
         color = get_pixel_color(data, tex, col, normalise(start, start_save, end)) ;//gets the color of a relative pixel from a texture 
         my_mlx_pixel_put(&data->frame, col.id, start, color);
@@ -59,12 +65,13 @@ void    put_vertical_line(t_game *data, t_img *tex, t_rccol col)
     }
 }
 
+
 void put_cols_to_win(t_game *data)
 {
     int i;
     t_img curr;
     // init col.id
-    //to put all the cols from the image onto the frame;
+    //goal is to put all the cols from the image onto the frame;
 
     if (!data || !data->frame.imgcolumn)
         return ;
