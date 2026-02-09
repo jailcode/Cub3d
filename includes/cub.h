@@ -222,6 +222,7 @@ int close_window(void *param);
 void    apply_background_color(t_game *data);
 int mouse_input(t_game *data);
 int mouse_move(int x, int y, t_game *data);
+int create_rgb(int color[3]);
 /*           minilibx funcs             */
 
 /*           colors and textures         */

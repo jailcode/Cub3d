@@ -69,7 +69,7 @@ int mouse_input(t_game *data)
     mlx_mouse_get_pos(data->mlx, data->win, &new.x, &new.y);
     if (new.x >= 0 && new.x <= SCREEN_WIDTH && new.y <= SCREEN_HEIGHT && new.y >= 0)
     {
-        //mlx_mouse_hide(data->mlx, data->win);
+        mlx_mouse_hide(data->mlx, data->win);
     }
     else mlx_mouse_show(data->mlx, data->win);
     return (0);

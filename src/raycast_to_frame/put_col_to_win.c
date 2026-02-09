@@ -37,22 +37,34 @@ void    put_vertical_line(t_game *data, t_img *tex, t_rccol col)
 {
     int start;
     int end;
-    int line_length; // line_length of pixels
+    int line_length;
     int color;
     int start_save;
-
+    int i;
     line_length = col.blockheightfactor * SCREEN_HEIGHT;
-    if (line_length < 0)
-        line_length = 0;
-    // +15 for col.blocksartrelative is to offset it to the center
-    start_save = ((SCREEN_HEIGHT / VERTICAL_OFFSET) * (col.blockstartrelative) - line_length) / 2;
+
+    // +12-15 for col.blocksartrelative is to offset it to the center
+    start_save = ((SCREEN_HEIGHT/ VERTICAL_OFFSET)* (col.blockstartrelative + 15) - line_length) / 3;
     start = start_save;
     end = start + line_length;
     if (start < 0)
         start = 0;
+    i = 0;
+    while(i < start && i < SCREEN_HEIGHT)
+    {
+        color = create_rgb(data->map->color_ceiling);
+        my_mlx_pixel_put(&data->frame, col.id, i, color);
+        i++;
+    }
     while(start < end && start < SCREEN_HEIGHT)
     {
         color = get_pixel_color(data, tex, col, normalise(start, start_save, end)) ;//gets the color of a relative pixel from a texture 
+        my_mlx_pixel_put(&data->frame, col.id, start, color);
+        start++;
+    }
+    while(start < SCREEN_HEIGHT)
+    {
+        color = create_rgb(data->map->color_floor);
         my_mlx_pixel_put(&data->frame, col.id, start, color);
         start++;
     }
@@ -67,12 +79,14 @@ void load_world(t_game *data)
     if (!data || !data->frame.imgcolumn)
         return ;
     i = 0;
-    apply_background_color(data);
     while(i < SCREEN_WIDTH)
     {
         data->frame.imgcolumn[i].id = i;
+        if (data->frame.imgcolumn[i].blockheightfactor < 0)
+            data->frame.imgcolumn[i].blockheightfactor = 0.01;
         curr = return_asset(data, data->frame.imgcolumn[i].cubeside);
         put_vertical_line(data, &curr, data->frame.imgcolumn[i]);
+        //put_floor_lines(data, &curr);
         i++;
     }
 }

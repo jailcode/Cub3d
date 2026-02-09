@@ -58,16 +58,7 @@ long long get_time_in_ms(void)
     gettimeofday(&tv, NULL);
     return ((long long) tv.tv_sec * 1000 + tv.tv_usec/1000);
 }
-/*
-void    temp_update_player_pos(t_game *data, t_coord delta_pos, double delta_dir)
-{
-    data->player.pos.x += delta_pos.x/10;
-    data->player.pos.y += delta_pos.y/10;
-	double const pdovrad = atan2(data->player.dov.y, data->player.dov.x) + delta_dir;
-	data->player.dov.x = cos(pdovrad);
-	data->player.dov.y = sin(pdovrad);	
-}
-*/
+
 void    update_player(t_game *data)
 {
     t_coord     delta_pos;
@@ -90,31 +81,34 @@ int create_rgb(int color[3])
     return (color[0] << 16 | color[1] << 8 | color[2]);
 }
 
+void    paint_frame(t_game *data, int start_y, int end_y, int color)
+{
+    int j;
+
+    while(start_y < end_y && start_y >= 0 && start_y < SCREEN_HEIGHT)
+    {
+        j = -1;
+        while(++j < data->frame.size_x)
+        {
+            my_mlx_pixel_put(&data->frame, j, start_y, color);
+        }
+        start_y++;
+    }
+}
+
 void    apply_background_color(t_game *data)
 {
     int start_ceiling;
     int start_floor;
-    int j;
     int *color;
-
-    start_floor = (data->frame.size_y/2) + data->frame.imgcolumn->blockstartrelative * VERTICAL_OFFSET;
-    start_ceiling = 0;
+    
     color = data->map->color_ceiling;
-    while(start_ceiling < start_floor && start_ceiling <= SCREEN_HEIGHT)
-    {
-        j = -1;
-        while(++j < data->frame.size_x)
-            my_mlx_pixel_put(&data->frame, j, start_ceiling, create_rgb(color));
-        start_ceiling++; 
-    }
+    start_ceiling = 0;
+    start_floor = SCREEN_HEIGHT/2 + data->frame.imgcolumn->blockstartrelative * VERTICAL_OFFSET /3;
+
+    paint_frame(data, start_ceiling, start_floor, create_rgb(color));
     color = data->map->color_floor;
-    while(start_floor < data->frame.size_y && start_floor >= 0)
-    {
-        j = -1;
-        while(++j < data->frame.size_x)
-            my_mlx_pixel_put(&data->frame, j, start_floor, create_rgb(color));
-        start_floor++; 
-    }
+    paint_frame(data, start_floor, SCREEN_HEIGHT, create_rgb(color));
 }
 
 int set_fps(t_game *data, int time)
@@ -135,6 +129,7 @@ int load_frame(t_game *data)
     if (!set_fps(data, TIME_BETWEEN_FRAMES))
         return (0);
     update_player(data);
+    //apply_background_color(data);
     load_world(data);
     load_mini_map(data);
     mlx_put_image_to_window(data->mlx, data->win, data->frame.img, 0, 0);
