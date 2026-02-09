@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/05 18:43:09 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/09 17:42:21 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ bool set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir const 
 	p->pos.x = (double)init_player_field.horizontal + 0.5;
 	p->pos.y = (double)init_player_field.vertical + 0.5;
 	p->verticaldovrad = 0.0;
-	return (true);
+	return(gen_raycast(g), true);
 }
 
 bool	is_wall(t_map const *const pmap, t_fidx const fidx)
