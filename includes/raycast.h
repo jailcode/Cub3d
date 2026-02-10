@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/10 12:15:04 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/10 14:13:11 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,9 +143,18 @@ t_vec			transform2csys(t_vec const *const pv, t_vec const *const xaxis);
 // --------------------
 // raycast_intersection
 // --------------------
+typedef struct s_map	t_map;
+t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap);
+
 t_coord			lineintersect(
 					t_line const *const rayln,
 					t_line const *const gridln);
-typedef struct s_map	t_map;
-t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap);
+void			setup_gridlines(
+					t_gridlns *const pgridlines,
+					t_line const ray);					
+void			setup_rayintersection(
+					t_gridlns *const pgridlines,
+					t_line const ray,
+					t_rcintersect	*prcintersect);
+
 #endif // RAYCAST_H
