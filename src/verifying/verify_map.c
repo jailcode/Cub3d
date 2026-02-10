@@ -103,7 +103,7 @@ int no_spaces_inside(t_parser *data, char **map)
     return (1);
 }
 
-void    get_player_cdir(t_parser *data, char dov) // uset set_initial_player_pos but also parse for multiple player
+void    get_player_cdir(t_parser *data, char dov)
 {
     if (data->compassdir != cdir_error)
         clean_exit(data->parse_memory, 1, "Multiple player starts");

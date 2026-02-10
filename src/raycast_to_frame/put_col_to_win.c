@@ -1,131 +1,92 @@
 #include "../../includes/cub.h"
 
 
-static int get_wall_color(t_cdir side)
+t_img return_asset(t_game *data, t_cdir side)
 {
-    if (side == North)
-        return (COLOR_GREEN);
-    else if (side == South)
-        return (COLOR_BLUE);
-    else if (side == East)
-        return (COLOR_DARK_GREEN);
+    if (side == East)
+        return (data->assets.East);
     else if (side == West)
-        return (COLOR_DARK_BLUE);
-    return (COLOR_BLACK);
+        return (data->assets.West);
+    else if (side == South)
+        return (data->assets.South);
+    else 
+        return data->assets.North;
 }
-void    put_vertical_line(t_game *data, int col, float size, t_cdir side)
+
+
+
+float normalise(int notnormalised, int start, int end)
 {
-    int line_height;
+    return ((float)(notnormalised - start) / (end-start));
+}
+
+int get_pixel_color(t_game *data, t_img *img, t_rccol col, float up2downrelative)
+{
+    char *color;
+    int img_x;
+    int img_y;
+
+    if (!data || !img)
+        return (0);
+    img_x = img->size_x * col.left2rightrelative;
+    img_y = (img->size_y) * (up2downrelative);
+    color = img->addr + (img_y * img->line_length + img_x * (img->bpp / 8));
+    return (*(unsigned int *)color);
+}
+void    put_vertical_line(t_game *data, t_img *tex, t_rccol col)
+{
     int start;
     int end;
+    int line_length;
     int color;
-    if (size <= 0)
-        return;
-    line_height = (int)(SCREEN_HEIGHT * size);
-    start = (SCREEN_HEIGHT - line_height) / 2;
-    end = start + line_height;
-    while (start < end)
-    {
-        color = get_wall_color(side);
-        my_mlx_pixel_put(&data->frame, col, start, color);
-        start++;
-    }
-}
-
-int get_pixel_color(t_img *img, t_coord *text, t_rccol *col)
-{
-    int tx;
-    int ty;
-    char *pixel;
-    float rel;
-
-    if (!img || !img->addr)
-        return 0;
-    rel = col->left2rightrelative;
-    if (rel < 0.0f) rel = 0.0f;
-    if (rel > 1.0f) rel = 1.0f;
-
-    tx = (int)((img->size_x - 1) * rel);
-    if (col->cubeside == East || col->cubeside == South)
-        tx = (img->size_x - 1) - tx;
-    ty = (int)text->y;
-    if (tx < 0) tx = 0;
-    if (ty < 0) ty = 0;
-    if (tx >= img->size_x)
-        tx = img->size_x - 1;
-    if (ty >= img->size_y)
-        ty = img->size_y - 1;
-    pixel = img->addr + (ty * img->line_length + tx * (img->bpp / 8));
-    return *(unsigned int *)pixel;
-}
-
-void    put_line_from_image(t_game *data, t_img *tex, t_rccol *col, t_coord *tex_pos)
-{
-    int line_height;
-    int start;
-    int end;
-    int color;
-    int step;
+    int start_save;
     int i;
-    if ( col->blockheightfactor <= 0)
-        return;
-    if (col->blockheightfactor > 1)
-        col->blockheightfactor = 1;
-    line_height = (int)(SCREEN_HEIGHT * col->blockheightfactor);
-    start = (SCREEN_HEIGHT - line_height) / 2;
-    end = start + line_height;
-    color = get_pixel_color(tex, tex_pos, col);
-    tex_pos->y = 0;
+    line_length = col.blockheightfactor * SCREEN_HEIGHT;
+
+    // +12-15 for col.blocksartrelative is to offset it to the center
+    start_save = ((SCREEN_HEIGHT/ VERTICAL_OFFSET)* (col.blockstartrelative + 15) - line_length) / 3;
+    start = start_save;
+    end = start + line_length;
+    if (start < 0)
+        start = 0;
     i = 0;
-    if (tex->size_y > 0)
-        step = line_height/ tex->size_y;
-    else step = line_height;
-    if (step <= 0) step = 1;
-    while (start < end)
+    while(i < start && i < SCREEN_HEIGHT)
     {
-        if (i >= step)
-        {
-            i = 0;
-            tex_pos->y++;
-            color = get_pixel_color(tex, tex_pos, col);
-        }
-        my_mlx_pixel_put(&data->frame, col->id, start, color);
-        start++;
+        color = create_rgb(data->map->color_ceiling);
+        my_mlx_pixel_put(&data->frame, col.id, i, color);
         i++;
     }
+    while(start < end && start < SCREEN_HEIGHT)
+    {
+        color = get_pixel_color(data, tex, col, normalise(start, start_save, end)) ;//gets the color of a relative pixel from a texture 
+        my_mlx_pixel_put(&data->frame, col.id, start, color);
+        start++;
+    }
+    while(start < SCREEN_HEIGHT)
+    {
+        color = create_rgb(data->map->color_floor);
+        my_mlx_pixel_put(&data->frame, col.id, start, color);
+        start++;
+    }
 }
 
-void    split_texture_to_col(t_game *data, t_rccol *curr, t_coord *tex_pos)
-{
-    if (curr->cubeside == East)
-        put_line_from_image(data, &data->assets.East, curr, tex_pos);
-    else if (curr->cubeside == North)
-        put_line_from_image(data, &data->assets.North, curr, tex_pos);
-    else if (curr->cubeside == South)
-        put_line_from_image(data, &data->assets.South, curr, tex_pos);
-    else if (curr->cubeside == West)
-        put_line_from_image(data, &data->assets.West, curr, tex_pos);
-}
 
-void    put_cols_to_win(t_game *data)
+void load_world(t_game *data)
 {
     int i;
-    float heightfactor;
-    t_coord texture_pos;
+    t_img curr;
 
     if (!data || !data->frame.imgcolumn)
-        return ;    
+        return ;
     i = 0;
-    texture_pos.x = 0;
-    texture_pos.y = 0;
     while(i < SCREEN_WIDTH)
     {
-        heightfactor = data->frame.imgcolumn[i].blockheightfactor;
-        if (heightfactor > 1)
-            heightfactor = 1;
         data->frame.imgcolumn[i].id = i;
-        //put_vertical_line(data, i, heightfactor, side);
-        split_texture_to_col(data, &data->frame.imgcolumn[i], &texture_pos);
+        if (data->frame.imgcolumn[i].blockheightfactor < 0)
+            data->frame.imgcolumn[i].blockheightfactor = 0.01;
+        curr = return_asset(data, data->frame.imgcolumn[i].cubeside);
+        put_vertical_line(data, &curr, data->frame.imgcolumn[i]);
+        //put_floor_lines(data, &curr);
         i++;
     }
 }

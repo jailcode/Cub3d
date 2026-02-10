@@ -4,6 +4,10 @@
 void    leave_game(t_game *data)
 {
     mlx_destroy_image(data->mlx, data->frame.img);
+    mlx_destroy_image(data->mlx, data->assets.East.img);
+    mlx_destroy_image(data->mlx, data->assets.West.img);
+    mlx_destroy_image(data->mlx, data->assets.North.img);
+    mlx_destroy_image(data->mlx, data->assets.South.img);
     mlx_destroy_window(data->mlx, data->win);
     mlx_destroy_display(data->mlx);
     free(data->mlx);
@@ -54,16 +58,7 @@ long long get_time_in_ms(void)
     gettimeofday(&tv, NULL);
     return ((long long) tv.tv_sec * 1000 + tv.tv_usec/1000);
 }
-/*
-void    temp_update_player_pos(t_game *data, t_coord delta_pos, double delta_dir)
-{
-    data->player.pos.x += delta_pos.x/10;
-    data->player.pos.y += delta_pos.y/10;
-	double const pdovrad = atan2(data->player.dov.y, data->player.dov.x) + delta_dir;
-	data->player.dov.x = cos(pdovrad);
-	data->player.dov.y = sin(pdovrad);	
-}
-*/
+
 void    update_player(t_game *data)
 {
     t_coord     delta_pos;
@@ -71,64 +66,71 @@ void    update_player(t_game *data)
 	double      delta_verticaldir;
 
     delta_pos.x = SPEED *(data->key.w - data->key.s);
-    delta_pos.y = SPEED * (data->key.d - data->key.a) ;
-    delta_dir = ANGULAR_SPEED * ( data->key.right - data->key.left);
-	delta_verticaldir = ANGULAR_SPEED * ( data->key.up - data->key.down);
+    delta_pos.y = SPEED * (data->key.d - data->key.a);
+    delta_dir = ANGULAR_SPEED * ( data->key.right - data->key.left) + data->input.x_diff;
+	delta_verticaldir = ANGULAR_SPEED * ( data->key.up - data->key.down) * VERTICAL_OFFSET/2 + data->input.y_diff;
+    data->input.x_diff = 0;
+    data->input.y_diff = 0;
+    //mouse_input(data, &delta_dir, &delta_verticaldir);
     update_player_pos(data, delta_pos, delta_dir, delta_verticaldir);
-}
-/*
-#include "../../includes/cub.h"
 
-t_rccol *make_test_imgcolumn(double blockheightfactor, t_cdir cubeside)
-    update_player_pos(data, delta_pos, (const double )delta_dir);
 }
-*/
+
 int create_rgb(int color[3])
 {
     return (color[0] << 16 | color[1] << 8 | color[2]);
+}
+
+void    paint_frame(t_game *data, int start_y, int end_y, int color)
+{
+    int j;
+
+    while(start_y < end_y && start_y >= 0 && start_y < SCREEN_HEIGHT)
+    {
+        j = -1;
+        while(++j < data->frame.size_x)
+        {
+            my_mlx_pixel_put(&data->frame, j, start_y, color);
+        }
+        start_y++;
+    }
 }
 
 void    apply_background_color(t_game *data)
 {
     int start_ceiling;
     int start_floor;
-    int j;
     int *color;
-
-    start_floor = (data->frame.size_y/2);// * data->player.dov.rad;
-    start_ceiling = 0;
+    
     color = data->map->color_ceiling;
-    while(start_ceiling < start_floor)
-    {
-        j = -1;
-        while(++j < data->frame.size_x)
-            my_mlx_pixel_put(&data->frame, j, start_ceiling, create_rgb(color));
-        start_ceiling++; 
-    }
+    start_ceiling = 0;
+    start_floor = SCREEN_HEIGHT/2 + data->frame.imgcolumn->blockstartrelative * VERTICAL_OFFSET /3;
+
+    paint_frame(data, start_ceiling, start_floor, create_rgb(color));
     color = data->map->color_floor;
-    while(start_floor < data->frame.size_y)
-    {
-        j = -1;
-        while(++j < data->frame.size_x)
-            my_mlx_pixel_put(&data->frame, j, start_floor, create_rgb(color));
-        start_floor++; 
-    }
+    paint_frame(data, start_floor, SCREEN_HEIGHT, create_rgb(color));
+}
+
+int set_fps(t_game *data, int time)
+{
+    long long new_time;
+    new_time = get_time_in_ms();
+    if (new_time - data->current_time < time)
+        return (0);
+    data->current_time = new_time;
+    return (1);
 }
 
 int load_frame(t_game *data)
 {
-    long long new_time;
 
     if (!data)
         return (0);
-    
-    new_time = get_time_in_ms();
-    if (new_time - data->current_time < TIME_BETWEEN_FRAMES)
+    if (!set_fps(data, TIME_BETWEEN_FRAMES))
         return (0);
-    data->current_time = new_time;
     update_player(data);
-    apply_background_color(data);
-    put_cols_to_win(data);
+    //apply_background_color(data);
+    load_world(data);
     load_mini_map(data);
     mlx_put_image_to_window(data->mlx, data->win, data->frame.img, 0, 0);
     return (1);
@@ -141,6 +143,12 @@ void    update_loop(t_game *data)
     mlx_loop(data->mlx);
 }
 
+int close_window(void *param)
+{
+    leave_game(param);
+    return (0);
+}
+
 void    start_game(t_game *data)
 {
     if (!data)
@@ -149,6 +157,7 @@ void    start_game(t_game *data)
     data->win = mlx_new_window(data->mlx, SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d");
     init_frame(data, &data->frame);
     load_assets(data);
+    mlx_mouse_move(data->mlx, data->win, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
     data->player.fov = FOV * (M_PI / 180.0);
     if (data->player.mindist2wall <= 0.0)
         data->player.mindist2wall = 0.1;

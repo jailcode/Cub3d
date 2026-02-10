@@ -7,6 +7,7 @@
 #define MMAP_OFFSET_X 24
 #define MMAP_OFFSET_Y 24
 
+
 void draw_tile(t_game *data, int screen_x, int screen_y, int color)
 {
     int x;
@@ -42,25 +43,7 @@ void    update_cords(t_mmap_dimensions *cords, int i, int j)
     cords->bottom_right.x = j;
     cords->bottom_right.y = i;
 }
-/*
-void    draw_outline(t_game *data, t_mmap_dimensions *cords)
-{
-    int i;
-    int j;
 
-    i = 0;
-    while(i < MMAP_TILE_COUNT + 3) // +2 for padding
-    {
-        j = 0;
-        while(j < MMAP_TILE_COUNT + 3)
-         {
-            draw_tile(data, i * TILE_SIZE, j * TILE_SIZE, 0x000000);
-            j++;
-        }
-        i++;
-    }
-    update_cords(data, cords, i, j);
-}*/
 void    draw_outline(t_game *data, t_mmap_dimensions *cords)
 {
     int i;
@@ -108,29 +91,6 @@ int get_field_color(t_game *data, int row, int col)
 
     return COLOR_BLACK;
 }
-/*
-void draw_mmap(t_game *data, t_mmap_dimensions *mmap_size)
-{
-    int px;
-    int py;
-    int i;
-    int j;
-    int color;
-    px = (int)data->player.pos.x;
-    py = (int)data->player.pos.y;
-    i = py - MM_RENDER_DISTANCE;
-    while(i < py + MM_RENDER_DISTANCE)
-    {
-        j = px - MM_RENDER_DISTANCE;
-        while(j < px + MM_RENDER_DISTANCE)
-        {
-            draw_tile(data, i, j, get_field_color(data->map->main_map, i, j));
-            j++;
-        }
-        i++;
-    }
-
-}*/
 
 void draw_mmap(t_game *data)
 {
@@ -163,6 +123,7 @@ void draw_mmap(t_game *data)
     }
 }
 
+
 void    draw_mini_player(t_game *data)
 {
     double mmap_px;
@@ -171,18 +132,14 @@ void    draw_mini_player(t_game *data)
     mmap_px = MM_RENDER_DISTANCE;
     mmap_py = MM_RENDER_DISTANCE;
     //rotate(&mmap_py, &mmap_px, data->player.dov.rad);
-    mmap_px = MMAP_OFFSET_X + mmap_px * TILE_SIZE;
-    mmap_py = MMAP_OFFSET_Y + mmap_py * TILE_SIZE;
+    mmap_px = MMAP_OFFSET_X/2 + mmap_px * TILE_SIZE;
+    mmap_py = MMAP_OFFSET_Y/2 + mmap_py * TILE_SIZE;
     draw_tile(data, mmap_px, mmap_py, COLOR_DARK_BLUE); // replace with draw_circle
 }
 
 void    load_mini_map(t_game *data)
 {
-    //t_mmap_dimensions   cords; //tells where the mmap starts and finishes
-    
     draw_mmap(data);
     draw_outline(data, &data->mmap_size);
     draw_mini_player(data);
-        //draw_outline(data); // draws a black minmap of fixed size on which the draw_mini_map draws
-    //draw_mini_map(data); // draws the minimap based on player_position
 }

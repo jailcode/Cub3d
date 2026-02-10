@@ -32,12 +32,7 @@ void    destroy_mlx_resources(t_game *data)
 int keyrelease(int keycode, t_game *data)
 {
     if (keycode == K_Q || keycode == ESC)
-    {
-        mlx_loop_end(data->mlx);
-        destroy_mlx_resources(data);
-        clean_memory_list(&data->memory);
-        exit(0);
-    }
+        leave_game(data);
     if (keycode == K_W)
         data->key.w = 0;
     else if (keycode == K_A)
@@ -57,6 +52,28 @@ int keyrelease(int keycode, t_game *data)
     return (0);
 }
 
+int mouse_move(int x, int y, t_game *data)
+{
+    //mlx_mouse_hide(data->mlx, data->win);
+    data->input.x_diff = (double)(x - data->input.prev.x)/50;
+    data->input.y_diff = (double)(data->input.prev.y - y)/10;
+
+    mlx_mouse_get_pos(data->mlx, data->win, &data->input.prev.x, &data->input.prev.y);
+    return (0);
+}
+
+int mouse_input(t_game *data)
+{
+    t_screen_coord new;
+
+    mlx_mouse_get_pos(data->mlx, data->win, &new.x, &new.y);
+    if (new.x >= 0 && new.x <= SCREEN_WIDTH && new.y <= SCREEN_HEIGHT && new.y >= 0)
+    {
+        mlx_mouse_hide(data->mlx, data->win);
+    }
+    else mlx_mouse_show(data->mlx, data->win);
+    return (0);
+}
 
 /* the third parameter of mlx_hook lets us now how to treat the buttons
 so 1L<<0 registers input immediately, 1L<<1 only registers on release
@@ -65,6 +82,8 @@ harm_smits.github.io/42docs/libs/minilibx/events.html*/
 
 void    register_input_hooks(t_game *data)
 {
+    mlx_hook(data->win, 6, 1L << 6, mouse_move, data);
+    mlx_hook(data->win, 17, 0, close_window, data);
     mlx_hook(data->win, 2, 1L<<0, keypress, data);
     mlx_hook(data->win, 3, 1L<<1, keyrelease, data);
 }

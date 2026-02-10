@@ -68,6 +68,14 @@ void init_assets(t_game *data)
     data->assets.South.img = NULL;
 }
 
+void init_mouse(t_game *data)
+{
+    data->input.prev.x = SCREEN_WIDTH/2;
+    data->input.prev.y = SCREEN_HEIGHT/2;
+    data->input.x_diff = 0;
+    data->input.y_diff = 0;
+}
+
 void    init_data(t_game *data, t_parser *parser)
 {
     data->map = parser->map;
@@ -81,6 +89,8 @@ void    init_data(t_game *data, t_parser *parser)
     data->player.fov = FOV * M_PI / 180.0;
 	data->player.unitdist = cos(data->player.fov / 2.0);
 	data->player.mindist2wall = 0.2;
+    init_mouse(data);
+    data->pitch = 0.0f;
     init_assets(data);
     set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
 }

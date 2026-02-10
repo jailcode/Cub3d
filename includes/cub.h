@@ -37,9 +37,9 @@
 # define SCREEN_HEIGHT 600
 # define SCREEN_WIDTH  1000
 # define FOV 60
-# define SPEED .025
-
-# define ANGULAR_SPEED (M_PI / FPS / 3.0)
+# define SPEED .05
+# define VERTICAL_OFFSET 16  //used for looking up and down, and adjusting player height sorta
+# define ANGULAR_SPEED (M_PI / FPS / 1.0)
 # define FPS 60
 
 typedef struct s_map
@@ -134,6 +134,13 @@ typedef struct s_assets
     t_img West;
 }   t_assets;
 
+typedef struct s_mouse_input
+{
+    t_screen_coord prev;
+    double x_diff;
+    double y_diff;
+} t_mouse;
+
 typedef struct s_game
 {
     t_map   *map;
@@ -141,6 +148,8 @@ typedef struct s_game
     t_mem_list    *memory;
     t_img   frame;
     t_keys  key;
+    t_mouse input;
+    float pitch;
     t_assets assets;
     void    *mlx;
     void    *win;
@@ -205,11 +214,15 @@ bool    verify_map(t_parser *data);
 void    leave_game(t_game *data);
 void    start_game(t_game *data);
 void    register_input_hooks(t_game *data);
-void    set_image_background(t_img *img, int color); //remove later maybe
 void    load_mini_map(t_game *data);
 void    my_mlx_pixel_put(t_img *img, int x, int y, int color);
-void    put_cols_to_win(t_game *data);
+void    load_world(t_game *data);
 void    load_assets(t_game *data);
+int close_window(void *param);
+void    apply_background_color(t_game *data);
+int mouse_input(t_game *data);
+int mouse_move(int x, int y, t_game *data);
+int create_rgb(int color[3]);
 /*           minilibx funcs             */
 
 /*           colors and textures         */
