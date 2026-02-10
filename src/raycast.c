@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/10 08:33:49 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/10 08:41:52 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,7 @@ t_rcintersect	rayintersection(t_line const ray, t_map const *const pmap)
 	return (rcintersect);
 }
 
-bool gen_raycast(t_game *const g)
+bool generate_raycast(t_game *const g)
 {
 	t_player const	*const p = &g->player;
 	double const	playerdovrad = atan2(p->dov.y, p->dov.x);	
@@ -199,14 +199,12 @@ bool gen_raycast(t_game *const g)
 	return (true);
 }
 
-bool set_initial_player_pos(t_game *const g, t_fidx init_player_field, t_cdir const compassdir)
+bool	set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir compassdir)
 {
-	t_player *const p = &g->player;
-	
 	if (p->pos.x < 0 || p->pos.y < 0)
 		return (false);
-	p->pos.x += 0.5;
-	p->pos.y += 0.5;
+	p->pos.x = (double)init_player_field.horizontal + 0.5;
+	p->pos.y = (double)init_player_field.vertical + 0.5;
 	p->dov = (t_dir){.x = 0.0, .y = 0.0};
 	if (compassdir == (t_cdir)North)
 		p->dov.y = -1.0;
@@ -303,6 +301,6 @@ bool	update_player_pos(
 		player_moved = true;
 	}
 	if (player_moved)
-		return(gen_raycast(g), true);
+		return(generate_raycast(g), true);
 	return (false);
 }

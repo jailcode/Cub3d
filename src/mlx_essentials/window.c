@@ -43,7 +43,6 @@ void    set_image_background(t_img *img, int color)
 
 void    init_frame(t_game *data, t_img *img)
 {
-
     img->size_x = SCREEN_WIDTH;
     img->size_y = SCREEN_HEIGHT;
     img->img = mlx_new_image(data->mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -159,5 +158,6 @@ void    start_game(t_game *data)
     load_assets(data);
     mlx_mouse_move(data->mlx, data->win, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
     register_input_hooks(data);
+	generate_raycast(data);
     update_loop(data);
 }

@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/05 18:26:13 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/10 08:41:52 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,9 @@ typedef struct s_raycastresult
 // the field index is given as a struct with 2 integers,
 // cdir is the compass-direction like N(orth) etc.
 // starting at 0,0 in the top left corner of the map
-bool	set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir cdir);
+bool	set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir cdcompassdir);
+
+bool	generate_raycast(t_game *const g);
 
 // DeltaDOV [rad] is positive in clockwise direction
 // The deltapos is a relative distance:
