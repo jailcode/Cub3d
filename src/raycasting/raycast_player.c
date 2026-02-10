@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/10 12:01:31 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/10 12:47:08 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,15 @@ bool	set_initial_player_pos(t_player *p, t_fidx init_player_field,
 	return (true);
 }
 
-static bool	update_playpos_internal(t_game *const g, t_line ray,
-		double const deltadist);
+static bool	update_playpos_internal(
+			t_game *const g, t_line ray, double const deltadist);
 
 static bool	update_playpos_internal_slide(t_game *const g, t_line ray,
 		t_rcintersect const *const pintersect, double const deltadist4slide)
 {
 	t_vec				wallparallel;
 	double				slidedist;
-	
+
 	wallparallel = (t_vec){-pintersect->wallnormal.y, pintersect->wallnormal.x};
 	slidedist = deltadist4slide * vdot(&ray.dir, &wallparallel);
 	if (fabs(slidedist) > EPS)
@@ -64,8 +64,8 @@ static bool	update_playpos_internal_slide(t_game *const g, t_line ray,
 static bool	update_playpos_internal(t_game *const g, t_line ray,
 		double const deltadist)
 {
-	t_player			*const p = &g->player;
-	t_rcintersect const intersect = rayintersection(ray, g->map);
+	t_player *const		p = &g->player;
+	t_rcintersect const	intersect = rayintersection(ray, g->map);
 	double const		maxdistbeforeimpact
 		= intersect.dist2intersect - p->mindist2wall
 		/ fabs(vdot(&ray.dir, &intersect.wallnormal));
@@ -86,33 +86,20 @@ static bool	update_playpos_internal(t_game *const g, t_line ray,
 	if (p->collision)
 	{
 		player_moved = update_playpos_internal_slide(g, ray,
-			&intersect, deltadist * (1.0 - ratio));
-		// wallparallel = (t_vec){-intersect.wallnormal.y, intersect.wallnormal.x};
-		// slidedist = deltadist * (1.0 - ratio) * vdot(&ray.dir, &wallparallel);
-		// if (fabs(slidedist) > EPS)
-		// {
-		// 	ray.dir = wallparallel;
-		// 	if (slidedist < 0.0)
-		// 	{
-		// 		slidedist *= -1.0;
-		// 		ray.dir.x *= -1.0;
-		// 		ray.dir.y *= -1.0;
-		// 	}
-		// 	player_moved = update_playpos_internal(g, ray, slidedist);
-		// }
+				&intersect, deltadist * (1.0 - ratio));
 	}
 	return (player_moved);
 }
 
 static bool	update_player_pos_shift(t_game *const g, t_vec deltapos)
 {
-	static t_vec const		maincsysxaxis = (t_vec){1.0, 0.0};
-	double const			deltadist = vnorm(&deltapos);
-	t_vec const				maincsyxaxis_rel2plyr
+	static t_vec const	maincsysxaxis = (t_vec){1.0, 0.0};
+	double const		deltadist = vnorm(&deltapos);
+	t_vec const			maincsyxaxis_rel2plyr
 		= transform2csys(&maincsysxaxis, &g->player.dov);
-	t_vec const				deltaposabs
+	t_vec const			deltaposabs
 		= transform2csys(&deltapos, &maincsyxaxis_rel2plyr);	
-	t_line			ray;		
+	t_line				ray;		
 
 	g->player.collision = false;
 	if (deltadist > EPS)
