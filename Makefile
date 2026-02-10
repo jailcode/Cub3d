@@ -36,4 +36,7 @@ fclean: clean
 
 re: fclean all
 
+norm:
+	watch "norminette -R CheckForbiddenSourceHeader $(INCLUDES) $(SRC) | grep Error"
+
 .PHONY: all clean fclean re
