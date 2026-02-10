@@ -4,13 +4,13 @@
 t_img return_asset(t_game *data, t_cdir side)
 {
     if (side == East)
-        return (data->assets.East);
+        return (data->assets.east);
     else if (side == West)
-        return (data->assets.West);
+        return (data->assets.west);
     else if (side == South)
-        return (data->assets.South);
+        return (data->assets.south);
     else 
-        return data->assets.North;
+        return data->assets.north;
 }
 
 

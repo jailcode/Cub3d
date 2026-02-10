@@ -4,10 +4,10 @@
 void    leave_game(t_game *data)
 {
     mlx_destroy_image(data->mlx, data->frame.img);
-    mlx_destroy_image(data->mlx, data->assets.East.img);
-    mlx_destroy_image(data->mlx, data->assets.West.img);
-    mlx_destroy_image(data->mlx, data->assets.North.img);
-    mlx_destroy_image(data->mlx, data->assets.South.img);
+    mlx_destroy_image(data->mlx, data->assets.east.img);
+    mlx_destroy_image(data->mlx, data->assets.west.img);
+    mlx_destroy_image(data->mlx, data->assets.north.img);
+    mlx_destroy_image(data->mlx, data->assets.south.img);
     mlx_destroy_window(data->mlx, data->win);
     mlx_destroy_display(data->mlx);
     free(data->mlx);
@@ -43,8 +43,6 @@ void    set_image_background(t_img *img, int color)
 
 void    init_frame(t_game *data, t_img *img)
 {
-    img->size_x = SCREEN_WIDTH;
-    img->size_y = SCREEN_HEIGHT;
     img->img = mlx_new_image(data->mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
     img->addr = mlx_get_data_addr(img->img, &img->bpp, &img->line_length, &img->endian);
 }
@@ -60,17 +58,17 @@ long long get_time_in_ms(void)
 
 void    update_player(t_game *data)
 {
-    t_coord     delta_pos;
-    double      delta_dir;
-	double      delta_verticaldir;
+	static double const	angularspeed = (M_PI / FPS / 1.0);
+    t_coord     		delta_pos;
+    double      		delta_dir;
+	double      		delta_verticaldir;
 
     delta_pos.x = SPEED *(data->key.w - data->key.s);
     delta_pos.y = SPEED * (data->key.d - data->key.a);
-    delta_dir = ANGULAR_SPEED * ( data->key.right - data->key.left) + data->input.x_diff;
-	delta_verticaldir = ANGULAR_SPEED * ( data->key.up - data->key.down) * VERTICAL_OFFSET/2 + data->input.y_diff;
+    delta_dir = angularspeed * ( data->key.right - data->key.left) + data->input.x_diff;
+	delta_verticaldir = angularspeed * ( data->key.up - data->key.down) * VERTICAL_OFFSET/2 + data->input.y_diff;
     data->input.x_diff = 0;
     data->input.y_diff = 0;
-    //mouse_input(data, &delta_dir, &delta_verticaldir);
     update_player_pos(data, delta_pos, delta_dir, delta_verticaldir);
 
 }
@@ -84,7 +82,7 @@ void    paint_frame(t_game *data, int start_y, int end_y, int color)
 {
     int j;
 
-    while(start_y < end_y && start_y >= 0 && start_y < SCREEN_HEIGHT)
+    while(start_y < end_y && start_y >= 0 && start_y < data->frame.size_y /* SCREEN_HEIGHT */)
     {
         j = -1;
         while(++j < data->frame.size_x)
@@ -103,11 +101,11 @@ void    apply_background_color(t_game *data)
     
     color = data->map->color_ceiling;
     start_ceiling = 0;
-    start_floor = SCREEN_HEIGHT/2 + data->frame.imgcolumn->blockstartrelative * VERTICAL_OFFSET /3;
+    start_floor = data->frame.size_y/2 + data->frame.imgcolumn->blockstartrelative * VERTICAL_OFFSET /3;
 
     paint_frame(data, start_ceiling, start_floor, create_rgb(color));
     color = data->map->color_floor;
-    paint_frame(data, start_floor, SCREEN_HEIGHT, create_rgb(color));
+    paint_frame(data, start_floor, data->frame.size_y, create_rgb(color));
 }
 
 int set_fps(t_game *data, int time)
@@ -128,7 +126,6 @@ int load_frame(t_game *data)
     if (!set_fps(data, TIME_BETWEEN_FRAMES))
         return (0);
     update_player(data);
-    //apply_background_color(data);
     load_world(data);
     load_mini_map(data);
     mlx_put_image_to_window(data->mlx, data->win, data->frame.img, 0, 0);
@@ -153,10 +150,10 @@ void    start_game(t_game *data)
     if (!data)
         clean_exit(data->memory, 1, "damaged data");
     data->mlx = mlx_init();
-    data->win = mlx_new_window(data->mlx, SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d");
+    data->win = mlx_new_window(data->mlx, data->frame.size_x, data->frame.size_y, "cub3d");
     init_frame(data, &data->frame);
     load_assets(data);
-    mlx_mouse_move(data->mlx, data->win, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+    mlx_mouse_move(data->mlx, data->win, data->frame.size_x/2, data->frame.size_y/2);
     register_input_hooks(data);
 	generate_raycast(data);
     update_loop(data);
