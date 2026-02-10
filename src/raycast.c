@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/09 17:42:21 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/10 08:33:49 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,25 +60,6 @@ t_coord	intersect(t_line const *const rayln, t_line const *const gridln)
 double dist(t_coord const *const c1, t_coord const *const c2)
 {
 	return (hypot(c1->x - c2->x, c1->y -c2->y));
-}
-
-bool set_initial_player_pos(t_player *p, t_fidx init_player_field, t_cdir const compassdir)
-{
-	if (init_player_field.horizontal < 0 || init_player_field.vertical < 0)
-		return (false);
-	p->dov = (t_dir){.x = 0.0, .y = 0.0};
-	if (compassdir == (t_cdir)North)
-		p->dov.y = -1.0;
-	else if (compassdir == (t_cdir)East)
-		p->dov.x = +1.0;
-	else if (compassdir == (t_cdir)South)
-		p->dov.y = +1.0;
-	else if (compassdir == (t_cdir)West)
-		p->dov.x = -1.0;
-	p->pos.x = (double)init_player_field.horizontal + 0.5;
-	p->pos.y = (double)init_player_field.vertical + 0.5;
-	p->verticaldovrad = 0.0;
-	return(gen_raycast(g), true);
 }
 
 bool	is_wall(t_map const *const pmap, t_fidx const fidx)
@@ -198,18 +179,12 @@ bool gen_raycast(t_game *const g)
 
 	t_line	ray;
 	ray.origin = p->pos;
-	ray.dir = p->dov;
 	for (int idx = 0; idx < g->frame.size_x; ++idx)
 	{
 		t_rccol	*pimgcolumn = &(g->frame.imgcolumn[idx]);
-		 // double check for texture debugging
 		double const rayangle = (playerdovrad - p->fov / 2.0)
 								+ (idx + 0.5) * (p->fov / g->frame.size_x);
-		ray.dir = (t_dir){
-			.x = cos(rayangle),
-			.y = sin(rayangle),
-		};
-		// 
+		ray.dir = (t_dir){.x = cos(rayangle),.y = sin(rayangle)};
 		t_rcintersect rcintersect = rayintersection(ray, g->map);
 		
 		double min_dist = rcintersect.dist2intersect * vdot(&ray.dir, &p->dov);
@@ -222,6 +197,29 @@ bool gen_raycast(t_game *const g)
 		pimgcolumn->left2rightrelative = rcintersect.relative;
 	}
 	return (true);
+}
+
+bool set_initial_player_pos(t_game *const g, t_fidx init_player_field, t_cdir const compassdir)
+{
+	t_player *const p = &g->player;
+	
+	if (p->pos.x < 0 || p->pos.y < 0)
+		return (false);
+	p->pos.x += 0.5;
+	p->pos.y += 0.5;
+	p->dov = (t_dir){.x = 0.0, .y = 0.0};
+	if (compassdir == (t_cdir)North)
+		p->dov.y = -1.0;
+	else if (compassdir == (t_cdir)East)
+		p->dov.x = +1.0;
+	else if (compassdir == (t_cdir)South)
+		p->dov.y = +1.0;
+	else if (compassdir == (t_cdir)West)
+		p->dov.x = -1.0;
+	else
+		return (false);
+	p->verticaldovrad = 0.0;
+	return(true);
 }
 
 t_csys	maincsysrelative2player(t_player const *const p)

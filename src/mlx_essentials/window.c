@@ -158,9 +158,6 @@ void    start_game(t_game *data)
     init_frame(data, &data->frame);
     load_assets(data);
     mlx_mouse_move(data->mlx, data->win, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
-    data->player.fov = FOV * (M_PI / 180.0);
-    if (data->player.mindist2wall <= 0.0)
-        data->player.mindist2wall = 0.1;
     register_input_hooks(data);
     update_loop(data);
 }

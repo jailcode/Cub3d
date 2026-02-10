@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 11:06:16 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/05 14:42:04 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/10 08:13:47 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ typedef struct s_game
     t_img   frame;
     t_keys  key;
     t_mouse input;
-    float pitch;
+    // float pitch;
     t_assets assets;
     void    *mlx;
     void    *win;
