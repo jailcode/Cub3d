@@ -77,12 +77,12 @@ void    store_img(t_game *data, t_img *img)
 void    load_assets(t_game *data)
 {
 
-    data->assets.North.relative_path = data->map->Ntexture;
-    data->assets.East.relative_path = data->map->Etexture;
-    data->assets.South.relative_path = data->map->Stexture;
-    data->assets.West.relative_path = data->map->Wtexture;
-    store_img(data, &data->assets.East);
-    store_img(data, &data->assets.West);
-    store_img(data, &data->assets.South);
-    store_img(data, &data->assets.North);
+    data->assets.north.relative_path = data->map->n_texture;
+    data->assets.east.relative_path = data->map->e_texture;
+    data->assets.south.relative_path = data->map->s_texture;
+    data->assets.west.relative_path = data->map->w_texture;
+    store_img(data, &data->assets.east);
+    store_img(data, &data->assets.west);
+    store_img(data, &data->assets.south);
+    store_img(data, &data->assets.north);
 }

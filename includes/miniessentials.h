@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   miniessentials.h                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/10 09:12:46 by rhaas             #+#    #+#             */
+/*   Updated: 2026/02/10 09:12:54 by rhaas            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINIESSENTIALS_H
 # define MINIESSENTIALS_H
 # include <X11/keysym.h> // has the keycodes
@@ -45,7 +57,4 @@
 #  define COLOR_SKY_BLUE 0x87CEEB
 
 # endif
-
-
-
 #endif
