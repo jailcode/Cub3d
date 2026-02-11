@@ -37,9 +37,9 @@
 # define SCREEN_WIDTH 1000
 # define FOV 60
 # define SPEED .05
-# define VERTICAL_OFFSET 16
 # define FPS 60
-// # define ANGULAR_SPEED (M_PI / FPS / 1.0)
+# define ANGULAR_SPEED (M_PI / FPS / 1.0)
+# define MOUSE_SENSITIVITY 15
 
 typedef struct s_map
 {
