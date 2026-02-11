@@ -1,6 +1,5 @@
 #include "../../includes/cub.h"
 
-
 t_img return_asset(t_game *data, t_cdir side)
 {
     if (side == East)
@@ -12,8 +11,6 @@ t_img return_asset(t_game *data, t_cdir side)
     else 
         return data->assets.north;
 }
-
-
 
 float normalise(int notnormalised, int start, int end)
 {
@@ -69,7 +66,6 @@ void    put_vertical_line(t_game *data, t_img *tex, t_rccol col)
     int start_save;
 
     line_length = col.blockheightfactor * SCREEN_HEIGHT;
-    // +1 for col.blocksartrelative is to offset it to the center
     start_save = ((SCREEN_HEIGHT)* (col.blockstartrelative + 1) - line_length) / 3;
     start = start_save;
     end = start + line_length;

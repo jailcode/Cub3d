@@ -40,6 +40,15 @@
 # define FPS 60
 # define ANGULAR_SPEED (M_PI / FPS / 1.0)
 # define MOUSE_SENSITIVITY 15
+# define TIME_BETWEEN_FRAMES 1000/FPS
+
+/* MMAP MACROS	*/
+# define MMAP_TILE_COUNT 8
+# define MINMAP_SIZE (TILE_SIZE * MMAP_TILE_COUNT)
+# define MM_RENDER_DISTANCE 4
+# define MMAP_OFFSET_X 24
+# define MMAP_OFFSET_Y 24
+/* MMAP MACROS	*/
 
 typedef struct s_map
 {

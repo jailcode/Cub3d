@@ -1,13 +1,6 @@
 #include "../../includes/cub.h"
 
 
-# define MMAP_TILE_COUNT 8
-# define MINMAP_SIZE (TILE_SIZE * MMAP_TILE_COUNT)
-# define MM_RENDER_DISTANCE 4
-#define MMAP_OFFSET_X 24
-#define MMAP_OFFSET_Y 24
-
-
 void draw_tile(t_game *data, int screen_x, int screen_y, int color)
 {
     int x;
@@ -63,8 +56,6 @@ void    draw_outline(t_game *data, t_mmap_dimensions *cords)
     }
     update_cords(cords, i, j);
 }
-void    temp_update_player_pos(t_game *data, t_coord delta_pos, double delta_dir);
-
 
 void    rotate(double *py, double *px, double angle)
 {
@@ -131,7 +122,6 @@ void    draw_mini_player(t_game *data)
 
     mmap_px = MM_RENDER_DISTANCE;
     mmap_py = MM_RENDER_DISTANCE;
-    //rotate(&mmap_py, &mmap_px, data->player.dov.rad);
     mmap_px = MMAP_OFFSET_X/2 + mmap_px * TILE_SIZE;
     mmap_py = MMAP_OFFSET_Y/2 + mmap_py * TILE_SIZE;
     draw_tile(data, mmap_px, mmap_py, COLOR_DARK_BLUE); // replace with draw_circle

@@ -1,6 +1,5 @@
 #include "../../includes/cub.h"
 
-
 void    leave_game(t_game *data)
 {
     mlx_destroy_image(data->mlx, data->frame.img);
@@ -23,34 +22,14 @@ void    my_mlx_pixel_put(t_img *img, int x, int y, int color)
     *(unsigned int *)dst = color;
 }
 
-void    set_image_background(t_img *img, int color)
-{
-    int x;
-    int y;
-
-    y = 0;
-    while(y < img->size_y)
-    {
-        x = 0;
-        while(x < img->size_x)
-        {
-            my_mlx_pixel_put(img, x, y, color);
-            x++;
-        }
-        y++;
-    }
-}
 
 void    init_frame(t_game *data, t_img *img)
 {
-
     img->size_x = SCREEN_WIDTH;
     img->size_y = SCREEN_HEIGHT;
     img->img = mlx_new_image(data->mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
     img->addr = mlx_get_data_addr(img->img, &img->bpp, &img->line_length, &img->endian);
 }
-
-# define TIME_BETWEEN_FRAMES 1000/FPS
 
 long long get_time_in_ms(void)
 {
