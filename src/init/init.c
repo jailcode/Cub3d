@@ -90,7 +90,6 @@ void    init_data(t_game *data, t_parser *parser)
 	data->player.unitdist = cos(data->player.fov / 2.0);
 	data->player.mindist2wall = 0.2;
     init_mouse(data);
-    data->pitch = 0.0f;
     init_assets(data);
     set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
 }

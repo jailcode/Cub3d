@@ -91,6 +91,7 @@ typedef struct s_player
 	t_dir	dov;
 	double	verticaldovrad;
 	bool	collision;
+    //t_state state;
 }	t_player;
 
 typedef struct s_gridlines

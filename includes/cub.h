@@ -66,6 +66,12 @@ typedef struct s_mmap_dimensions
 }   t_mmap_dimensions;
 
 
+typedef struct s_player_state
+{
+    int sprinting;
+
+}t_state;
+
 typedef struct s_mem_list
 {
     void				*address;
@@ -123,6 +129,7 @@ typedef struct s_keys
     int right;
 	int up;
 	int down;
+    int shift;
 }   t_keys;
 
 typedef struct s_assets
@@ -149,7 +156,6 @@ typedef struct s_game
     t_img   frame;
     t_keys  key;
     t_mouse input;
-    float pitch;
     t_assets assets;
     void    *mlx;
     void    *win;
