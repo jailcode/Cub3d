@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/10 14:55:27 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/11 16:19:31 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,11 +129,11 @@ bool	update_player_pos(t_game *const g, t_vec deltapos,
 	}
 	if (fabs(deltaverticalrad) > EPS)
 	{
-		//*
 		p->verticaldovrad += deltaverticalrad;
-		/*/
-		p->verticaldovrad = fmod(p->verticaldovrad + deltaverticalrad, M_PI / 2.0);
-		//*/
+		if (p->verticaldovrad > M_PI / 2.0)
+			p->verticaldovrad = M_PI / 2.0;
+		else if (p->verticaldovrad < -M_PI / 2.0)
+			p->verticaldovrad = -M_PI / 2.0;
 		player_moved = true;
 	}
 	if (player_moved)
