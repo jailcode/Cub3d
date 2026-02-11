@@ -80,7 +80,7 @@ void    clean_exit(t_mem_list *memory, int code, char *message)
 {
     clean_memory_list(&memory);
 	if (message)
-		printf("Error: %s\n", message);
+		printf("Error\n%s\n", message);
 	else
 		printf("Error\n");
 	close_fds_in_range(3, 1024);
