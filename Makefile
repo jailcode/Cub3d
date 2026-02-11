@@ -30,9 +30,8 @@ CFLAGS := -Wall -Werror -Wextra
 CFLAGS += -Iminilibx-linux -Iincludes
 CFLAGS += -g3
 
-LFLAGS := -lm -Lminilibx-linux
-
-MLX_FLAGS = -lmlx -lXext -lX11
+LFLAGS := -lm
+MLX_FLAGS = -Lminilibx-linux -lmlx -lXext -lX11
 
 all: $(NAME)
 
