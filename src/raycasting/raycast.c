@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/10 12:51:43 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/11 16:03:12 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	gen_imgcolumn(t_game *const g, t_rccol *pimgcolumn,
 	pimgcolumn->blockheightfactor = p->unitdist / min_dist * w2hratio;
 	pimgcolumn->blockstartrelative
 		= 0.5 * (1.0 - pimgcolumn->blockheightfactor)
-		+ p->verticaldovrad / p->fov * w2hratio;
+		+ p->verticaldovrad / (p->fov / 2.0) * w2hratio;
 	pimgcolumn->cubeside = prcintersect->cubeside;
 	pimgcolumn->left2rightrelative = prcintersect->relative;
 }
