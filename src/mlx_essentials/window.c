@@ -66,6 +66,7 @@ void    update_player(t_game *data)
 	double      delta_verticaldir;
 	double		mouse_x_rad;
 	double		mouse_y_rad;
+    static double const angularspeed = (M_PI / 2.0) / FPS;
 
     delta_pos.x = SPEED *(data->key.w - data->key.s);
     delta_pos.y = SPEED * (data->key.d - data->key.a);
@@ -73,8 +74,8 @@ void    update_player(t_game *data)
     mouse_x_rad = data->input.x_diff * MOUSE_SENSITIVITY * (M_PI / 180.0);
     mouse_y_rad = data->input.y_diff * MOUSE_SENSITIVITY * (M_PI / 180.0);
     
-    delta_dir = ANGULAR_SPEED * (data->key.right - data->key.left) + mouse_x_rad;
-    delta_verticaldir = ANGULAR_SPEED * (data->key.up - data->key.down) + mouse_y_rad;
+    delta_dir = angularspeed * (data->key.right - data->key.left) + mouse_x_rad;
+    delta_verticaldir = angularspeed * (data->key.up - data->key.down) + mouse_y_rad;
     
     data->input.x_diff = 0;
     data->input.y_diff = 0;
