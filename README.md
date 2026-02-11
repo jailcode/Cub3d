@@ -80,7 +80,7 @@ C 225,30,0\
 ### Information and study material+
 + https://lodev.org/cgtutor/raycasting.html
 + https://www.youtube.com/watch?v=qjWkNZ0SXfo
-
++ https://youtu.be/NbSee-XM7WA
 
 ### AI usage
 AI wasn't used for this project.
