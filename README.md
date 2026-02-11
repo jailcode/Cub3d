@@ -8,7 +8,7 @@ cub3D shows a dynamic view inside a maze, where the first person character can m
 
 # Instructions
 + First, the program needs to be built
-  + The source code contains a Makefile, so the program can be built by running `make re`.\
+  + The source code contains a Makefile, so the program can be built by running `make re`.
   + As a prerequisite, the MinilibX library needs to be available. Make sure it is compiled and referenced correctly in the current projects Makefile in variable `MLX_FLAGS`.
 + Once compiled, the program can be run from the command line by using the following command: `./cub3D <someFileName>.cub`\
   `<someFileName>.cub` is the filename (with extension ".cub") of a valid scene description file (See follwing paragraph for details).
