@@ -19,7 +19,7 @@ void	dfs(t_parser *data, char **map, int row, int col)
 	if (row < 0 || row >= data->map->rows || col < 0 || col >= data->map->col)
 		return ;
 	if (ft_strchr("0NSEW", map[row][col]))
-		clean_exit(data->parse_memory, 1, "Map is not closed");
+		clean_exit(data->parse_memory, 1, "Invalid map");
 	if (map[row][col] != ' ')
 		return ;
 	map[row][col] = '1';

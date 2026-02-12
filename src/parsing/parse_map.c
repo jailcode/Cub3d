@@ -120,7 +120,8 @@ bool	process_map(t_parser *data, char *filename)
 	}
 	close(fd);
 	build_raw_map(data);
-	get_player_info(data);
+	if (get_player_info(data) != 1)
+		clean_exit(data->parse_memory, 1, "No player start given");
 	transfer_map(data);
 	build_padded_map(data);
 	return (true);

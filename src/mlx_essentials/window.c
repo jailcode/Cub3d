@@ -14,6 +14,7 @@
 
 void	leave_game(t_game *data)
 {
+	mlx_mouse_show(data->mlx, data->win);
 	mlx_destroy_image(data->mlx, data->frame.img);
 	mlx_destroy_image(data->mlx, data->assets.east.img);
 	mlx_destroy_image(data->mlx, data->assets.west.img);
