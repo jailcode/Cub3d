@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 09:16:08 by rhaas             #+#    #+#             */
-/*   Updated: 2026/02/10 11:21:02 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/12 15:08:49 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,12 +127,6 @@ char	*spaced_line(char *line, size_t len)
 	return (line);
 }
 
-void	print_map(char **map)
-{
-	for (int i = 0; map[i]; i++)
-		printf("%s\n", map[i]);
-}
-
 void	build_raw_map(t_parser *p)
 {
 	size_t		i;
@@ -150,7 +144,6 @@ void	build_raw_map(t_parser *p)
 	p->map->parse_map[i] = NULL;
 	p->map->rows = p->map_height;
 	p->map->col = p->map_width;
-	// print_map(p->map->parse_map);
 }
 
 char	*pad_line(t_parser *data, char *line)
@@ -198,25 +191,25 @@ void	build_padded_map(t_parser *data)
 	int		i;
 	char	**new_map;
 
-    if (!data || !data->map ||!data->map->parse_map)
-        return ;
-    old_h = data->map->rows;
-    new_map = x_malloc(&data->parse_memory,
-                sizeof(char *) * (old_h + 3));
-    if (!new_map)
-        clean_exit(data->parse_memory, 1, "malloc failed");
-    new_map[0] = make_space_line(data);
-    i = 0;
-    while(i < old_h)
-    {
-      new_map[i + 1] =  pad_line(data, data->map->parse_map[i]);
-        i++;
-    }
-    new_map[i + 1] = make_space_line(data);
-    new_map[i + 2] = NULL;
-    data->map->parse_map = new_map;
-    data->map->rows = old_h;
-    data->map->col = data->map->col;
+	if (!data || !data->map ||!data->map->parse_map)
+		return ;
+	old_h = data->map->rows;
+	new_map = x_malloc(&data->parse_memory,
+			sizeof(char *) * (old_h + 3));
+	if (!new_map)
+		clean_exit(data->parse_memory, 1, "malloc failed");
+	new_map[0] = make_space_line(data);
+	i = 0;
+	while (i < old_h)
+	{
+		new_map[i + 1] = pad_line(data, data->map->parse_map[i]);
+		i++;
+	}
+	new_map[i + 1] = make_space_line(data);
+	new_map[i + 2] = NULL;
+	data->map->parse_map = new_map;
+	data->map->rows = old_h;
+	data->map->col = data->map->col;
 }
 
 t_fieldtype	return_fieldtype(char c)
@@ -233,28 +226,6 @@ t_fieldtype	return_fieldtype(char c)
 		return (ground);
 }
 
-void	print_main_map(t_map *map)
-{
-	int	i;
-	int	j;
-
-	if (!map || !map->main_map)
-		return ;
-	for (i = 0; i < map->rows; i++)
-	{
-		for (j = 0; j < map->col; j++)
-		{
-			if (map->main_map[i][j]/*.ftype*/ == wall)
-				printf("1");
-			else if (map->main_map[i][j]/*.ftype*/ == ground)
-				printf("0");
-			else if (map->main_map[i][j]/*.ftype*/ == empty)
-				printf(" ");
-		}
-		printf("\n");
-	}
-}
-
 void	build_main_map(t_parser *data, t_fieldtype **map)
 {
 	int	i;
@@ -265,7 +236,7 @@ void	build_main_map(t_parser *data, t_fieldtype **map)
 	{
 		j = -1;
 		while (++j < data->map->col)
-			map[i][j]/*.ftype*/ = return_fieldtype(data->map->parse_map[i][j]);
+			map[i][j] = return_fieldtype(data->map->parse_map[i][j]);
 	}
 }
 
@@ -291,14 +262,12 @@ void	transfer_map(t_parser *data)
 		j = -1;
 		while (++j < data->map->col)
 		{
+			main_map[i][j] = empty;
 			if (j < len)
-				main_map[i][j]/*.ftype*/ = return_fieldtype(map[i][j]);
-			else
-				main_map[i][j]/*.ftype*/ = empty; // pad short lines with spaces
+				main_map[i][j] = return_fieldtype(map[i][j]);
 		}
 	}
 	data->map->main_map = main_map;
-	// print_main_map(data->map);
 }
 
 int			get_player_info(t_parser *data);
