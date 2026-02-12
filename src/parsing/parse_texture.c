@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/cub.h"
+#include "cub.h"
 
 void	add_texture_data(char **dest, char *line, t_mem_list **memory)
 {

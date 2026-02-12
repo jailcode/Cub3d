@@ -1,4 +1,4 @@
-#include "../../includes/cub.h"
+#include "cub.h"
 
 int	init_memory_list(t_mem_list **m)
 {

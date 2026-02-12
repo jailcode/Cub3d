@@ -214,8 +214,9 @@ int						load_frame(t_game *data);
 /*            PARSING          */
 
 /*            INITIALISATION          */
-
+void					init_assets(t_game *data);
 void					init_parser(t_parser *data);
+void					init_mouse(t_game *data);
 void					init_data(t_game *data, t_parser *parser);
 
 /*            INITIALISATION          */
@@ -249,6 +250,7 @@ int						get_field_color(t_game *data, int row, int col);
 void					draw_tile(t_game *data, int screen_x,
 							int screen_y, int color);
 void					draw_outline(t_game *data, t_mmap_dimensions *cords);
+int						mouse_move(int x, int y, t_game *data);
 
 /*           minilibx funcs             */
 

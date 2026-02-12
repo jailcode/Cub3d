@@ -1,4 +1,16 @@
-#include "../../includes/cub.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   draw_funcs.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pdangwal <pdangwal@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/12 14:50:38 by pdangwal          #+#    #+#             */
+/*   Updated: 2026/02/12 14:50:40 by pdangwal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub.h"
 
 static void	update_cords(t_mmap_dimensions *cords, int i, int j)
 {

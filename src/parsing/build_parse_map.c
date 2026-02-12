@@ -1,4 +1,4 @@
-#include "../../includes/cub.h"
+#include "cub.h"
 
 
 void	build_raw_map(t_parser *p)

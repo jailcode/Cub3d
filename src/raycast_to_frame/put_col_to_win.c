@@ -1,4 +1,16 @@
-#include "../../includes/cub.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   put_col_to_win.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pdangwal <pdangwal@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/12 15:05:34 by pdangwal          #+#    #+#             */
+/*   Updated: 2026/02/12 15:07:48 by pdangwal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub.h"
 
 t_img	return_asset(t_game *data, t_cdir side)
 {
@@ -32,8 +44,6 @@ int	get_pixel_color(t_game *data, t_img *img, t_rccol col,
 	return (*(unsigned int *)color);
 }
 
-
-
 void	put_vertical_line(t_game *data, t_img *tex, t_rccol col)
 {
 	int	start;
@@ -62,8 +72,8 @@ void	put_vertical_line(t_game *data, t_img *tex, t_rccol col)
 
 void	load_world(t_game *data)
 {
-	int i;
-	t_img curr;
+	int		i;
+	t_img	curr;
 
 	if (!data || !data->frame.imgcolumn)
 		return ;

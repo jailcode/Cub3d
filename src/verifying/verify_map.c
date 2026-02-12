@@ -1,4 +1,4 @@
-#include "../../includes/cub.h"
+#include "cub.h"
 
 int	check_map_elements(t_parser *data)
 {

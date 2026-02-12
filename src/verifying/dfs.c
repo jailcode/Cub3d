@@ -1,4 +1,4 @@
-#include "../../includes/cub.h"
+#include "cub.h"
 
 void	dfs(t_parser *data, char **map, int row, int col)
 {

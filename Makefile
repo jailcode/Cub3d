@@ -10,6 +10,7 @@ SRC := src/main.c \
 		src/utils/time.c \
 		src/utils/memory_management.c \
 		src/init/init.c \
+		src/init/init_2.c \
 		src/parsing/parse_texture.c \
 		src/parsing/build_main_map.c \
 		src/parsing/build_parse_map.c \

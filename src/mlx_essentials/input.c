@@ -1,6 +1,18 @@
-#include "../../includes/cub.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   input.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pdangwal <pdangwal@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/12 14:44:29 by pdangwal          #+#    #+#             */
+/*   Updated: 2026/02/12 14:49:07 by pdangwal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void toggle_mouse(t_game *data)
+#include "cub.h"
+
+void	toggle_mouse(t_game *data)
 {
 	if (data->key.m == 1)
 	{
@@ -65,34 +77,6 @@ int	keyrelease(int keycode, t_game *data)
 		data->key.up = 0;
 	else if (keycode == XK_Down)
 		data->key.down = 0;
-	return (0);
-}
-
-int mouse_move(int x, int y, t_game *data)
-{
-	if (data->key.m == 1)
-		return (0);
-    data->input.x_diff = (double)(x - SCREEN_WIDTH / 2) / 100.0;
-    data->input.y_diff = (double)(SCREEN_HEIGHT / 2 - y) / 50.0;
-
-    data->input.prev.x = x;
-    data->input.prev.y = y;
-	//mouse_input(data);
-    return (0);
-}
-
-int	mouse_input(t_game *data)
-{
-	t_screen_coord	new;
-
-	mlx_mouse_get_pos(data->mlx, data->win, &new.x, &new.y);
-	if (new.x >= 0 && new.x <= SCREEN_WIDTH &&new.y <= SCREEN_HEIGHT
-		&&new.y >= 0 && data->key.m == 0)
-	{
-		mlx_mouse_hide(data->mlx, data->win);
-	}
-	else
-		mlx_mouse_show(data->mlx, data->win);
 	return (0);
 }
 

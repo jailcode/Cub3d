@@ -1,4 +1,4 @@
-#include "../../includes/cub.h"
+#include "cub.h"
 
 t_fieldtype	return_fieldtype(char c)
 {

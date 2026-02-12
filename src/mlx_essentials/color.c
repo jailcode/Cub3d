@@ -1,9 +1,22 @@
-#include "../../includes/cub.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   color.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pdangwal <pdangwal@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/12 14:50:10 by pdangwal          #+#    #+#             */
+/*   Updated: 2026/02/12 14:50:12 by pdangwal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub.h"
 
 int	create_trgb(int t, int r, int g, int b)
 {
 	return (t << 24 | r << 16 | g << 8 | b);
 }
+
 int	create_rgb(int color[3])
 {
 	return (color[0] << 16 | color[1] << 8 | color[2]);

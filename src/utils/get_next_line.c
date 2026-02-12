@@ -1,4 +1,4 @@
-#include "../../includes/cub.h"
+#include "cub.h"
 
 static char	*fr_free(t_mem_list *memory, char *buffer, char *buf)
 {

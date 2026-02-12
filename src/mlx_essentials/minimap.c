@@ -1,6 +1,18 @@
-#include "../../includes/cub.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minimap.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pdangwal <pdangwal@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/12 14:52:16 by pdangwal          #+#    #+#             */
+/*   Updated: 2026/02/12 14:52:18 by pdangwal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-int get_mplayer_offset(t_game *data, char type)
+#include "cub.h"
+
+int	get_mplayer_offset(t_game *data, char type)
 {
 	if (type == 'x')
 		return (((int)(data->player.pos.x * 100) % 100) * TILE_SIZE / 100);
