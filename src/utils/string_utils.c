@@ -1,21 +1,21 @@
-#include "../../includes/cub.h"
+#include "cub.h"
 
-
-size_t  ft_strlen(const char *s)
+size_t	ft_strlen(const char *s)
 {
-    int i;
+	size_t	i;
 
-    i = 0;
-    while(s[i])
-        i++;
-    return (i);
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
 }
 
-int ft_isspace(char c)
+int	ft_isspace(char c)
 {
-    if (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f')
-        return (1);
-    return (0);
+	if (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v'
+		|| c == '\f')
+		return (1);
+	return (0);
 }
 
 size_t	ft_strlcpy(char *dest, const char *src, size_t size)
@@ -34,75 +34,45 @@ size_t	ft_strlcpy(char *dest, const char *src, size_t size)
 	return (ft_strlen(src));
 }
 
-int ft_isdigit(char c)
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-    if (c <= '9' && c >= '0')
-        return (1);
-    return (0);
+	size_t	i;
+
+	if (!s1 || !s2)
+		return (-1);
+	i = 0;
+	while (i < n && s1[i] && s2[i])
+	{
+		if ((unsigned char)s1[i] != (unsigned char)s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		i++;
+	}
+	if (i == n)
+		return (0);
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
 
-int ft_strncmp(const char *s1, const char *s2, size_t n)
+char	*ft_strdup(t_mem_list **memory, const char *s)
 {
-    size_t i;
+	char	*dup;
+	size_t	len;
+	size_t	i;
 
-    if (!s1 || !s2)
-        return (-1);
-
-    i = 0;
-    while (i < n && s1[i] && s2[i])
-    {
-        if ((unsigned char)s1[i] != (unsigned char)s2[i])
-            return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-        i++;
-    }
-    if (i == n)
-        return 0;
-    return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-}
-
-char    *ft_strdup(t_mem_list **memory, const char *s)
-{
-    char *dup;
-    size_t  len;
-    size_t  i;
-
-    if (!s)
-        return (NULL);
-    len = 0;
-    while (s[len])
-        len++;
-    dup = x_malloc(memory, len + 1);
-    if (!dup)
-        return (NULL);
-    i = 0;
-    while(i < len)
-    {
-        dup[i] = s[i];
-        i++;
-    }
-    dup[i] = '\0';
-    return (dup);
-}
-
-char	*ft_strtrim(t_mem_list **memory, char const *s1, char const *set)
-{
-	int		start;
-	int		end;
-	char	*str;
-
-	if (!s1 || !set)
+	if (!s)
 		return (NULL);
-	start = 0;
-	end = ft_strlen(s1) - 1;
-	while (ft_strchr(set, s1[start]) && start <= end)
-		start++;
-	if (start > end)
-		return (ft_strdup(memory, s1 + end + 1));
-	while (ft_strchr(set, s1[end]) && end >= 0)
-		end--;
-	str = x_malloc(memory, end - start + 2);
-	if (!str)
+	len = 0;
+	while (s[len])
+		len++;
+	dup = x_malloc(memory, len + 1);
+	if (!dup)
 		return (NULL);
-	ft_strlcpy(str, &s1[start], end - start + 2);
-	return (str);
+	i = 0;
+	while (i < len)
+	{
+		dup[i] = s[i];
+		i++;
+	}
+	dup[i] = '\0';
+	return (dup);
 }
+

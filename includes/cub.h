@@ -40,6 +40,12 @@
 # define FPS 60
 # define ANGULAR_SPEED (M_PI / FPS / 1.0)
 # define MOUSE_SENSITIVITY 15
+# define TIME_BETWEEN_FRAMES (1000 / FPS)
+# define MMAP_TILE_COUNT 8
+# define MINMAP_SIZE (TILE_SIZE * MMAP_TILE_COUNT)
+# define MM_RENDER_DISTANCE 4
+# define MMAP_OFFSET_X 24
+# define MMAP_OFFSET_Y 24
 
 typedef struct s_map
 {
@@ -116,6 +122,7 @@ typedef struct s_keys
 	int					a;
 	int					s;
 	int					d;
+	int					m;
 	int					left;
 	int					right;
 	int					up;
@@ -191,12 +198,25 @@ char					*ft_strdup(t_mem_list **memory, const char *s);
 int						extract_line(t_game *data, char *line);
 char					*ft_strtrim(t_mem_list **memory, char const *s1,
 							char const *set);
+void					transfer_map(t_parser *data);
+int						get_player_info(t_parser *data);
+void					paint_floor_line(t_game *data, int start, int x);
+void					paint_ceiling_line(t_game *data, int start, int x);
+void					build_padded_map(t_parser *data);
+void					build_raw_map(t_parser *p);
+void					add_map_line(t_parser *p, char *line);
+int						is_empty(char *line);
+int						no_spaces_inside(t_parser *data, char **map);
+void					get_player_cdir(t_parser *data, char dov);
+void					dfs(t_parser *data, char **map, int row, int col);
+int						load_frame(t_game *data);
 
 /*            PARSING          */
 
 /*            INITIALISATION          */
-
+void					init_assets(t_game *data);
 void					init_parser(t_parser *data);
+void					init_mouse(t_game *data);
 void					init_data(t_game *data, t_parser *parser);
 
 /*            INITIALISATION          */
@@ -221,6 +241,17 @@ void					apply_background_color(t_game *data);
 int						mouse_input(t_game *data);
 int						mouse_move(int x, int y, t_game *data);
 int						create_rgb(int color[3]);
+int						load_frame(t_game *data);
+void					update_player(t_game *data);
+int						set_fps(t_game *data, int time);
+void					init_frame(t_game *data, t_img *img);
+long long				get_time_in_ms(void);
+int						get_field_color(t_game *data, int row, int col);
+void					draw_tile(t_game *data, int screen_x,
+							int screen_y, int color);
+void					draw_outline(t_game *data, t_mmap_dimensions *cords);
+int						mouse_move(int x, int y, t_game *data);
+
 /*           minilibx funcs             */
 
 /*           colors and textures         */

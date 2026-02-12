@@ -1,118 +1,114 @@
-#include "../../includes/cub.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pdangwal <pdangwal@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/12 14:59:23 by pdangwal          #+#    #+#             */
+/*   Updated: 2026/02/12 14:59:49 by pdangwal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "cub.h"
 
-t_map *init_map(t_mem_list **memory)
+t_map	*init_map(t_mem_list **memory)
 {
-    int i;
-    t_map *map;
+	int		i;
+	t_map	*map;
 
-    map = x_malloc(memory, sizeof(*map));
-    if (!map)
-        clean_exit(*memory, 1, "malloc failed");
-    i = 0;
-    while(i < 3)
-    {
-        map->color_ceiling[i] = -1;
-        map->color_floor[i] = -1;
-        i++;
-    }
-    map->n_texture = NULL;
-    map->s_texture = NULL;
-    map->w_texture = NULL;
-    map->e_texture = NULL;
-    map->parse_map = NULL;
-    map->main_map = NULL;
-    map->rows = 0;
-    map->col = 0;
-    return (map); 
+	map = x_malloc(memory, sizeof(*map));
+	if (!map)
+		clean_exit(*memory, 1, "malloc failed");
+	i = 0;
+	while (i < 3)
+	{
+		map->color_ceiling[i] = -1;
+		map->color_floor[i] = -1;
+		i++;
+	}
+	map->n_texture = NULL;
+	map->s_texture = NULL;
+	map->w_texture = NULL;
+	map->e_texture = NULL;
+	map->parse_map = NULL;
+	map->main_map = NULL;
+	map->rows = 0;
+	map->col = 0;
+	return (map);
 }
 
-void init_columns(t_rccol *cols)
+void	init_columns(t_rccol *cols)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while(i < SCREEN_WIDTH)
-    {
-        cols[i].blockheightfactor = 0;
-        cols[i].blockstartrelative = 0;
-        cols[i].cubeside = 0;
-        cols[i].id = 0;
-        cols[i].left2rightrelative = 0;
-        i++;
-    }
+	i = 0;
+	while (i < SCREEN_WIDTH)
+	{
+		cols[i].blockheightfactor = 0;
+		cols[i].blockstartrelative = 0;
+		cols[i].cubeside = 0;
+		cols[i].id = 0;
+		cols[i].left2rightrelative = 0;
+		i++;
+	}
 }
 
-void init_parser(t_parser *ret)
+void	init_parser(t_parser *ret)
 {
-    t_mem_list *memory;
+	t_mem_list	*memory;
 
-    if (init_memory_list(&memory))
-        exit(1);
-    ret->map = init_map(&memory);
-    if (!ret->map)
-        clean_exit(memory, 1, "malloc failed");
-    ret->parse_memory = memory;
-    ret->map_head = NULL;
-    ret->map->main_map = NULL;
-    ret->map_tail = NULL;
-    ret->map_height = 0;
-    ret->map_width = 0;
-    ret->compassdir = cdir_error;
-    ret->imgcolumn = x_malloc(&memory, SCREEN_WIDTH * sizeof(t_rccol));
-    init_columns(ret->imgcolumn);
-    ret->state = PARSE_HEADER;
+	if (init_memory_list(&memory))
+		exit(1);
+	ret->map = init_map(&memory);
+	if (!ret->map)
+		clean_exit(memory, 1, "malloc failed");
+	ret->parse_memory = memory;
+	ret->map_head = NULL;
+	ret->map->main_map = NULL;
+	ret->map_tail = NULL;
+	ret->map_height = 0;
+	ret->map_width = 0;
+	ret->compassdir = cdir_error;
+	ret->imgcolumn = x_malloc(&memory, SCREEN_WIDTH * sizeof(t_rccol));
+	init_columns(ret->imgcolumn);
+	ret->state = PARSE_HEADER;
 }
 
-void    init_keys(t_game *data)
+void	init_keys(t_game *data)
 {
-    data->key.a = 0;
-    data->key.d = 0;
-    data->key.s = 0;
-    data->key.left = 0;
-    data->key.right = 0;
-    data->key.up = 0;
-    data->key.down = 0;
-    data->key.w = 0;
+	data->key.a = 0;
+	data->key.d = 0;
+	data->key.s = 0;
+	data->key.left = 0;
+	data->key.right = 0;
+	data->key.up = 0;
+	data->key.down = 0;
+	data->key.w = 0;
+	data->key.m = 0;
 }
 
-void init_assets(t_game *data)
+void	init_data(t_game *data, t_parser *parser)
 {
-    data->assets.asset_num = 4;
-    data->assets.east.img = NULL;
-    data->assets.west.img = NULL;
-    data->assets.north.img = NULL;
-    data->assets.south.img = NULL;
-}
-
-void init_mouse(t_game *data)
-{
-    data->input.prev.x = SCREEN_WIDTH/2;
-    data->input.prev.y = SCREEN_HEIGHT/2;
-    data->input.x_diff = 0;
-    data->input.y_diff = 0;
-}
-
-void    init_data(t_game *data, t_parser *parser)
-{
-    data->map = parser->map;
-    data->memory = parser->parse_memory;
-    data->frame.img = NULL;
-    data->frame.imgcolumn = parser->imgcolumn;
-    data->mlx = NULL;
-    data->win = NULL;
-    data->current_time = 0;
-    init_keys(data);
-    data->frame.size_x = SCREEN_WIDTH;
-    data->frame.size_y = SCREEN_HEIGHT;
-    data->player.fov = FOV * M_PI / 180.0;
+	data->map = parser->map;
+	data->memory = parser->parse_memory;
+	data->frame.img = NULL;
+	data->frame.imgcolumn = parser->imgcolumn;
+	data->mlx = NULL;
+	data->win = NULL;
+	data->current_time = 0;
+	init_keys(data);
+	data->frame.size_x = SCREEN_WIDTH;
+	data->frame.size_y = SCREEN_HEIGHT;
+	data->player.fov = FOV * M_PI / 180.0;
 	data->player.unitdist = cos(data->player.fov / 2.0);
 	data->player.mindist2wall = 0.2;
-    data->player.pos.x = 0;
-    data->player.pos.y = 0;
-    data->player.collision = false;
-    data->player.verticaldovrad = 0;
-    init_mouse(data);
-    init_assets(data);
-    set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
+	data->player.pos.x = 0;
+	data->player.pos.y = 0;
+	data->player.collision = false;
+	data->player.verticaldovrad = 0;
+	init_mouse(data);
+	init_assets(data);
+	set_initial_player_pos(&data->player, parser->init_player_field,
+		parser->compassdir);
 }

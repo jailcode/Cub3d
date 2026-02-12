@@ -1,4 +1,4 @@
-#include "../../includes/cub.h"
+#include "cub.h"
 
 char	*ft_strjoin(t_mem_list *memory, char const *s1, char const *s2)
 {

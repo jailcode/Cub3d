@@ -6,11 +6,11 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 09:16:08 by rhaas             #+#    #+#             */
-/*   Updated: 2026/02/12 15:08:49 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/12 15:12:28 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/cub.h"
+#include "cub.h"
 
 int	is_map_line(char *line)
 {
@@ -67,29 +67,6 @@ int	is_empty(char *line)
 	return (1);
 }
 
-void	add_map_line(t_parser *p, char *line)
-{
-	t_map_node	*node;
-	size_t		len;
-
-	if (is_empty(line))
-		clean_exit(p->parse_memory, 1, "Empty line in map");
-	node = x_malloc(&p->parse_memory, sizeof(*node));
-	node->line = ft_strdup(&p->parse_memory, line);
-	node->next = NULL;
-	if (!p->map_head)
-		p->map_head = node;
-	else
-		p->map_tail->next = node;
-	p->map_tail = node;
-	p->map_height++;
-	len = ft_strlen(line);
-	if (line[len - 1] == '\n')
-		len--;
-	if (p->map_width < len)
-		p->map_width = len;
-}
-
 void	parse_header_line(t_parser *p, char *line)
 {
 	if (!line || is_empty(line))
@@ -114,17 +91,6 @@ void	parse_header_line(t_parser *p, char *line)
 		add_color_data(p->map->color_ceiling, line + 1, &p->parse_memory);
 	else
 		clean_exit(p->parse_memory, 1, "Invalid identifier");
-}
-
-char	*spaced_line(char *line, size_t len)
-{
-	int	i;
-
-	i = -1;
-	while ((size_t)++i < len)
-		line[i] = ' ';
-	line[i] = '\0';
-	return (line);
 }
 
 void	build_raw_map(t_parser *p)
