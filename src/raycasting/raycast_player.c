@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/12 13:30:17 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/12 13:43:32 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,17 +71,8 @@ static bool	update_playpos_internal(t_game *const g, t_line ray,
 	double				ratio;
 
 	player_moved = false;
-	maxdistbeforeimpact	= intersect.dist2intersect - p->mindist2wall
-		/ fabs(vdot(&ray.dir, &intersect.wallnormal));	
-		// if (isnan(maxdistbeforeimpact) 
-		// 	|| isinf(maxdistbeforeimpact)
-		// 	|| (maxdistbeforeimpact < 0.0)
-		// 	|| deltadist > .5
-		// )
-	{
-		printf("ppos: %lf, %lf\n",
-			p->pos.x, p->pos.y);
-	}
+	maxdistbeforeimpact = intersect.dist2intersect - p->mindist2wall
+		/ fabs(vdot(&ray.dir, &intersect.wallnormal));
 	if (maxdistbeforeimpact < -EPS)
 		maxdistbeforeimpact = 0.0;
 	ratio = maxdistbeforeimpact / deltadist;
@@ -95,10 +86,8 @@ static bool	update_playpos_internal(t_game *const g, t_line ray,
 		player_moved = true;
 	}
 	if (p->collision)
-	{
 		player_moved = update_playpos_internal_slide(g, ray,
 				&intersect, deltadist * (1.0 - ratio));
-	}
 	return (player_moved);
 }
 
@@ -137,10 +126,6 @@ bool	update_player_pos(t_game *const g, t_vec deltapos,
 		p->dov.x = cos(pdovrad);
 		p->dov.y = sin(pdovrad);
 		player_moved = true;
-
-		printf("pdov %lf,%lf (%lf)\n",
-			p->dov.x, p->dov.y,
-			atan2(p->dov.y, p->dov.x)*180/M_PI);
 	}
 	if (fabs(deltaverticalrad) > EPS)
 	{
