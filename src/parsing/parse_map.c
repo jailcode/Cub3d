@@ -215,8 +215,8 @@ void	build_padded_map(t_parser *data)
     new_map[i + 1] = make_space_line(data);
     new_map[i + 2] = NULL;
     data->map->parse_map = new_map;
-    data->map->rows = old_h + 2;
-    data->map->col = data->map->col +2;
+    data->map->rows = old_h;
+    data->map->col = data->map->col;
 }
 
 t_fieldtype	return_fieldtype(char c)

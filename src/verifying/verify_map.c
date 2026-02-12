@@ -47,12 +47,12 @@ char    **copy_map(t_mem_list **memory, char **map)
     copy[i] = NULL;
     return (copy);
 }
-
+/*
 void    print_map(char **map)
 {
     for(int i = 0; map[i]; i++)
          printf("%s\n", map[i]);
-}
+}*/
 
 void    dfs(t_parser *data, char **map, int row, int col)
 {
