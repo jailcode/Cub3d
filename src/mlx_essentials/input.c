@@ -12,7 +12,6 @@ void toggle_mouse(t_game *data)
 		mlx_mouse_show(data->mlx, data->win);
 		data->key.m = 1;
 	}
-	printf("hello \n");
 }
 
 int	keypress(int keycode, t_game *data)
