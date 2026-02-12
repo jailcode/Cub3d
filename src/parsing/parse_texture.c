@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:12:41 by pdangwal          #+#    #+#             */
-/*   Updated: 2026/02/12 15:14:39 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/12 15:20:42 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,25 +54,9 @@ static int	parse_color_value(char *line, int *i, t_mem_list *memory)
 }
 
 void	add_color_data(int color[3], char *line, t_mem_list **memory)
-void	add_color_data(int color[3], char *line, t_mem_list **memory)
 {
 	int	i;
-	int	i;
 
-	if (!color || !line || color[0] != -1)
-		clean_exit(*memory, 1, "Duplicate color");
-	i = 0;
-	color[0] = parse_color_value(line, &i, *memory);
-	if (line[i++] != ',')
-		clean_exit(*memory, 1, "invalid format");
-	color[1] = parse_color_value(line, &i, *memory);
-	if (line[i++] != ',')
-		clean_exit(*memory, 1, "invalid format");
-	color[2] = parse_color_value(line, &i, *memory);
-	while (ft_isspace(line[i]))
-		i++;
-	if (line[i] && line[i] != '\n')
-		clean_exit(*memory, 1, "garbage after color");
 	if (!color || !line || color[0] != -1)
 		clean_exit(*memory, 1, "Duplicate color");
 	i = 0;
@@ -103,16 +87,8 @@ void	store_img(t_game *data, t_img *img)
 }
 
 void	load_assets(t_game *data)
-void	load_assets(t_game *data)
 {
-	data->assets.north.relative_path = data->map->n_texture;
-	data->assets.east.relative_path = data->map->e_texture;
-	data->assets.south.relative_path = data->map->s_texture;
-	data->assets.west.relative_path = data->map->w_texture;
-	store_img(data, &data->assets.east);
-	store_img(data, &data->assets.west);
-	store_img(data, &data->assets.south);
-	store_img(data, &data->assets.north);
+
 	data->assets.north.relative_path = data->map->n_texture;
 	data->assets.east.relative_path = data->map->e_texture;
 	data->assets.south.relative_path = data->map->s_texture;
