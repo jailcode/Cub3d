@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 11:06:16 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/10 11:16:39 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/12 15:29:04 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,8 @@
 # define FOV 60
 # define SPEED .05
 # define FPS 60
-# define ANGULAR_SPEED (M_PI / FPS / 1.0)
 # define MOUSE_SENSITIVITY 15
-# define TIME_BETWEEN_FRAMES (1000 / FPS)
 # define MMAP_TILE_COUNT 8
-# define MINMAP_SIZE (TILE_SIZE * MMAP_TILE_COUNT)
 # define MM_RENDER_DISTANCE 4
 # define MMAP_OFFSET_X 24
 # define MMAP_OFFSET_Y 24
@@ -96,7 +93,6 @@ typedef struct s_parser
 	t_map_node			*map_head;
 	t_map_node			*map_tail;
 	t_fidx				init_player_field;
-	// t_dir	player_dir;
 	t_cdir				compassdir;
 	size_t				map_height;
 	size_t				map_width;
@@ -153,7 +149,6 @@ typedef struct s_game
 	t_img				frame;
 	t_keys				key;
 	t_mouse				input;
-	//	float	pitch;
 	t_assets			assets;
 	void				*mlx;
 	void				*win;
