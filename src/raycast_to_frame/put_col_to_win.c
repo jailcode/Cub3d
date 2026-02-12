@@ -86,7 +86,6 @@ void load_world(t_game *data)
             data->frame.imgcolumn[i].blockheightfactor = 0.01;
         curr = return_asset(data, data->frame.imgcolumn[i].cubeside);
         put_vertical_line(data, &curr, data->frame.imgcolumn[i]);
-        //put_floor_lines(data, &curr);
         i++;
     }
 }

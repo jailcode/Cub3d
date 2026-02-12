@@ -13,7 +13,7 @@ int check_map_elements(t_parser *data)
     while(++i < map->rows)
     {
         j = -1;
-        while(++j <= map->col)
+        while(++j < map->col)
         {
             if (ft_strchr("10 NSWE", map->parse_map[i][j]) == NULL)
                 return (0);
@@ -48,16 +48,23 @@ char    **copy_map(t_mem_list **memory, char **map)
     return (copy);
 }
 
+void    print_map(char **map)
+{
+    for(int i = 0; map[i]; i++)
+         printf("%s\n", map[i]);
+}
+
 void    dfs(t_parser *data, char **map, int row, int col)
 {
     if (!data)
         clean_exit(data->parse_memory, 1, "no data");
-    if (row < 0 || row >= data->map->rows || col < 0 || 
-        col >= data->map->col || map[row][col] == '1')
+    if (row < 0 || row >= data->map->rows
+        || col < 0 || col >= data->map->col)
+        return;
+    if (ft_strchr("0NSEW", map[row][col]))
+        clean_exit(data->parse_memory, 1, "Map is not closed");
+    if (map[row][col] != ' ')
         return ;
-    if (map[row][col] && !(map[row][col] == ' ' || map[row][col] == '1'))
-        clean_exit(data->parse_memory, 1, "invalid map");
-
     map[row][col] = '1';
     dfs(data, map, row + 1, col);
     dfs(data, map, row, col + 1);
@@ -76,6 +83,7 @@ int is_closed(t_parser *data)
         return (0);
     test_map = copy_map(&data->parse_memory, data->map->parse_map);
     dfs(data, test_map, 0, 0);
+    //print_map(data->map->parse_map);
     if (!no_spaces_inside(data, test_map))
         clean_exit(data->parse_memory, 1, "spaces inside map");
     return (1);

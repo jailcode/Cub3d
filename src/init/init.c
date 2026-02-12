@@ -27,6 +27,22 @@ t_map *init_map(t_mem_list **memory)
     return (map); 
 }
 
+void init_columns(t_rccol *cols)
+{
+    int i;
+
+    i = 0;
+    while(i < SCREEN_WIDTH)
+    {
+        cols[i].blockheightfactor = 0;
+        cols[i].blockstartrelative = 0;
+        cols[i].cubeside = 0;
+        cols[i].id = 0;
+        cols[i].left2rightrelative = 0;
+        i++;
+    }
+}
+
 void init_parser(t_parser *ret)
 {
     t_mem_list *memory;
@@ -44,6 +60,7 @@ void init_parser(t_parser *ret)
     ret->map_width = 0;
     ret->compassdir = cdir_error;
     ret->imgcolumn = x_malloc(&memory, SCREEN_WIDTH * sizeof(t_rccol));
+    init_columns(ret->imgcolumn);
     ret->state = PARSE_HEADER;
 }
 

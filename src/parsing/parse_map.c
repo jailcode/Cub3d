@@ -117,11 +117,7 @@ char    *spaced_line(char *line, size_t len)
 }
 
 
-void    print_map(char **map)
-{
-    for(int i = 0; map[i]; i++)
-         printf("%s\n", map[i]);
-}
+
 
 
 void    build_raw_map(t_parser *p)
@@ -207,8 +203,8 @@ void    build_padded_map(t_parser *data)
     new_map[i + 1] = make_space_line(data);
     new_map[i + 2] = NULL;
     data->map->parse_map = new_map;
-    data->map->rows = old_h;
-    data->map->col = data->map->col;
+    data->map->rows = old_h + 2;
+    data->map->col = data->map->col +2;
 }
 
 t_fieldtype return_fieldtype(char c)
