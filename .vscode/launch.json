@@ -6,8 +6,8 @@
       "type": "cppdbg",
       "request": "launch",
       "args": [
-		// "map_rapha.cub",
-		"map.cub",
+		"map_rapha.cub",
+		//"map.cub",
 		],	
     //   "stopAtEntry": true,
       "externalConsole": false,
