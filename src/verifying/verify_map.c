@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   verify_map.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pdangwal <pdangwal@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/12 15:21:53 by pdangwal          #+#    #+#             */
+/*   Updated: 2026/02/12 15:22:12 by pdangwal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub.h"
 
 int	check_map_elements(t_parser *data)
@@ -52,9 +64,6 @@ void	print_map(char **map)
 	for(int i = 0; map[i]; i++)
 			printf("%s\n", map[i]);
 }*/
-
-
-
 
 int	is_closed(t_parser *data)
 {

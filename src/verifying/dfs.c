@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dfs.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pdangwal <pdangwal@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/12 15:20:14 by pdangwal          #+#    #+#             */
+/*   Updated: 2026/02/12 15:20:41 by pdangwal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub.h"
 
 void	dfs(t_parser *data, char **map, int row, int col)
@@ -19,9 +31,9 @@ void	dfs(t_parser *data, char **map, int row, int col)
 
 char	*ft_strtrim(t_mem_list **memory, char const *s1, char const *set)
 {
-	int start;
-	int end;
-	char *str;
+	int		start;
+	int		end;
+	char	*str;
 
 	if (!s1 || !set)
 		return (NULL);

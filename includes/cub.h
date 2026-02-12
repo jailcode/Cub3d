@@ -198,6 +198,7 @@ char					*ft_strdup(t_mem_list **memory, const char *s);
 int						extract_line(t_game *data, char *line);
 char					*ft_strtrim(t_mem_list **memory, char const *s1,
 							char const *set);
+int						is_empty(char *line);
 void					transfer_map(t_parser *data);
 int						get_player_info(t_parser *data);
 void					paint_floor_line(t_game *data, int start, int x);

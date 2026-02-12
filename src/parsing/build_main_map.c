@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   build_main_map.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pdangwal <pdangwal@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/12 15:24:19 by pdangwal          #+#    #+#             */
+/*   Updated: 2026/02/12 15:24:25 by pdangwal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub.h"
 
 t_fieldtype	return_fieldtype(char c)
@@ -24,15 +36,15 @@ void	build_main_map(t_parser *data, t_fieldtype **map)
 	{
 		j = -1;
 		while (++j < data->map->col)
-			map[i][j] /*.ftype*/ = return_fieldtype(data->map->parse_map[i][j]);
+			map[i][j] = return_fieldtype(data->map->parse_map[i][j]);
 	}
 }
 
-void copy_main_map(t_parser *data, t_fieldtype **main_map, char **map)
+void	copy_main_map(t_parser *data, t_fieldtype **main_map, char **map)
 {
-	int	i;
-	int j;
-	int len;
+	int		i;
+	int		j;
+	int		len;
 
 	i = -1;
 	while (++i < data->map->rows)
@@ -42,9 +54,9 @@ void copy_main_map(t_parser *data, t_fieldtype **main_map, char **map)
 		while (++j < data->map->col)
 		{
 			if (j < len)
-				main_map[i][j] /*.ftype*/ = return_fieldtype(map[i][j]);
+				main_map[i][j] = return_fieldtype(map[i][j]);
 			else
-				main_map[i][j] /*.ftype*/ = empty;
+				main_map[i][j] = empty;
 		}
 	}
 }

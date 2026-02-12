@@ -88,7 +88,6 @@ void	store_img(t_game *data, t_img *img)
 
 void	load_assets(t_game *data)
 {
-
 	data->assets.north.relative_path = data->map->n_texture;
 	data->assets.east.relative_path = data->map->e_texture;
 	data->assets.south.relative_path = data->map->s_texture;

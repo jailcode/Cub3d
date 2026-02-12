@@ -1,5 +1,16 @@
-#include "cub.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   build_parse_map.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pdangwal <pdangwal@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/12 15:25:46 by pdangwal          #+#    #+#             */
+/*   Updated: 2026/02/12 15:25:48 by pdangwal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "cub.h"
 
 void	build_raw_map(t_parser *p)
 {
@@ -105,6 +116,4 @@ void	build_padded_map(t_parser *data)
 	new_map[i + 2] = NULL;
 	data->map->parse_map = new_map;
 	data->map->rows = old_h;
-	//data->map->col = data->map->col;
 }
-
