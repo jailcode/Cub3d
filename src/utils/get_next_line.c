@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/12 15:23:23 by rhaas             #+#    #+#             */
+/*   Updated: 2026/02/12 15:23:57 by rhaas            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub.h"
 
 static char	*fr_free(t_mem_list *memory, char *buffer, char *buf)
@@ -5,7 +17,6 @@ static char	*fr_free(t_mem_list *memory, char *buffer, char *buf)
 	char	*temp;
 
 	temp = ft_strjoin(memory, buffer, buf);
-	//free(buffer);
 	return (temp);
 }
 

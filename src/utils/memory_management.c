@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   memory_management.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/12 15:22:46 by rhaas             #+#    #+#             */
+/*   Updated: 2026/02/12 15:23:02 by rhaas            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub.h"
 
 int	init_memory_list(t_mem_list **m)
@@ -21,14 +33,12 @@ void	clean_memory_list(t_mem_list **mem)
 
 	if (!mem || !(*mem))
 		return ;
-	// Find the start of the list
 	while ((*mem)->prev != NULL)
 	{
-		if ((*mem)->prev == *mem) // Detect circular reference
+		if ((*mem)->prev == *mem)
 			break ;
 		(*mem) = (*mem)->prev;
 	}
-	// Free all nodes from start to end
 	count = 0;
 	while (*mem != NULL && count < 1000000)
 	{
