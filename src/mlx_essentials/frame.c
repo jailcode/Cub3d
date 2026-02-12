@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   frame.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pdangwal <pdangwal@student.42berlin.d      +#+  +:+       +#+        */
+/*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 14:51:12 by pdangwal          #+#    #+#             */
-/*   Updated: 2026/02/12 14:51:57 by pdangwal         ###   ########.fr       */
+/*   Updated: 2026/02/12 15:27:58 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ void	init_frame(t_game *data, t_img *img)
 
 int	load_frame(t_game *data)
 {
+	static double const TIME_BETWEEN_FRAMES = (1000 / FPS);
+	
 	if (!data)
 		return (0);
 	if (!set_fps(data, TIME_BETWEEN_FRAMES))
