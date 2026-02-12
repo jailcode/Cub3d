@@ -6,7 +6,7 @@
 /*   By: rhaas <rhaas@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 09:41:15 by raphha            #+#    #+#             */
-/*   Updated: 2026/02/11 16:19:31 by rhaas            ###   ########.fr       */
+/*   Updated: 2026/02/12 13:43:32 by rhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,13 +66,15 @@ static bool	update_playpos_internal(t_game *const g, t_line ray,
 {
 	t_player *const		p = &g->player;
 	t_rcintersect const	intersect = rayintersection(ray, g->map);
-	double const		maxdistbeforeimpact
-		= intersect.dist2intersect - p->mindist2wall
-		/ fabs(vdot(&ray.dir, &intersect.wallnormal));
+	double				maxdistbeforeimpact;
 	bool				player_moved;
 	double				ratio;
 
 	player_moved = false;
+	maxdistbeforeimpact = intersect.dist2intersect - p->mindist2wall
+		/ fabs(vdot(&ray.dir, &intersect.wallnormal));
+	if (maxdistbeforeimpact < -EPS)
+		maxdistbeforeimpact = 0.0;
 	ratio = maxdistbeforeimpact / deltadist;
 	p->collision = (ratio < 1.0);
 	if (ratio > EPS)
@@ -84,10 +86,8 @@ static bool	update_playpos_internal(t_game *const g, t_line ray,
 		player_moved = true;
 	}
 	if (p->collision)
-	{
 		player_moved = update_playpos_internal_slide(g, ray,
 				&intersect, deltadist * (1.0 - ratio));
-	}
 	return (player_moved);
 }
 
