@@ -4,13 +4,13 @@
 t_img return_asset(t_game *data, t_cdir side)
 {
     if (side == East)
-        return (data->assets.East);
+        return (data->assets.east);
     else if (side == West)
-        return (data->assets.West);
+        return (data->assets.west);
     else if (side == South)
-        return (data->assets.South);
+        return (data->assets.south);
     else 
-        return data->assets.North;
+        return data->assets.north;
 }
 
 
@@ -33,6 +33,33 @@ int get_pixel_color(t_game *data, t_img *img, t_rccol col, float up2downrelative
     color = img->addr + (img_y * img->line_length + img_x * (img->bpp / 8));
     return (*(unsigned int *)color);
 }
+
+void paint_ceiling_line(t_game *data, int start, int x)
+{
+    int     i;
+    int     color;
+
+    i = 0;
+    color = create_rgb(data->map->color_ceiling);
+    while(i < start && i < SCREEN_HEIGHT)
+    {
+        my_mlx_pixel_put(&data->frame, x, i, color);
+        i++;
+    }
+}
+
+void paint_floor_line(t_game *data, int start, int x)
+{
+    int color;
+
+    color = create_rgb(data->map->color_floor);
+    while(start < SCREEN_HEIGHT)
+    {
+        my_mlx_pixel_put(&data->frame, x, start, color);
+        start++;
+    }
+}
+
 void    put_vertical_line(t_game *data, t_img *tex, t_rccol col)
 {
     int start;
@@ -40,34 +67,22 @@ void    put_vertical_line(t_game *data, t_img *tex, t_rccol col)
     int line_length;
     int color;
     int start_save;
-    int i;
-    line_length = col.blockheightfactor * SCREEN_HEIGHT;
 
-    // +12-15 for col.blocksartrelative is to offset it to the center
-    start_save = ((SCREEN_HEIGHT/ VERTICAL_OFFSET)* (col.blockstartrelative + 15) - line_length) / 3;
+    line_length = col.blockheightfactor * SCREEN_HEIGHT;
+    // +1 for col.blocksartrelative is to offset it to the center
+    start_save = ((SCREEN_HEIGHT)* (col.blockstartrelative + 1) - line_length) / 3;
     start = start_save;
     end = start + line_length;
     if (start < 0)
         start = 0;
-    i = 0;
-    while(i < start && i < SCREEN_HEIGHT)
-    {
-        color = create_rgb(data->map->color_ceiling);
-        my_mlx_pixel_put(&data->frame, col.id, i, color);
-        i++;
-    }
+    paint_ceiling_line(data, start, col.id);
     while(start < end && start < SCREEN_HEIGHT)
     {
         color = get_pixel_color(data, tex, col, normalise(start, start_save, end)) ;//gets the color of a relative pixel from a texture 
         my_mlx_pixel_put(&data->frame, col.id, start, color);
         start++;
     }
-    while(start < SCREEN_HEIGHT)
-    {
-        color = create_rgb(data->map->color_floor);
-        my_mlx_pixel_put(&data->frame, col.id, start, color);
-        start++;
-    }
+    paint_floor_line(data, start, col.id);
 }
 
 

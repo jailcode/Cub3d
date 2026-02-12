@@ -4,10 +4,10 @@
 void    leave_game(t_game *data)
 {
     mlx_destroy_image(data->mlx, data->frame.img);
-    mlx_destroy_image(data->mlx, data->assets.East.img);
-    mlx_destroy_image(data->mlx, data->assets.West.img);
-    mlx_destroy_image(data->mlx, data->assets.North.img);
-    mlx_destroy_image(data->mlx, data->assets.South.img);
+    mlx_destroy_image(data->mlx, data->assets.east.img);
+    mlx_destroy_image(data->mlx, data->assets.west.img);
+    mlx_destroy_image(data->mlx, data->assets.north.img);
+    mlx_destroy_image(data->mlx, data->assets.south.img);
     mlx_destroy_window(data->mlx, data->win);
     mlx_destroy_display(data->mlx);
     free(data->mlx);
@@ -64,14 +64,21 @@ void    update_player(t_game *data)
     t_coord     delta_pos;
     double      delta_dir;
 	double      delta_verticaldir;
+	double		mouse_x_rad;
+	double		mouse_y_rad;
+    static double const angularspeed = (M_PI / 2.0) / FPS;
 
     delta_pos.x = SPEED *(data->key.w - data->key.s);
     delta_pos.y = SPEED * (data->key.d - data->key.a);
-    delta_dir = ANGULAR_SPEED * ( data->key.right - data->key.left) + data->input.x_diff;
-	delta_verticaldir = ANGULAR_SPEED * ( data->key.up - data->key.down) * VERTICAL_OFFSET/2 + data->input.y_diff;
+    
+    mouse_x_rad = data->input.x_diff * MOUSE_SENSITIVITY * (M_PI / 180.0);
+    mouse_y_rad = data->input.y_diff * MOUSE_SENSITIVITY * (M_PI / 180.0);
+    
+    delta_dir = angularspeed * (data->key.right - data->key.left) + mouse_x_rad;
+    delta_verticaldir = angularspeed * (data->key.up - data->key.down) + mouse_y_rad;
+    
     data->input.x_diff = 0;
     data->input.y_diff = 0;
-    //mouse_input(data, &delta_dir, &delta_verticaldir);
     update_player_pos(data, delta_pos, delta_dir, delta_verticaldir);
 
 }
@@ -81,35 +88,6 @@ int create_rgb(int color[3])
     return (color[0] << 16 | color[1] << 8 | color[2]);
 }
 
-void    paint_frame(t_game *data, int start_y, int end_y, int color)
-{
-    int j;
-
-    while(start_y < end_y && start_y >= 0 && start_y < SCREEN_HEIGHT)
-    {
-        j = -1;
-        while(++j < data->frame.size_x)
-        {
-            my_mlx_pixel_put(&data->frame, j, start_y, color);
-        }
-        start_y++;
-    }
-}
-
-void    apply_background_color(t_game *data)
-{
-    int start_ceiling;
-    int start_floor;
-    int *color;
-    
-    color = data->map->color_ceiling;
-    start_ceiling = 0;
-    start_floor = SCREEN_HEIGHT/2 + data->frame.imgcolumn->blockstartrelative * VERTICAL_OFFSET /3;
-
-    paint_frame(data, start_ceiling, start_floor, create_rgb(color));
-    color = data->map->color_floor;
-    paint_frame(data, start_floor, SCREEN_HEIGHT, create_rgb(color));
-}
 
 int set_fps(t_game *data, int time)
 {
@@ -158,9 +136,7 @@ void    start_game(t_game *data)
     init_frame(data, &data->frame);
     load_assets(data);
     mlx_mouse_move(data->mlx, data->win, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
-    data->player.fov = FOV * (M_PI / 180.0);
-    if (data->player.mindist2wall <= 0.0)
-        data->player.mindist2wall = 0.1;
     register_input_hooks(data);
+	generate_raycast(data);
     update_loop(data);
 }

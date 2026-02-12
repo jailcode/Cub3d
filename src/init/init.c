@@ -16,10 +16,10 @@ t_map *init_map(t_mem_list **memory)
         map->color_floor[i] = -1;
         i++;
     }
-    map->Ntexture = NULL;
-    map->Stexture = NULL;
-    map->Wtexture = NULL;
-    map->Etexture = NULL;
+    map->n_texture = NULL;
+    map->s_texture = NULL;
+    map->w_texture = NULL;
+    map->e_texture = NULL;
     map->parse_map = NULL;
     map->main_map = NULL;
     map->rows = 0;
@@ -79,10 +79,10 @@ void    init_keys(t_game *data)
 void init_assets(t_game *data)
 {
     data->assets.asset_num = 4;
-    data->assets.East.img = NULL;
-    data->assets.West.img = NULL;
-    data->assets.North.img = NULL;
-    data->assets.South.img = NULL;
+    data->assets.east.img = NULL;
+    data->assets.west.img = NULL;
+    data->assets.north.img = NULL;
+    data->assets.south.img = NULL;
 }
 
 void init_mouse(t_game *data)
@@ -103,11 +103,13 @@ void    init_data(t_game *data, t_parser *parser)
     data->win = NULL;
     data->current_time = 0;
     init_keys(data);
+    data->frame.size_x = SCREEN_WIDTH;
+    data->frame.size_y = SCREEN_HEIGHT;
     data->player.fov = FOV * M_PI / 180.0;
 	data->player.unitdist = cos(data->player.fov / 2.0);
 	data->player.mindist2wall = 0.2;
     init_mouse(data);
-    data->pitch = 0.0f;
+    // data->pitch = 0.0f;
     init_assets(data);
     set_initial_player_pos(&data->player, parser->init_player_field, parser->compassdir);
 }
