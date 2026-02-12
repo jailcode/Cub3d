@@ -23,11 +23,11 @@ void	init_frame(t_game *data, t_img *img)
 
 int	load_frame(t_game *data)
 {
-	static double const TIME_BETWEEN_FRAMES = (1000 / FPS);
-	
+	static double const	time_between_frames = (1000 / FPS);
+
 	if (!data)
 		return (0);
-	if (!set_fps(data, TIME_BETWEEN_FRAMES))
+	if (!set_fps(data, time_between_frames))
 		return (0);
 	update_player(data);
 	load_world(data);
