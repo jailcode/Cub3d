@@ -20,7 +20,6 @@ static char	*ft_next(t_mem_list *memory, char *buffer)
 		i++;
 	if (!buffer[i])
 	{
-		//free(buffer);
 		return (NULL);
 	}
 	line = ft_calloc(memory, (ft_strlen(buffer) - i + 1), sizeof(char));
@@ -28,7 +27,6 @@ static char	*ft_next(t_mem_list *memory, char *buffer)
 	j = 0;
 	while (buffer[i])
 		line[j++] = buffer[i++];
-	//free(buffer);
 	return (line);
 }
 
@@ -68,7 +66,6 @@ static char	*read_file(t_mem_list *memory, int fd, char *res)
 		byte_read = read(fd, buffer, BUFFER_SIZE);
 		if (byte_read == -1)
 		{
-			//free(buffer);
 			return (NULL);
 		}
 		buffer[byte_read] = 0;
@@ -76,7 +73,6 @@ static char	*read_file(t_mem_list *memory, int fd, char *res)
 		if (ft_strchr(buffer, '\n'))
 			break ;
 	}
-	//free(buffer);
 	return (res);
 }
 
@@ -87,15 +83,11 @@ char	*get_next_line(t_mem_list *memory, int fd)
 
 	if (fd == -1)
 	{
-		//if (buffer)
-			//free(buffer);
 		buffer = NULL;
 		return (NULL);
 	}
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
-		//if (buffer)
-			//free(buffer);
 		buffer = NULL;
 		return (NULL);
 	}

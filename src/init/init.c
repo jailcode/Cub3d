@@ -74,6 +74,7 @@ void    init_keys(t_game *data)
     data->key.up = 0;
     data->key.down = 0;
     data->key.w = 0;
+    data->key.m = 0;
 }
 
 void init_assets(t_game *data)

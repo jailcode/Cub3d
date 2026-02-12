@@ -1,166 +1,103 @@
 #include "../../includes/cub.h"
 
-int check_map_elements(t_parser *data)
+int	check_map_elements(t_parser *data)
 {
-    int i;
-    int j;
-    t_map   *map;
+	int		i;
+	int		j;
+	t_map	*map;
 
-    if (!data)
-        return (0);
-    map = data->map;
-    i = -1;
-    while(++i < map->rows)
-    {
-        j = -1;
-        while(++j < map->col)
-        {
-            if (ft_strchr("10 NSWE", map->parse_map[i][j]) == NULL)
-                return (0);
-        }
-    }
-    return (1);
+	if (!data)
+		return (0);
+	map = data->map;
+	i = -1;
+	while (++i < map->rows)
+	{
+		j = -1;
+		while (++j < map->col)
+		{
+			if (ft_strchr("10 NSWE", map->parse_map[i][j]) == NULL)
+				return (0);
+		}
+	}
+	return (1);
 }
 
-char    **copy_map(t_mem_list **memory, char **map)
+char	**copy_map(t_mem_list **memory, char **map)
 {
-    char    **copy;
-    int     i;
+	char	**copy;
+	int		i;
 
-    if (!map)
-        return (NULL);
-
-    i = 0;
-    while (map[i])
-        i++;
-    copy = x_malloc(memory, sizeof(char *) * (i + 1));
-    if (!copy)
-        clean_exit(*memory, 1, "malloc failed");
-    i = 0;
-    while (map[i])
-    {
-        copy[i] = ft_strdup(memory, map[i]);
-        if (!copy[i])
-            clean_exit(*memory, 1, "malloc failed");
-        i++;
-    }
-    copy[i] = NULL;
-    return (copy);
+	if (!map)
+		return (NULL);
+	i = 0;
+	while (map[i])
+		i++;
+	copy = x_malloc(memory, sizeof(char *) * (i + 1));
+	if (!copy)
+		clean_exit(*memory, 1, "malloc failed");
+	i = 0;
+	while (map[i])
+	{
+		copy[i] = ft_strdup(memory, map[i]);
+		if (!copy[i])
+			clean_exit(*memory, 1, "malloc failed");
+		i++;
+	}
+	copy[i] = NULL;
+	return (copy);
 }
 /*
-void    print_map(char **map)
+void	print_map(char **map)
 {
-    for(int i = 0; map[i]; i++)
-         printf("%s\n", map[i]);
+	for(int i = 0; map[i]; i++)
+			printf("%s\n", map[i]);
 }*/
 
-void    dfs(t_parser *data, char **map, int row, int col)
+
+
+
+int	is_closed(t_parser *data)
 {
-    if (!data)
-        clean_exit(data->parse_memory, 1, "no data");
-    if (row < 0 || row >= data->map->rows
-        || col < 0 || col >= data->map->col)
-        return;
-    if (ft_strchr("0NSEW", map[row][col]))
-        clean_exit(data->parse_memory, 1, "Map is not closed");
-    if (map[row][col] != ' ')
-        return ;
-    map[row][col] = '1';
-    dfs(data, map, row + 1, col);
-    dfs(data, map, row, col + 1);
-    dfs(data, map, row - 1, col);
-    dfs(data, map, row, col - 1);
+	char	**test_map;
+
+	if (!data)
+		return (0);
+	test_map = copy_map(&data->parse_memory, data->map->parse_map);
+	dfs(data, test_map, 0, 0);
+	if (!no_spaces_inside(data, test_map))
+		clean_exit(data->parse_memory, 1, "spaces inside map");
+	return (1);
 }
 
-
-int no_spaces_inside(t_parser *data, char **map);
-
-int is_closed(t_parser *data)
+int	no_spaces_inside(t_parser *data, char **map)
 {
-    char    **test_map;
+	int	i;
+	int	j;
 
-    if (!data)
-        return (0);
-    test_map = copy_map(&data->parse_memory, data->map->parse_map);
-    dfs(data, test_map, 0, 0);
-    //print_map(data->map->parse_map);
-    if (!no_spaces_inside(data, test_map))
-        clean_exit(data->parse_memory, 1, "spaces inside map");
-    return (1);
+	if (!data || !map)
+		return (0);
+	i = 0;
+	while (map[i])
+	{
+		j = 0;
+		while (map[i][j])
+		{
+			if (map[i][j] == ' ')
+				dfs(data, map, i, j);
+			j++;
+		}
+		i++;
+	}
+	return (1);
 }
 
-int no_spaces_inside(t_parser *data, char **map)
+bool	verify_map(t_parser *data)
 {
-    int i;
-    int j;
-
-    if (!data || !map)
-        return (0);
-    i = 0;
-    while(map[i])
-    {
-        j = 0;
-        while(map[i][j])
-        {
-            if (map[i][j] == ' ')
-                dfs(data, map, i, j);
-            j++;
-        }
-        i++;
-    }
-    return (1);
-}
-
-void    get_player_cdir(t_parser *data, char dov)
-{
-    if (data->compassdir != cdir_error)
-        clean_exit(data->parse_memory, 1, "Multiple player starts");
-    if (dov == 'N')
-        data->compassdir = North;
-    else if (dov == 'S')
-        data->compassdir = South;
-    else if (dov == 'W')
-        data->compassdir = West;
-    else if (dov == 'E')
-        data->compassdir = East;
-}
-
-int get_player_info(t_parser *data)
-{
-    int i;
-    int j;
-    int ret;
-
-    if (!data)
-        return (0);
-    i = 0;
-    ret = 0;
-    while(data->map->parse_map[i])
-    {
-        j = 0;
-        while(data->map->parse_map[i][j])
-        {
-            if (ft_strchr("NWES", data->map->parse_map[i][j]) != NULL)
-            {
-                get_player_cdir(data, data->map->parse_map[i][j]);
-                data->init_player_field.vertical = i;
-                data->init_player_field.horizontal = j;
-                ret = 1;
-            }
-            j++;
-        }
-        i++;
-    }
-    return (ret);
-}
-
-bool    verify_map(t_parser *data)
-{
-    if (!data)
-        return (false);
-    if (!check_map_elements(data))
-        return (false);
-    if (!is_closed(data))
-        return (false);
-    return (true);
+	if (!data)
+		return (false);
+	if (!check_map_elements(data))
+		return (false);
+	if (!is_closed(data))
+		return (false);
+	return (true);
 }
